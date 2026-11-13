@@ -20,6 +20,8 @@
         var ab = d.querySelector('.admin-bar');
         if (ab) ab.style.display = 'none';
         d.body.style.paddingBottom = '20px';
+        f.style.height = '10px';
+        setTimeout(function () { f.style.height = (d.documentElement.scrollHeight + 40) + 'px'; }, 300);
       } catch (e) {}
     });
   </script>
