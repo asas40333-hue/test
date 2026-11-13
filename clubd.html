@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>2026 리골프 모임 클럽디 보은 CC 단체전 특별 화보집</title>
+
+  <!-- OpenGraph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="[화보집] 2026 리골프 모임 클럽디 보은 CC 16인 단체전">
+  <meta property="og:description" content="시계탑 앞 16인 단체 사진부터 4개 조 열전, 스윙 화보, 금·은·동메달 시상식까지!">
+  <meta property="og:image" content="https://asas40333-hue.github.io/test/clubd-p1.png">
+  <meta property="og:url" content="https://asas40333-hue.github.io/test/clubd.html">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #1a1a1a;
+      color: #f0f0f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      overflow-x: hidden;
+    }
+    header {
+      width: 100%;
+      max-width: 1000px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+    }
+    .header-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: #e0e0e0;
+    }
+    .page-indicator {
+      font-size: 14px;
+      color: #c8a97e;
+      font-weight: 700;
+      background: #2a2a2a;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .viewer-container {
+      width: 100%;
+      max-width: 1000px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      position: relative;
+    }
+    .album-frame {
+      width: 100%;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+      position: relative;
+    }
+    .album-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: opacity 0.25s ease;
+    }
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: background 0.2s;
+    }
+    .nav-btn:hover { background: rgba(0,0,0,0.8); }
+    .prev-btn { left: 24px; }
+    .next-btn { right: 24px; }
+    
+    .toolbar {
+      width: 100%;
+      max-width: 1000px;
+      padding: 16px 20px 24px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+    .btn {
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: #2d5a3f;
+      border-color: #3b7553;
+      color: #fff;
+    }
+    .btn:active { transform: scale(0.98); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-title">⛳ 리골프 모임 클럽디 보은 CC 단체전 특별 화보집</div>
+    <div class="page-indicator" id="pageIndicator">1 / 5</div>
+  </header>
+
+  <div class="viewer-container">
+    <div class="album-frame" id="albumFrame">
+      <img id="albumImg" src="clubd-p1.png" alt="리골프 클럽디 보은 화보집">
+    </div>
+    <button class="nav-btn prev-btn" onclick="prevPage()">‹</button>
+    <button class="nav-btn next-btn" onclick="nextPage()">›</button>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn" onclick="prevPage()">◀ 이전 쪽</button>
+    <button class="btn btn-primary" onclick="nextPage()">다음 쪽 ▶</button>
+    <button class="btn" onclick="shareKakao()">📲 카톡 공유</button>
+  </div>
+
+  <script>
+    const pages = [
+      'clubd-p1.png',
+      'clubd-p2.png',
+      'clubd-p3.png',
+      'clubd-p4.png',
+      'clubd-p5.png'
+    ];
+    let currentIndex = 0;
+
+    const albumImg = document.getElementById('albumImg');
+    const pageIndicator = document.getElementById('pageIndicator');
+
+    function updatePage(index) {
+      if (index < 0) index = 0;
+      if (index >= pages.length) index = pages.length - 1;
+      currentIndex = index;
+      
+      albumImg.style.opacity = '0.3';
+      setTimeout(() => {
+        albumImg.src = pages[currentIndex];
+        albumImg.style.opacity = '1';
+        pageIndicator.innerText = `${currentIndex + 1} / ${pages.length}`;
+      }, 150);
+    }
+
+    function prevPage() {
+      if (currentIndex > 0) {
+        updatePage(currentIndex - 1);
+      }
+    }
+
+    function nextPage() {
+      if (currentIndex < pages.length - 1) {
+        updatePage(currentIndex + 1);
+      }
+    }
+
+    // Swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      if (touchEndX < touchStartX - 50) {
+        nextPage();
+      }
+      if (touchEndX > touchStartX + 50) {
+        prevPage();
+      }
+    }
+
+    function shareKakao() {
+      if (navigator.share) {
+        navigator.share({
+          title: '리골프 모임 클럽디 보은 CC 단체전 특별 화보집',
+          text: '16인 4팀 단체 라운딩 기념 포토북 화보집',
+          url: window.location.href
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          alert('화보집 링크가 복사되었습니다! 카카오톡 단톡방에 붙여넣기 하세요.');
+        });
+      }
+    }
+  </script>
+</body>
+</html>
