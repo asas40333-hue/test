@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>메종플러스 현장 공유 시스템</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #3b82f6;
+      --accent: #10b981;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 14px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 80px; }
+
+    /* 헤더 */
+    .app-header {
+      background: var(--card-bg);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title { font-size: 13px; font-weight: 700; color: var(--primary); letter-spacing: -0.3px; }
+    .project-name { font-size: 17px; font-weight: 800; color: var(--text); margin-top: 2px; }
+    .mode-badge {
+      background: #eff6ff;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: 1px solid #bfdbfe;
+    }
+
+    /* 상단 프로그레스 카드 */
+    .status-card {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #fff;
+      margin: 16px;
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+    }
+    .status-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .status-stage { font-size: 14px; font-weight: 600; opacity: 0.9; }
+    .status-dday { background: rgba(255, 255, 255, 0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+    .status-percent { font-size: 32px; font-weight: 900; margin-bottom: 8px; }
+    .progress-bar-bg { background: rgba(255, 255, 255, 0.25); height: 8px; border-radius: 4px; overflow: hidden; }
+    .progress-bar-fill { background: #34d399; height: 100%; width: 45%; border-radius: 4px; transition: width 0.3s ease; }
+    .status-sub { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; opacity: 0.85; }
+
+    /* 탭 메뉴 */
+    .nav-tabs {
+      display: flex;
+      background: var(--card-bg);
+      padding: 4px;
+      margin: 0 16px 16px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .nav-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-tab.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(30, 58, 138, 0.25);
+    }
+
+    /* 공통 컨테이너 */
+    .tab-content { display: none; padding: 0 16px; }
+    .tab-content.active { display: block; }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .section-desc { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+
+    /* 카드 */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    /* 1. 현장 일지 탭 */
+    .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .photo-item {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      background: #e2e8f0;
+    }
+    .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-badge {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+    .log-item {
+      border-left: 3px solid var(--primary-light);
+      padding-left: 12px;
+      margin-bottom: 14px;
+    }
+    .log-date { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .log-work { font-size: 14px; font-weight: 700; margin-top: 2px; }
+
+    /* 2. 자재 스펙북 탭 */
+    .spec-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .spec-item:last-child { border-bottom: none; }
+    .spec-thumb {
+      width: 54px;
+      height: 54px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    .spec-info { flex: 1; }
+    .spec-cat { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .spec-name { font-size: 14px; font-weight: 700; margin-top: 1px; }
+    .spec-model { font-size: 12px; color: var(--text-muted); }
+    .spec-status {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .spec-status.confirmed { background: #ecfdf5; color: #059669; }
+    .spec-status.changed { background: #fef3c7; color: #d97706; }
+
+    /* 3. 일정표 탭 */
+    .timeline { position: relative; padding-left: 20px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-step { position: relative; margin-bottom: 18px; }
+    .timeline-dot {
+      position: absolute;
+      left: -20px;
+      top: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      border: 3px solid #fff;
+    }
+    .timeline-step.done .timeline-dot { background: var(--accent); }
+    .timeline-step.current .timeline-dot { background: var(--primary-light); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+    .timeline-date { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .timeline-title { font-size: 14px; font-weight: 700; margin-top: 2px; }
+    .timeline-notice { font-size: 12px; color: #dc2626; margin-top: 3px; font-weight: 500; }
+
+    /* 4. 공사 대금 정산 탭 */
+    .amount-box {
+      background: #f8fafc;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      border: 1px dashed var(--border);
+    }
+    .amount-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+    .amount-row.total {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--primary);
+    }
+    .payment-step {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f8fafc;
+      margin-bottom: 8px;
+    }
+    .payment-step.paid { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .payment-step.pending { background: #fffbeb; border: 1px solid #fde68a; }
+    .pay-tag { font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+    .pay-tag.paid { background: #dcfce7; color: #15803d; }
+    .pay-tag.pending { background: #fef3c7; color: #b45309; }
+
+    /* 대표님 관리 모드 플로팅 바 */
+    .admin-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+    }
+    .admin-btn {
+      background: var(--primary-light);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 -->
+  <header class="app-header">
+    <div>
+      <div class="brand-title">메종플러스 인테리어</div>
+      <div class="project-name">어은동 한빛아파트 129동 1406호</div>
+    </div>
+    <div class="mode-badge" onclick="toggleMode()">고객 전용 뷰 👁️</div>
+  </header>
+
+  <!-- 상단 프로그레스 요약 카드 -->
+  <div class="status-card">
+    <div class="status-top">
+      <span class="status-stage">현재 공정: <strong>목공 & 전기 배선 공사</strong></span>
+      <span class="status-dday">입주 D-18</span>
+    </div>
+    <div class="status-percent">45% 진행 중</div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill"></div>
+    </div>
+    <div class="status-sub">
+      <span>착공일: 2026.11.16</span>
+      <span>준공 예정: 2026.12.05</span>
+    </div>
+  </div>
+
+  <!-- 탭 내비게이션 -->
+  <nav class="nav-tabs">
+    <div class="nav-tab active" onclick="switchTab('log')">📸 현장일지</div>
+    <div class="nav-tab" onclick="switchTab('spec')">🧱 자재스펙</div>
+    <div class="nav-tab" onclick="switchTab('schedule')">📅 공정일정</div>
+    <div class="nav-tab" onclick="switchTab('payment')">💰 공사대금</div>
+  </nav>
+
+  <!-- 1. 현장 일지 탭 -->
+  <div id="tab-log" class="tab-content active">
+    <div class="section-title">
+      오늘의 현장 리포트
+      <span class="section-desc">대표님이 직접 기록한 현장</span>
+    </div>
+
+    <div class="card">
+      <div class="log-item">
+        <div class="log-date">2026.11.18 (오늘)</div>
+        <div class="log-work">우물천장 간접등 배선 및 거실 아트월 목공틀 작업</div>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+        거실 우물천장 평탄화 및 T5 간접조명 배선 완료되었습니다. 안방 도어선 문틀 교체 및 단열재 충진 꼼꼼히 확인했습니다.
+      </p>
+      <div class="photo-grid">
+        <div class="photo-item">
+          <div style="width:100%;height:100%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:32px;">🪵</div>
+          <div class="photo-badge">우물천장 목공틀</div>
+        </div>
+        <div class="photo-item">
+          <div style="width:100%;height:100%;background:#cbd5e1;display:flex;align-items:center;justify-content:center;font-size:32px;">💡</div>
+          <div class="photo-badge">간접조명 배선 인입</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="log-item" style="border-left-color: #94a3b8;">
+        <div class="log-date">2026.11.16 (착공 1일차)</div>
+        <div class="log-work">욕실 전체 철거 및 바닥 방수 1차 도포</div>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+        기존 타일 및 위생도기 전면 철거 후 고스락 1차 액체방수 완료. 양생 상태 확인 후 내일 2차 우레탄 방수 들어갑니다.
+      </p>
+    </div>
+  </div>
+
+  <!-- 2. 자재 스펙북 탭 -->
+  <div id="tab-spec" class="tab-content">
+    <div class="section-title">
+      선정 및 변경 자재 목록
+      <span class="section-desc">고객님과 사전 협의된 자재</span>
+    </div>
+
+    <div class="card">
+      <div class="spec-item">
+        <div class="spec-thumb">🚽</div>
+        <div class="spec-info">
+          <div class="spec-cat">공용 욕실 양변기</div>
+          <div class="spec-name">아메리칸스탠다드 웨이브 라운드</div>
+          <div class="spec-model">치마형 밀폐형 양변기 (C4010)</div>
+        </div>
+        <span class="spec-status confirmed">확정</span>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-thumb">🚿</div>
+        <div class="spec-info">
+          <div class="spec-cat">안방 욕실 수전</div>
+          <div class="spec-name">더죤테크 하프단 스탠 무광 니켈</div>
+          <div class="spec-model">고급 무광 스테인리스 매립 세면수전</div>
+        </div>
+        <span class="spec-status changed">자재변경 (+12만)</span>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-thumb">🪵</div>
+        <div class="spec-info">
+          <div class="spec-cat">거실 및 방 바닥재</div>
+          <div class="spec-name">구정마루 그랜드 텍스쳐 오크</div>
+          <div class="spec-model">광폭 강마루 (친환경 1등급 본드 시공)</div>
+        </div>
+        <span class="spec-status confirmed">확정</span>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-thumb">💡</div>
+        <div class="spec-info">
+          <div class="spec-cat">거실 주조명</div>
+          <div class="spec-name">2인치 초슬림 COB 매립등</div>
+          <div class="spec-model">주백색(4000K) + 전구색 간접 T5</div>
+        </div>
+        <span class="spec-status confirmed">확정</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 공사 일정표 탭 -->
+  <div id="tab-schedule" class="tab-content">
+    <div class="section-title">
+      전체 공정 스케줄
+      <span class="section-desc">실시간 일정 반영</span>
+    </div>
+
+    <div class="card">
+      <div class="timeline">
+        <div class="timeline-step done">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">11.16(월) ~ 11.17(화) · 완료</div>
+          <div class="timeline-title">철거 및 욕실 1·2차 방수 공사</div>
+          <div class="timeline-notice">※ 소음 민원 접수 없이 안전하게 마감</div>
+        </div>
+
+        <div class="timeline-step current">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">11.18(수) ~ 11.20(금) · 진행 중</div>
+          <div class="timeline-title">창호(샤시) 교체 및 목공·전기 배선</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">11.23(월) ~ 11.25(수) · 예정</div>
+          <div class="timeline-title">타일 시공 (욕실, 주방, 현관, 발코니)</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">11.26(목) ~ 11.27(금) · 예정</div>
+          <div class="timeline-title">도배(실크벽지) 및 바닥 강마루 시공</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">12.01(화) ~ 12.03(목) · 예정</div>
+          <div class="timeline-title">싱크대·붙박이장 가구 세팅 및 조명 마감</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">12.04(금) ~ 12.05(토) · 예정</div>
+          <div class="timeline-title">입주청소 및 고객 최종 준공 검수 (인수인계)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 공사 대금 정산 탭 -->
+  <div id="tab-payment" class="tab-content">
+    <div class="section-title">
+      공사 대금 및 정산 내역
+      <span class="section-desc">계약금 · 중도금 · 잔금 현황</span>
+    </div>
+
+    <div class="card">
+      <div class="amount-box">
+        <div class="amount-row"><span>총 계약 금액</span><span>46,050,000원</span></div>
+        <div class="amount-row"><span>자재 변경 추가금</span><span>+120,000원</span></div>
+        <div class="amount-row" style="color: #059669;"><span>기 납부 금액</span><span>-23,050,000원</span></div>
+        <div class="amount-row total"><span>현재 남은 잔금</span><span>23,120,000원</span></div>
+      </div>
+
+      <div class="payment-step paid">
+        <div>
+          <div style="font-size: 13px; font-weight: 700;">1차 계약금 (10%)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">4,600,000원 · 11월 10일 입금 완료</div>
+        </div>
+        <span class="pay-tag paid">완납</span>
+      </div>
+
+      <div class="payment-step paid">
+        <div>
+          <div style="font-size: 13px; font-weight: 700;">2차 중도금 (40%)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">18,450,000원 · 11월 16일 입금 완료</div>
+        </div>
+        <span class="pay-tag paid">완납</span>
+      </div>
+
+      <div class="payment-step pending">
+        <div>
+          <div style="font-size: 13px; font-weight: 700;">3차 중도금 (30%)</div>
+          <div style="font-size: 12px; color: #b45309; font-weight: 600;">13,800,000원 · 11월 26일 (목공·타일 마감 시)</div>
+        </div>
+        <span class="pay-tag pending">입금 예정</span>
+      </div>
+
+      <div class="payment-step">
+        <div>
+          <div style="font-size: 13px; font-weight: 700;">최종 잔금 (20% + 변경분)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">9,320,000원 · 12월 05일 (준공 검수 완료일)</div>
+        </div>
+        <span class="pay-tag">미도래</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 하단 대표님 관리 모드 바 -->
+  <div class="admin-bar">
+    <div>
+      <div style="font-size: 11px; opacity: 0.8;">메종플러스 관리자 모드</div>
+      <div style="font-size: 13px; font-weight: 700;">김성수 대표님 접속 중</div>
+    </div>
+    <div>
+      <button class="admin-btn" onclick="alert('오늘의 현장 사진 및 공정 메모 등록 창이 열립니다.')">📸 사진/일지 등록</button>
+      <button class="admin-btn" style="background:#059669; margin-left: 6px;" onclick="alert('고객님 카카오톡으로 현장 공유 링크가 발송되었습니다.')">📲 고객 공유</button>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
+    }
+
+    function toggleMode() {
+      const badge = document.querySelector('.mode-badge');
+      if (badge.innerText.includes('고객')) {
+        badge.innerText = '대표님 관리자 뷰 ⚙️';
+        badge.style.background = '#fef3c7';
+        badge.style.color = '#b45309';
+        badge.style.borderColor = '#fde68a';
+      } else {
+        badge.innerText = '고객 전용 뷰 👁️';
+        badge.style.background = '#eff6ff';
+        badge.style.color = '#1e3a8a';
+        badge.style.borderColor = '#bfdbfe';
+      }
+    }
+  </script>
+</body>
+</html>
