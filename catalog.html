@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>메종플러스 30년 검증 실전 자재 도감 · 10선 샘플</title>
-  <meta name="description" content="인테리어 견적 상담 및 자재 미팅 전용 메종플러스 스탠다드 컬렉션">
+  <title>메종플러스 30년 검증 실전 자재 도감 · 실물 화보 10선</title>
+  <meta name="description" content="인테리어 견적 상담 및 자재 미팅 전용 메종플러스 스탠다드 실물 컬렉션">
   
   <!-- OpenGraph KakaoTalk Preview -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="메종플러스 30년 검증 실전 자재 도감">
-  <meta property="og:description" content="견적 상담 및 계약 자재 미팅용 스탠다드 핵심 자재 10선 프로토타입">
+  <meta property="og:title" content="메종플러스 30년 검증 실전 자재 도감 (실물 화보)">
+  <meta property="og:description" content="견적 상담 및 계약 자재 미팅용 스탠다드 핵심 자재 10선 공식 실물 카탈로그">
   <meta property="og:image" content="https://asas40333-hue.github.io/test/og-client.png">
   <meta property="og:url" content="https://asas40333-hue.github.io/test/catalog.html">
 
@@ -17,7 +17,7 @@
   <style>
     :root {
       --primary: #1e3a8a;
-      --primary-light: #3b82f6;
+      --primary-light: #2563eb;
       --accent: #d97706;
       --bg: #f8fafc;
       --card-bg: #ffffff;
@@ -26,11 +26,11 @@
       --text-muted: #94a3b8;
       --border: #e2e8f0;
       --radius-sm: 8px;
-      --radius-md: 14px;
+      --radius-md: 16px;
       --radius-lg: 20px;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-      --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+      --shadow-md: 0 6px 16px rgba(0,0,0,0.07);
+      --shadow-lg: 0 12px 28px rgba(0,0,0,0.12);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Pretendard", -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -39,7 +39,7 @@
     /* Top App Bar */
     header {
       position: sticky; top: 0; z-index: 50;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
       padding: 12px 18px;
@@ -71,16 +71,14 @@
       background: white; border-bottom: 1px solid var(--border);
       padding: 14px 16px; position: sticky; top: 58px; z-index: 40;
     }
-    .search-box {
-      position: relative; margin-bottom: 12px;
-    }
+    .search-box { position: relative; margin-bottom: 12px; }
     .search-input {
       width: 100%; padding: 10px 14px 10px 38px;
       background: #f1f5f9; border: 1px solid var(--border);
       border-radius: 10px; font-size: 14px; outline: none;
       transition: all 0.2s;
     }
-    .search-input:focus { background: white; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+    .search-input:focus { background: white; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
     .search-icon { position: absolute; left: 12px; top: 12px; font-size: 14px; color: #94a3b8; }
 
     .category-pills {
@@ -114,16 +112,32 @@
     .material-card {
       background: white; border-radius: var(--radius-md);
       border: 1px solid var(--border); box-shadow: var(--shadow-sm);
-      margin-bottom: 16px; overflow: hidden;
+      margin-bottom: 20px; overflow: hidden;
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    .material-card:active { transform: scale(0.99); }
+
+    /* Product Photo Display */
+    .card-photo-wrapper {
+      position: relative; width: 100%; height: 240px;
+      background: #ffffff; border-bottom: 1px solid #f1f5f9;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; overflow: hidden;
+    }
+    .card-photo-wrapper img {
+      max-width: 90%; max-height: 90%; object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+    .card-photo-wrapper:hover img { transform: scale(1.04); }
+    .photo-zoom-hint {
+      position: absolute; right: 12px; bottom: 12px;
+      background: rgba(15, 23, 42, 0.7); color: white;
+      font-size: 11px; font-weight: 600; padding: 4px 8px;
+      border-radius: 6px; backdrop-filter: blur(4px);
+      display: flex; align-items: center; gap: 4px;
+    }
 
     /* Card Top Header */
-    .card-head {
-      padding: 16px 16px 12px;
-      border-bottom: 1px dashed #f1f5f9;
-    }
+    .card-head { padding: 16px 16px 12px; }
     .card-meta {
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 8px;
@@ -140,19 +154,8 @@
     .badge-grade.premium { background: #fef3c7; color: #92400e; }
     .brand-name { font-size: 12px; font-weight: 700; color: #64748b; }
 
-    .card-title-box { display: flex; gap: 12px; align-items: flex-start; }
-    .mat-icon-box {
-      width: 48px; height: 48px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 26px; flex-shrink: 0; background: #f8fafc;
-      border: 1px solid #e2e8f0;
-    }
-    .mat-info { flex: 1; }
-    .mat-name { font-size: 16px; font-weight: 800; color: #0f172a; line-height: 1.35; margin-bottom: 4px; }
-    .mat-space { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 4px; }
-
-    /* Card Body */
-    .card-body { padding: 14px 16px; }
+    .mat-name { font-size: 17px; font-weight: 800; color: #0f172a; line-height: 1.35; margin-bottom: 4px; }
+    .mat-space { font-size: 12px; color: #2563eb; font-weight: 600; display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
 
     /* Master Comment Box */
     .comment-box {
@@ -186,10 +189,10 @@
       border: 1px solid var(--border); overflow-x: auto;
       box-shadow: var(--shadow-sm); display: none;
     }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 500px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 540px; }
     th { background: #f8fafc; padding: 10px 12px; text-align: left; font-weight: 800; color: #475569; border-bottom: 1px solid var(--border); }
-    td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #1e293b; vertical-align: top; }
-    tr:last-child td { border-bottom: none; }
+    td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #1e293b; vertical-align: middle; }
+    .table-thumb { width: 50px; height: 50px; object-fit: contain; border-radius: 6px; border: 1px solid #e2e8f0; background: white; }
 
     /* Bottom Floating Bar */
     .bottom-bar {
@@ -206,6 +209,28 @@
     .btn-pdf { background: #f1f5f9; color: #334155; }
     .btn-share { background: #fee500; color: #191919; }
     .btn-call { background: var(--primary); color: white; }
+
+    /* Lightbox Modal */
+    .modal {
+      display: none; position: fixed; inset: 0; z-index: 100;
+      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: white; border-radius: 16px; max-width: 500px; width: 100%;
+      overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      position: relative; animation: popUp 0.25s ease-out;
+    }
+    @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-img { width: 100%; height: 320px; object-fit: contain; background: #ffffff; padding: 20px; }
+    .modal-info { padding: 16px 20px 20px; }
+    .modal-title { font-size: 17px; font-weight: 800; margin-bottom: 6px; }
+    .modal-close {
+      position: absolute; right: 14px; top: 14px; width: 32px; height: 32px;
+      border-radius: 50%; background: #f1f5f9; border: none; font-size: 16px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
 
     /* Toast */
     .toast {
@@ -228,14 +253,14 @@
         <div class="brand-sub">스탠다드 자재 컬렉션</div>
       </div>
     </div>
-    <div class="header-badge">검증 10선 샘플</div>
+    <div class="header-badge">실물 화보 10선</div>
   </header>
 
   <!-- Hero Section -->
   <section class="hero">
-    <div class="hero-tag">💡 30년 현장 내공의 엄선</div>
+    <div class="hero-tag">📷 실물 고화질 제품 화보 수록</div>
     <h1>상담이 30분 만에 끝나는<br>메종플러스 실전 자재 도감</h1>
-    <p>하자 없는 내구성과 세련된 디자인으로 30년간 가장 검증된 필수 핵심 자재 10선 프로토타입입니다.</p>
+    <p>30년간 가장 검증된 필수 핵심 자재 10선의 공식 고화질 실물 사진과 현장 시공 스펙입니다.</p>
   </section>
 
   <!-- Filter Section -->
@@ -257,7 +282,7 @@
   <!-- Content Container -->
   <main class="container">
     <div class="view-switch">
-      <div class="count-text">총 <span id="itemCount">10</span>개 자재 등록</div>
+      <div class="count-text">총 <span id="itemCount">10</span>개 자재 실물 등록</div>
       <div class="mode-buttons">
         <button class="mode-btn active" id="btnCardView" onclick="switchView('card')">🗂️ 카드형</button>
         <button class="mode-btn" id="btnTableView" onclick="switchView('table')">📊 비교표</button>
@@ -268,6 +293,12 @@
     <div id="cardsList">
 
       <article class="material-card" data-category="욕실" data-search="대림바스 CC-603 치마형 투피스 양변기 대림바스 (Daelim Bath) 욕실 수로가 완전히 가려진 밀결 치마형이라 물때 청소가 가장 쉽고, 비데 호환성이 뛰어납니다. 10년이 지나도 부속 수급이 쉬워 하자가 절대 안 나는 국민 양변기입니다.">
+        <!-- Product Photo -->
+        <div class="card-photo-wrapper" onclick="openPhotoModal('images/mat_toilet.png', '대림바스 CC-603 치마형 투피스 양변기')">
+          <img src="images/mat_toilet.png" alt="대림바스 CC-603 치마형 투피스 양변기" loading="lazy">
+          <div class="photo-zoom-hint">🔍 탭해서 크게보기</div>
+        </div>
+
         <div class="card-head">
           <div class="card-meta">
             <div class="badge-group">
@@ -276,16 +307,9 @@
             </div>
             <span class="brand-name">대림바스 (Daelim Bath)</span>
           </div>
-          <div class="card-title-box">
-            <div class="mat-icon-box">🚽</div>
-            <div class="mat-info">
-              <h2 class="mat-name">대림바스 CC-603 치마형 투피스 양변기</h2>
-              <div class="mat-space">📍 추천 적용: 거실 공용 욕실 / 안방 부부 욕실</div>
-            </div>
-          </div>
-        </div>
+          <h2 class="mat-name">대림바스 CC-603 치마형 투피스 양변기</h2>
+          <div class="mat-space">📍 추천 적용: 거실 공용 욕실 / 안방 부부 욕실</div>
 
-        <div class="card-body">
           <div class="comment-box">
             <div class="comment-title">💡 30년 소장님의 선택 이유</div>
             <div class="comment-text">"수로가 완전히 가려진 밀결 치마형이라 물때 청소가 가장 쉽고, 비데 호환성이 뛰어납니다. 10년이 지나도 부속 수급이 쉬워 하자가 절대 안 나는 국민 양변기입니다."</div>
@@ -303,6 +327,12 @@
       </article>
 
       <article class="material-card" data-category="욕실" data-search="아메리칸 스탠다드 웨이브 라운드 평면붙임 세면기 아메리칸 스탠다드 (American Standard) 욕실 하부 트랩이 도기 안으로 쏙 숨겨져 욕실 바닥 청소가 극도로 편해집니다. 유려한 곡선 디자인으로 호텔 욕실 분위기를 내는 대표 세면기입니다.">
+        <!-- Product Photo -->
+        <div class="card-photo-wrapper" onclick="openPhotoModal('images/mat_basin.png', '아메리칸 스탠다드 웨이브 라운드 평면붙임 세면기')">
+          <img src="images/mat_basin.png" alt="아메리칸 스탠다드 웨이브 라운드 평면붙임 세면기" loading="lazy">
+          <div class="photo-zoom-hint">🔍 탭해서 크게보기</div>
+        </div>
+
         <div class="card-head">
           <div class="card-meta">
             <div class="badge-group">
@@ -311,16 +341,9 @@
             </div>
             <span class="brand-name">아메리칸 스탠다드 (American Standard)</span>
           </div>
-          <div class="card-title-box">
-            <div class="mat-icon-box">🚰</div>
-            <div class="mat-info">
-              <h2 class="mat-name">아메리칸 스탠다드 웨이브 라운드 평면붙임 세면기</h2>
-              <div class="mat-space">📍 추천 적용: 거실 욕실 / 부부 욕실</div>
-            </div>
-          </div>
-        </div>
+          <h2 class="mat-name">아메리칸 스탠다드 웨이브 라운드 평면붙임 세면기</h2>
+          <div class="mat-space">📍 추천 적용: 거실 욕실 / 부부 욕실</div>
 
-        <div class="card-body">
           <div class="comment-box">
             <div class="comment-title">💡 30년 소장님의 선택 이유</div>
             <div class="comment-text">"하부 트랩이 도기 안으로 쏙 숨겨져 욕실 바닥 청소가 극도로 편해집니다. 유려한 곡선 디자인으로 호텔 욕실 분위기를 내는 대표 세면기입니다."</div>
@@ -338,6 +361,12 @@
       </article>
 
       <article class="material-card" data-category="욕실" data-search="무광 SUS304 스테인리스 원홀 세면수전 더존테크 / 바스텍 욕실 반짝거리는 유광 크롬 수전은 하루만 지나도 물때가 지저분하게 앉지만, 무광 스테인리스는 물때가 거의 안 보이고 닦기도 쉽습니다. 묵직한 손맛이 일품입니다.">
+        <!-- Product Photo -->
+        <div class="card-photo-wrapper" onclick="openPhotoModal('images/mat_faucet_bath.png', '무광 SUS304 스테인리스 원홀 세면수전')">
+          <img src="images/mat_faucet_bath.png" alt="무광 SUS304 스테인리스 원홀 세면수전" loading="lazy">
+          <div class="photo-zoom-hint">🔍 탭해서 크게보기</div>
+        </div>
+
         <div class="card-head">
           <div class="card-meta">
             <div class="badge-group">
@@ -346,16 +375,9 @@
             </div>
             <span class="brand-name">더존테크 / 바스텍</span>
           </div>
-          <div class="card-title-box">
-            <div class="mat-icon-box">🚿</div>
-            <div class="mat-info">
-              <h2 class="mat-name">무광 SUS304 스테인리스 원홀 세면수전</h2>
-              <div class="mat-space">📍 추천 적용: 욕실 세면대</div>
-            </div>
-          </div>
-        </div>
+          <h2 class="mat-name">무광 SUS304 스테인리스 원홀 세면수전</h2>
+          <div class="mat-space">📍 추천 적용: 욕실 세면대</div>
 
-        <div class="card-body">
           <div class="comment-box">
             <div class="comment-title">💡 30년 소장님의 선택 이유</div>
             <div class="comment-text">"반짝거리는 유광 크롬 수전은 하루만 지나도 물때가 지저분하게 앉지만, 무광 스테인리스는 물때가 거의 안 보이고 닦기도 쉽습니다. 묵직한 손맛이 일품입니다."</div>
@@ -373,6 +395,12 @@
       </article>
 
       <article class="material-card" data-category="욕실" data-search="힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1) 힘펠 (HIMPEL) 욕실 겨울철 샤워 전 욕실을 3분 만에 훈훈하게 데워주는 마법 같은 기기입니다. 습기 곰팡이 건조와 바디 드라이 기능으로 사모님과 아이들이 가장 좋아하는 1등 옵션입니다.">
+        <!-- Product Photo -->
+        <div class="card-photo-wrapper" onclick="openPhotoModal('images/mat_hugent.png', '힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1)')">
+          <img src="images/mat_hugent.png" alt="힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1)" loading="lazy">
+          <div class="photo-zoom-hint">🔍 탭해서 크게보기</div>
+        </div>
+
         <div class="card-head">
           <div class="card-meta">
             <div class="badge-group">
@@ -381,16 +409,9 @@
             </div>
             <span class="brand-name">힘펠 (HIMPEL)</span>
           </div>
-          <div class="card-title-box">
-            <div class="mat-icon-box">🌀</div>
-            <div class="mat-info">
-              <h2 class="mat-name">힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1)</h2>
-              <div class="mat-space">📍 추천 적용: 거실 욕실 천장</div>
-            </div>
-          </div>
-        </div>
+          <h2 class="mat-name">힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1)</h2>
+          <div class="mat-space">📍 추천 적용: 거실 욕실 천장</div>
 
-        <div class="card-body">
           <div class="comment-box">
             <div class="comment-title">💡 30년 소장님의 선택 이유</div>
             <div class="comment-text">"겨울철 샤워 전 욕실을 3분 만에 훈훈하게 데워주는 마법 같은 기기입니다. 습기 곰팡이 건조와 바디 드라이 기능으로 사모님과 아이들이 가장 좋아하는 1등 옵션입니다."</div>
@@ -408,6 +429,12 @@
       </article>
 
       <article class="material-card" data-category="주방" data-search="백조 사각 싱크볼 그랜드 860 (SQSR-860) 백조씽크 (BAEKJO) 주방 기존 둥근 씽크볼과 달리 각진 사각이라 대형 프라이팬이나 곰솥도 쏙 들어갑니다. 모서리 R15 라운딩 처리로 코너에 음식물이 끼지 않고 물 튀김 소음 방음 패드가 부착되어 있습니다.">
+        <!-- Product Photo -->
+        <div class="card-photo-wrapper" onclick="openPhotoModal('images/mat_sink_bowl.png', '백조 사각 싱크볼 그랜드 860 (SQSR-860)')">
+          <img src="images/mat_sink_bowl.png" alt="백조 사각 싱크볼 그랜드 860 (SQSR-860)" loading="lazy">
+          <div class="photo-zoom-hint">🔍 탭해서 크게보기</div>
+        </div>
+
         <div class="card-head">
           <div class="card-meta">
             <div class="badge-group">
@@ -416,16 +443,9 @@
             </div>
             <span class="brand-name">백조씽크 (BAEKJO)</span>
           </div>
-          <div class="card-title-box">
-            <div class="mat-icon-box">🍽️</div>
-            <div class="mat-info">
-              <h2 class="mat-name">백조 사각 싱크볼 그랜드 860 (SQSR-860)</h2>
-              <div class="mat-space">📍 추천 적용: 주방 씽크대 하부장</div>
-            </div>
-          </div>
-        </div>
+          <h2 class="mat-name">백조 사각 싱크볼 그랜드 860 (SQSR-860)</h2>
+          <div class="mat-space">📍 추천 적용: 주방 씽크대 하부장</div>
 
-        <div class="card-body">
           <div class="comment-box">
             <div class="comment-title">💡 30년 소장님의 선택 이유</div>
             <div class="comment-text">"기존 둥근 씽크볼과 달리 각진 사각이라 대형 프라이팬이나 곰솥도 쏙 들어갑니다. 모서리 R15 라운딩 처리로 코너에 음식물이 끼지 않고 물 튀김 소음 방음 패드가 부착되어 있습니다."</div>
@@ -443,6 +463,12 @@
       </article>
 
       <article class="material-card" data-category="주방" data-search="하츠 로빈 침니후드 화이트/실버 (RHO-90S) 하츠 (Haatz) 주방 상부장 없는 미니멀 주방이나 단독 침니형 주방의 대명사입니다. 소음 대비 흡입 풍량이 우수하여 요리 매연과 기름 냄새를 가장 확실하게 배출합니다.">
+        <!-- Product Photo -->
+        <div class="card-photo-wrapper" onclick="openPhotoModal('images/mat_hood.png', '하츠 로빈 침니후드 화이트/실버 (RHO-90S)')">
+          <img src="images/mat_hood.png" alt="하츠 로빈 침니후드 화이트/실버 (RHO-90S)" loading="lazy">
+          <div class="photo-zoom-hint">🔍 탭해서 크게보기</div>
+        </div>
+
         <div class="card-head">
           <div class="card-meta">
             <div class="badge-group">
@@ -451,16 +477,9 @@
             </div>
             <span class="brand-name">하츠 (Haatz)</span>
           </div>
-          <div class="card-title-box">
-            <div class="mat-icon-box">💨</div>
-            <div class="mat-info">
-              <h2 class="mat-name">하츠 로빈 침니후드 화이트/실버 (RHO-90S)</h2>
-              <div class="mat-space">📍 추천 적용: 주방 인덕션 상부</div>
-            </div>
-          </div>
-        </div>
+          <h2 class="mat-name">하츠 로빈 침니후드 화이트/실버 (RHO-90S)</h2>
+          <div class="mat-space">📍 추천 적용: 주방 인덕션 상부</div>
 
-        <div class="card-body">
           <div class="comment-box">
             <div class="comment-title">💡 30년 소장님의 선택 이유</div>
             <div class="comment-text">"상부장 없는 미니멀 주방이나 단독 침니형 주방의 대명사입니다. 소음 대비 흡입 풍량이 우수하여 요리 매연과 기름 냄새를 가장 확실하게 배출합니다."</div>
@@ -478,6 +497,12 @@
       </article>
 
       <article class="material-card" data-category="주방" data-search="더존테크 슈티에 391 거위목 싱크수전 (무광 니켈) 더존테크 (DUJON) 주방 높이 솟은 아치형 거위목 곡선이 사각 싱크볼과 만났을 때 인스타 감성 주방이 완성됩니다. 인출식 호스로 사각 모서리 구석구석 물청소가 편리합니다.">
+        <!-- Product Photo -->
+        <div class="card-photo-wrapper" onclick="openPhotoModal('images/mat_faucet_kitchen.png', '더존테크 슈티에 391 거위목 싱크수전 (무광 니켈)')">
+          <img src="images/mat_faucet_kitchen.png" alt="더존테크 슈티에 391 거위목 싱크수전 (무광 니켈)" loading="lazy">
+          <div class="photo-zoom-hint">🔍 탭해서 크게보기</div>
+        </div>
+
         <div class="card-head">
           <div class="card-meta">
             <div class="badge-group">
@@ -486,16 +511,9 @@
             </div>
             <span class="brand-name">더존테크 (DUJON)</span>
           </div>
-          <div class="card-title-box">
-            <div class="mat-icon-box">🚰</div>
-            <div class="mat-info">
-              <h2 class="mat-name">더존테크 슈티에 391 거위목 싱크수전 (무광 니켈)</h2>
-              <div class="mat-space">📍 추천 적용: 주방 사각 싱크볼</div>
-            </div>
-          </div>
-        </div>
+          <h2 class="mat-name">더존테크 슈티에 391 거위목 싱크수전 (무광 니켈)</h2>
+          <div class="mat-space">📍 추천 적용: 주방 사각 싱크볼</div>
 
-        <div class="card-body">
           <div class="comment-box">
             <div class="comment-title">💡 30년 소장님의 선택 이유</div>
             <div class="comment-text">"높이 솟은 아치형 거위목 곡선이 사각 싱크볼과 만났을 때 인스타 감성 주방이 완성됩니다. 인출식 호스로 사각 모서리 구석구석 물청소가 편리합니다."</div>
@@ -513,6 +531,12 @@
       </article>
 
       <article class="material-card" data-category="바닥재" data-search="LX Z:IN 강그린 프로 광폭 강마루 (크리미 오크) LX하우시스 (LX Z:IN) 바닥재 일반 강마루(폭 95mm)보다 훨씬 넓은 143mm 광폭이라 30평대 아파트가 40평대처럼 시원하게 넓어 보입니다. 긁힘과 찍힘에 매우 강해 반려견이나 아이 있는 집에 제격입니다.">
+        <!-- Product Photo -->
+        <div class="card-photo-wrapper" onclick="openPhotoModal('images/mat_flooring.png', 'LX Z:IN 강그린 프로 광폭 강마루 (크리미 오크)')">
+          <img src="images/mat_flooring.png" alt="LX Z:IN 강그린 프로 광폭 강마루 (크리미 오크)" loading="lazy">
+          <div class="photo-zoom-hint">🔍 탭해서 크게보기</div>
+        </div>
+
         <div class="card-head">
           <div class="card-meta">
             <div class="badge-group">
@@ -521,16 +545,9 @@
             </div>
             <span class="brand-name">LX하우시스 (LX Z:IN)</span>
           </div>
-          <div class="card-title-box">
-            <div class="mat-icon-box">🪵</div>
-            <div class="mat-info">
-              <h2 class="mat-name">LX Z:IN 강그린 프로 광폭 강마루 (크리미 오크)</h2>
-              <div class="mat-space">📍 추천 적용: 거실, 주방, 전체 침실 바닥</div>
-            </div>
-          </div>
-        </div>
+          <h2 class="mat-name">LX Z:IN 강그린 프로 광폭 강마루 (크리미 오크)</h2>
+          <div class="mat-space">📍 추천 적용: 거실, 주방, 전체 침실 바닥</div>
 
-        <div class="card-body">
           <div class="comment-box">
             <div class="comment-title">💡 30년 소장님의 선택 이유</div>
             <div class="comment-text">"일반 강마루(폭 95mm)보다 훨씬 넓은 143mm 광폭이라 30평대 아파트가 40평대처럼 시원하게 넓어 보입니다. 긁힘과 찍힘에 매우 강해 반려견이나 아이 있는 집에 제격입니다."</div>
@@ -548,6 +565,12 @@
       </article>
 
       <article class="material-card" data-category="조명" data-search="3인치 COB 딥스팟 다운라이트 매립등 (주백색 4000K) 필립스 / 오스람 조명 과거 형광등 같은 푸른 백색(6500K)이나 너무 노란 전구색(3000K) 대신, 딱 호텔 라운지 느낌의 4000K 주백색입니다. 빛이 안쪽으로 쏙 들어가 있어 아래서 올려다봐도 눈이 전혀 안 부십니다.">
+        <!-- Product Photo -->
+        <div class="card-photo-wrapper" onclick="openPhotoModal('images/mat_downlight.png', '3인치 COB 딥스팟 다운라이트 매립등 (주백색 4000K)')">
+          <img src="images/mat_downlight.png" alt="3인치 COB 딥스팟 다운라이트 매립등 (주백색 4000K)" loading="lazy">
+          <div class="photo-zoom-hint">🔍 탭해서 크게보기</div>
+        </div>
+
         <div class="card-head">
           <div class="card-meta">
             <div class="badge-group">
@@ -556,16 +579,9 @@
             </div>
             <span class="brand-name">필립스 / 오스람</span>
           </div>
-          <div class="card-title-box">
-            <div class="mat-icon-box">💡</div>
-            <div class="mat-info">
-              <h2 class="mat-name">3인치 COB 딥스팟 다운라이트 매립등 (주백색 4000K)</h2>
-              <div class="mat-space">📍 추천 적용: 거실 아트월, 복도, 주방 상부, 침실 간접등</div>
-            </div>
-          </div>
-        </div>
+          <h2 class="mat-name">3인치 COB 딥스팟 다운라이트 매립등 (주백색 4000K)</h2>
+          <div class="mat-space">📍 추천 적용: 거실 아트월, 복도, 주방 상부, 침실 간접등</div>
 
-        <div class="card-body">
           <div class="comment-box">
             <div class="comment-title">💡 30년 소장님의 선택 이유</div>
             <div class="comment-text">"과거 형광등 같은 푸른 백색(6500K)이나 너무 노란 전구색(3000K) 대신, 딱 호텔 라운지 느낌의 4000K 주백색입니다. 빛이 안쪽으로 쏙 들어가 있어 아래서 올려다봐도 눈이 전혀 안 부십니다."</div>
@@ -583,6 +599,12 @@
       </article>
 
       <article class="material-card" data-category="도어·철물" data-search="도무스(DOMUS) 711 니켈 무광 방문 레버 핸들 도무스 (DOMUS) 도어·철물 손잡이를 잡고 내릴 때 덜렁거림 없이 착 감기는 묵직함이 문 전체의 품격을 결정합니다. 30년 동안 수많은 손잡이를 써봤지만 잔고장 없는 내구성은 도무스가 단연 1등입니다.">
+        <!-- Product Photo -->
+        <div class="card-photo-wrapper" onclick="openPhotoModal('images/mat_door_handle.png', '도무스(DOMUS) 711 니켈 무광 방문 레버 핸들')">
+          <img src="images/mat_door_handle.png" alt="도무스(DOMUS) 711 니켈 무광 방문 레버 핸들" loading="lazy">
+          <div class="photo-zoom-hint">🔍 탭해서 크게보기</div>
+        </div>
+
         <div class="card-head">
           <div class="card-meta">
             <div class="badge-group">
@@ -591,16 +613,9 @@
             </div>
             <span class="brand-name">도무스 (DOMUS)</span>
           </div>
-          <div class="card-title-box">
-            <div class="mat-icon-box">🚪</div>
-            <div class="mat-info">
-              <h2 class="mat-name">도무스(DOMUS) 711 니켈 무광 방문 레버 핸들</h2>
-              <div class="mat-space">📍 추천 적용: 방문 3개소, 욕실문 2개소</div>
-            </div>
-          </div>
-        </div>
+          <h2 class="mat-name">도무스(DOMUS) 711 니켈 무광 방문 레버 핸들</h2>
+          <div class="mat-space">📍 추천 적용: 방문 3개소, 욕실문 2개소</div>
 
-        <div class="card-body">
           <div class="comment-box">
             <div class="comment-title">💡 30년 소장님의 선택 이유</div>
             <div class="comment-text">"손잡이를 잡고 내릴 때 덜렁거림 없이 착 감기는 묵직함이 문 전체의 품격을 결정합니다. 30년 동안 수많은 손잡이를 써봤지만 잔고장 없는 내구성은 도무스가 단연 1등입니다."</div>
@@ -624,82 +639,82 @@
       <table>
         <thead>
           <tr>
+            <th>사진</th>
             <th>구분</th>
             <th>품명 및 모델</th>
             <th>주요 제원</th>
-            <th>현장 추천 포인트</th>
           </tr>
         </thead>
         <tbody id="tableBody">
 
           <tr data-category="욕실" data-search="대림바스 CC-603 치마형 투피스 양변기 대림바스 (Daelim Bath) 욕실">
+            <td><img src="images/mat_toilet.png" alt="대림바스 CC-603 치마형 투피스 양변기" class="table-thumb" onclick="openPhotoModal('images/mat_toilet.png', '대림바스 CC-603 치마형 투피스 양변기')"></td>
             <td><strong>욕실</strong><br><span style="color:#64748b; font-size:11px;">대림바스 (Daelim Bath)</span></td>
             <td><strong>대림바스 CC-603 치마형 투피스 양변기</strong><br><span style="color:#2563eb; font-size:11px;">📍 거실 공용 욕실 / 안방 부부 욕실</span></td>
             <td>규격: W400 × D730 × H710mm · 세척방식: 와류 세척 (강력 사이펀)</td>
-            <td style="font-size:11px; color:#475569;">수로가 완전히 가려진 밀결 치마형이라 물때 청소가 가장 쉽고, 비데 호환성이 뛰어납니다. 10년이 지나도 부속 수급이 쉬워 하자가 절대 안 나는 국민 양변기입니다.</td>
           </tr>
 
           <tr data-category="욕실" data-search="아메리칸 스탠다드 웨이브 라운드 평면붙임 세면기 아메리칸 스탠다드 (American Standard) 욕실">
+            <td><img src="images/mat_basin.png" alt="아메리칸 스탠다드 웨이브 라운드 평면붙임 세면기" class="table-thumb" onclick="openPhotoModal('images/mat_basin.png', '아메리칸 스탠다드 웨이브 라운드 평면붙임 세면기')"></td>
             <td><strong>욕실</strong><br><span style="color:#64748b; font-size:11px;">아메리칸 스탠다드 (American Standard)</span></td>
             <td><strong>아메리칸 스탠다드 웨이브 라운드 평면붙임 세면기</strong><br><span style="color:#2563eb; font-size:11px;">📍 거실 욕실 / 부부 욕실</span></td>
             <td>규격: W560 × D470 × H420mm · 설치방식: 벽걸이 평면붙임 (배수트랩 은폐)</td>
-            <td style="font-size:11px; color:#475569;">하부 트랩이 도기 안으로 쏙 숨겨져 욕실 바닥 청소가 극도로 편해집니다. 유려한 곡선 디자인으로 호텔 욕실 분위기를 내는 대표 세면기입니다.</td>
           </tr>
 
           <tr data-category="욕실" data-search="무광 SUS304 스테인리스 원홀 세면수전 더존테크 / 바스텍 욕실">
+            <td><img src="images/mat_faucet_bath.png" alt="무광 SUS304 스테인리스 원홀 세면수전" class="table-thumb" onclick="openPhotoModal('images/mat_faucet_bath.png', '무광 SUS304 스테인리스 원홀 세면수전')"></td>
             <td><strong>욕실</strong><br><span style="color:#64748b; font-size:11px;">더존테크 / 바스텍</span></td>
             <td><strong>무광 SUS304 스테인리스 원홀 세면수전</strong><br><span style="color:#2563eb; font-size:11px;">📍 욕실 세면대</span></td>
             <td>소재: SUS 304 최고급 스테인리스 · 표면마감: 헤어라인 무광 니켈</td>
-            <td style="font-size:11px; color:#475569;">반짝거리는 유광 크롬 수전은 하루만 지나도 물때가 지저분하게 앉지만, 무광 스테인리스는 물때가 거의 안 보이고 닦기도 쉽습니다. 묵직한 손맛이 일품입니다.</td>
           </tr>
 
           <tr data-category="욕실" data-search="힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1) 힘펠 (HIMPEL) 욕실">
+            <td><img src="images/mat_hugent.png" alt="힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1)" class="table-thumb" onclick="openPhotoModal('images/mat_hugent.png', '힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1)')"></td>
             <td><strong>욕실</strong><br><span style="color:#64748b; font-size:11px;">힘펠 (HIMPEL)</span></td>
             <td><strong>힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1)</strong><br><span style="color:#2563eb; font-size:11px;">📍 거실 욕실 천장</span></td>
             <td>핵심기능: 환기 + 온풍 + 제습·건조 + 헤어드라이 · 모터스펙: BLDC 고효율 저소음 모터</td>
-            <td style="font-size:11px; color:#475569;">겨울철 샤워 전 욕실을 3분 만에 훈훈하게 데워주는 마법 같은 기기입니다. 습기 곰팡이 건조와 바디 드라이 기능으로 사모님과 아이들이 가장 좋아하는 1등 옵션입니다.</td>
           </tr>
 
           <tr data-category="주방" data-search="백조 사각 싱크볼 그랜드 860 (SQSR-860) 백조씽크 (BAEKJO) 주방">
+            <td><img src="images/mat_sink_bowl.png" alt="백조 사각 싱크볼 그랜드 860 (SQSR-860)" class="table-thumb" onclick="openPhotoModal('images/mat_sink_bowl.png', '백조 사각 싱크볼 그랜드 860 (SQSR-860)')"></td>
             <td><strong>주방</strong><br><span style="color:#64748b; font-size:11px;">백조씽크 (BAEKJO)</span></td>
             <td><strong>백조 사각 싱크볼 그랜드 860 (SQSR-860)</strong><br><span style="color:#2563eb; font-size:11px;">📍 주방 씽크대 하부장</span></td>
             <td>외경치수: 860 × 460mm (깊이 220mm) · 스테인리스: SUS 304 (두께 1.2T 프리미엄)</td>
-            <td style="font-size:11px; color:#475569;">기존 둥근 씽크볼과 달리 각진 사각이라 대형 프라이팬이나 곰솥도 쏙 들어갑니다. 모서리 R15 라운딩 처리로 코너에 음식물이 끼지 않고 물 튀김 소음 방음 패드가 부착되어 있습니다.</td>
           </tr>
 
           <tr data-category="주방" data-search="하츠 로빈 침니후드 화이트/실버 (RHO-90S) 하츠 (Haatz) 주방">
+            <td><img src="images/mat_hood.png" alt="하츠 로빈 침니후드 화이트/실버 (RHO-90S)" class="table-thumb" onclick="openPhotoModal('images/mat_hood.png', '하츠 로빈 침니후드 화이트/실버 (RHO-90S)')"></td>
             <td><strong>주방</strong><br><span style="color:#64748b; font-size:11px;">하츠 (Haatz)</span></td>
             <td><strong>하츠 로빈 침니후드 화이트/실버 (RHO-90S)</strong><br><span style="color:#2563eb; font-size:11px;">📍 주방 인덕션 상부</span></td>
             <td>외형규격: W898 × D450 × H650~950mm · 배기풍량: 최대 480 CMH (3단 전자식)</td>
-            <td style="font-size:11px; color:#475569;">상부장 없는 미니멀 주방이나 단독 침니형 주방의 대명사입니다. 소음 대비 흡입 풍량이 우수하여 요리 매연과 기름 냄새를 가장 확실하게 배출합니다.</td>
           </tr>
 
           <tr data-category="주방" data-search="더존테크 슈티에 391 거위목 싱크수전 (무광 니켈) 더존테크 (DUJON) 주방">
+            <td><img src="images/mat_faucet_kitchen.png" alt="더존테크 슈티에 391 거위목 싱크수전 (무광 니켈)" class="table-thumb" onclick="openPhotoModal('images/mat_faucet_kitchen.png', '더존테크 슈티에 391 거위목 싱크수전 (무광 니켈)')"></td>
             <td><strong>주방</strong><br><span style="color:#64748b; font-size:11px;">더존테크 (DUJON)</span></td>
             <td><strong>더존테크 슈티에 391 거위목 싱크수전 (무광 니켈)</strong><br><span style="color:#2563eb; font-size:11px;">📍 주방 사각 싱크볼</span></td>
             <td>전체높이: 전고 430mm (토수구 높이 240mm) · 수전기능: 인출식 헤드 (스프레이/직수 전환)</td>
-            <td style="font-size:11px; color:#475569;">높이 솟은 아치형 거위목 곡선이 사각 싱크볼과 만났을 때 인스타 감성 주방이 완성됩니다. 인출식 호스로 사각 모서리 구석구석 물청소가 편리합니다.</td>
           </tr>
 
           <tr data-category="바닥재" data-search="LX Z:IN 강그린 프로 광폭 강마루 (크리미 오크) LX하우시스 (LX Z:IN) 바닥재">
+            <td><img src="images/mat_flooring.png" alt="LX Z:IN 강그린 프로 광폭 강마루 (크리미 오크)" class="table-thumb" onclick="openPhotoModal('images/mat_flooring.png', 'LX Z:IN 강그린 프로 광폭 강마루 (크리미 오크)')"></td>
             <td><strong>바닥재</strong><br><span style="color:#64748b; font-size:11px;">LX하우시스 (LX Z:IN)</span></td>
             <td><strong>LX Z:IN 강그린 프로 광폭 강마루 (크리미 오크)</strong><br><span style="color:#2563eb; font-size:11px;">📍 거실, 주방, 전체 침실 바닥</span></td>
             <td>단위규격: 폭 143 × 길이 1,200 × 두께 7.5mm · 보드구조: 내수 합판 코어 + HPL 고강도 표면</td>
-            <td style="font-size:11px; color:#475569;">일반 강마루(폭 95mm)보다 훨씬 넓은 143mm 광폭이라 30평대 아파트가 40평대처럼 시원하게 넓어 보입니다. 긁힘과 찍힘에 매우 강해 반려견이나 아이 있는 집에 제격입니다.</td>
           </tr>
 
           <tr data-category="조명" data-search="3인치 COB 딥스팟 다운라이트 매립등 (주백색 4000K) 필립스 / 오스람 조명">
+            <td><img src="images/mat_downlight.png" alt="3인치 COB 딥스팟 다운라이트 매립등 (주백색 4000K)" class="table-thumb" onclick="openPhotoModal('images/mat_downlight.png', '3인치 COB 딥스팟 다운라이트 매립등 (주백색 4000K)')"></td>
             <td><strong>조명</strong><br><span style="color:#64748b; font-size:11px;">필립스 / 오스람</span></td>
             <td><strong>3인치 COB 딥스팟 다운라이트 매립등 (주백색 4000K)</strong><br><span style="color:#2563eb; font-size:11px;">📍 거실 아트월, 복도, 주방 상부, 침실 간접등</span></td>
             <td>타공치수: 75Ø (3인치 원형 타공) · 색온도: 주백색 4000K (아이보리 온화한 빛)</td>
-            <td style="font-size:11px; color:#475569;">과거 형광등 같은 푸른 백색(6500K)이나 너무 노란 전구색(3000K) 대신, 딱 호텔 라운지 느낌의 4000K 주백색입니다. 빛이 안쪽으로 쏙 들어가 있어 아래서 올려다봐도 눈이 전혀 안 부십니다.</td>
           </tr>
 
           <tr data-category="도어·철물" data-search="도무스(DOMUS) 711 니켈 무광 방문 레버 핸들 도무스 (DOMUS) 도어·철물">
+            <td><img src="images/mat_door_handle.png" alt="도무스(DOMUS) 711 니켈 무광 방문 레버 핸들" class="table-thumb" onclick="openPhotoModal('images/mat_door_handle.png', '도무스(DOMUS) 711 니켈 무광 방문 레버 핸들')"></td>
             <td><strong>도어·철물</strong><br><span style="color:#64748b; font-size:11px;">도무스 (DOMUS)</span></td>
             <td><strong>도무스(DOMUS) 711 니켈 무광 방문 레버 핸들</strong><br><span style="color:#2563eb; font-size:11px;">📍 방문 3개소, 욕실문 2개소</span></td>
             <td>몸체소재: 고밀도 아연 다이캐스팅 · 표면마감: 새틴 니켈 무광 헤어라인</td>
-            <td style="font-size:11px; color:#475569;">손잡이를 잡고 내릴 때 덜렁거림 없이 착 감기는 묵직함이 문 전체의 품격을 결정합니다. 30년 동안 수많은 손잡이를 써봤지만 잔고장 없는 내구성은 도무스가 단연 1등입니다.</td>
           </tr>
 
         </tbody>
@@ -707,9 +722,21 @@
     </div>
   </main>
 
+  <!-- Photo Lightbox Modal -->
+  <div id="photoModal" class="modal" onclick="closePhotoModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closePhotoModal()">✕</button>
+      <img id="modalImg" src="" alt="" class="modal-img">
+      <div class="modal-info">
+        <h3 id="modalTitle" class="modal-title"></h3>
+        <p style="font-size:12px; color:#64748b;">메종플러스 스탠다드 공식 자재 고화질 실물 컷</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Bottom Floating Bar -->
   <div class="bottom-bar">
-    <a href="https://asas40333-hue.github.io/test/" class="btn-action btn-pdf">🏠 현장홈</a>
+    <a href="catalog.pdf" download class="btn-action btn-pdf">📄 PDF 다운</a>
     <button class="btn-action btn-share" onclick="copyShareLink()">💬 카톡 공유</button>
     <a href="tel:01044203007" class="btn-action btn-call">📞 대표님 연결</a>
   </div>
@@ -720,7 +747,6 @@
     let currentCategory = '전체';
     let searchQuery = '';
 
-    // Filter Logic
     function filterItems() {
       const cards = document.querySelectorAll('.material-card');
       const rows = document.querySelectorAll('#tableBody tr');
@@ -756,7 +782,6 @@
       document.getElementById('itemCount').textContent = visibleCount;
     }
 
-    // Category Pill Click
     document.querySelectorAll('.pill').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
@@ -766,13 +791,11 @@
       });
     });
 
-    // Search Input
     document.getElementById('searchInput').addEventListener('input', (e) => {
       searchQuery = e.target.value.toLowerCase().trim();
       filterItems();
     });
 
-    // Switch View
     function switchView(mode) {
       if (mode === 'card') {
         document.getElementById('cardsList').style.display = 'block';
@@ -787,7 +810,16 @@
       }
     }
 
-    // Copy Link
+    function openPhotoModal(imgSrc, title) {
+      document.getElementById('modalImg').src = imgSrc;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('photoModal').classList.add('active');
+    }
+
+    function closePhotoModal() {
+      document.getElementById('photoModal').classList.remove('active');
+    }
+
     function copyShareLink() {
       navigator.clipboard.writeText(window.location.href).then(() => {
         const toast = document.getElementById('toast');
