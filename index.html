@@ -29,6 +29,7 @@
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #0f172a;
+      --text-main: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
       --radius: 14px;
@@ -189,6 +190,125 @@
     }
     .spec-status.confirmed { background: #ecfdf5; color: #059669; }
     .spec-status.changed { background: #fef3c7; color: #d97706; }
+    .spec-status.recommended { background: #fef3c7; color: #b45309; }
+
+    /* 자재 스펙 — 실속형 풀세트 카드 */
+    .spec-notice {
+      display: flex;
+      gap: 9px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: #92400e;
+      letter-spacing: -0.2px;
+    }
+    .spec-notice b { color: #78350f; }
+    .spec-notice-icon { font-size: 15px; line-height: 1.2; }
+    .spec-legend {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 13px;
+      margin-bottom: 16px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .spec-legend-item { display: flex; align-items: center; gap: 5px; }
+    .spec-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+    .spec-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .spec-card-head .spec-status { flex-shrink: 0; white-space: nowrap; }
+    .spec-cat-en {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary-light);
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+    .spec-card-title { font-size: 16px; font-weight: 800; color: var(--text); margin-top: 2px; letter-spacing: -0.4px; }
+    .spec-list { display: flex; flex-direction: column; gap: 8px; }
+    .spec-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+    }
+    .spec-thumb {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+    }
+    .spec-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .spec-thumb.photo { cursor: zoom-in; }
+    .spec-body { flex: 1; min-width: 0; }
+    .spec-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.35; letter-spacing: -0.3px; }
+    .spec-desc { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+    .spec-desc b { color: #334155; font-weight: 700; }
+    .spec-subhead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .spec-card-note {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .spec-footnote {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 2px 0 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+    .spec-footnote b { color: #334155; }
+    .photo-modal-box { padding: 0; background: #0f172a; border-radius: 16px 16px 0 0; overflow: hidden; }
+    .photo-modal-box img { width: 100%; max-height: 62vh; object-fit: contain; display: block; background: #0f172a; }
+    .photo-modal-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      padding: 12px 14px;
+    }
+    .photo-modal-caption { font-size: 12.5px; font-weight: 700; color: var(--text); line-height: 1.4; }
 
     /* 3. 일정표 탭 */
     .timeline { position: relative; padding-left: 20px; }
@@ -467,9 +587,24 @@
       </div>
     </div>
 
+    <!-- 상단 안내 배너 (실속형 표준 세팅 안내) -->
+    <div class="spec-notice">
+      <div class="spec-notice-icon">💡</div>
+      <div>
+        ※ <b>'트렌드 추천(협의)'</b> 품목은 재건축 이슈를 고려한 <b>실속형 표준 세팅</b>이며, 고객 미팅 시 원하시는 색상·모델로 <b>즉시 변경 반영</b>됩니다.
+      </div>
+    </div>
+
     <div class="section-title">
       선정 및 확정 자재 스펙
-      <span class="section-desc">한빛아파트 129동 1406호 현장 협의 자재</span>
+      <span class="section-desc">한빛아파트 129동 1406호 · 31평형</span>
+    </div>
+
+    <!-- 범례 / 상태 안내 -->
+    <div class="spec-legend">
+      <div class="spec-legend-item"><span class="spec-dot" style="background:#10b981;"></span>확정 사양 2개 공종</div>
+      <div class="spec-legend-item"><span class="spec-dot" style="background:#f59e0b;"></span>트렌드 추천(협의) 6개 공종</div>
+      <div class="spec-legend-item" style="margin-left:auto; font-weight:500; color:#94a3b8;">📷 사진 터치 시 확대</div>
     </div>
 
     <!-- 1. 창호(샷시) 전면 교체 스펙 카드 -->
@@ -633,15 +768,376 @@
             온풍·제습·환기·드라이 기능 일체형 스마트 환풍기
           </div>
         </div>
+
+        <div class="spec-subhead">
+          <span>추가 표준 사양 (위생도기 · 수전 · 수납)</span>
+          <span class="spec-status recommended">트렌드 추천(협의)</span>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_toilet.jpg','대림바스 CC-603 치마형 투피스 양변기')"><img src="images/mat_toilet.jpg" alt="대림바스 CC-603 치마형 투피스 양변기"></div>
+          <div class="spec-body">
+            <div class="spec-name">대림바스 CC-603 투피스 양변기</div>
+            <div class="spec-desc">치마형 일체 디자인 · 절수형 6L · 30년 검증 국민 실속 모델</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_faucet_bath.jpg','무광 SUS304 스테인리스 세면·샤워 수전')"><img src="images/mat_faucet_bath.jpg" alt="무광 SUS304 스테인리스 세면·샤워 수전"></div>
+          <div class="spec-body">
+            <div class="spec-name">무광 SUS304 샤워 · 세면 수전</div>
+            <div class="spec-desc">욕실 전체 <b>무광 스테인리스 통일</b> · 크롬 대비 물때·손때가 덜 타는 마감</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#eef2f6,#cbd5e1);"></div>
+          <div class="spec-body">
+            <div class="spec-name">은경 슬라이딩장 (거울 일체형)</div>
+            <div class="spec-desc">습기 많은 욕실에 강한 은경 도어 · 여닫이 공간 없이 수납 확보</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 3. 차후 협의 품목 안내 -->
-    <div class="card" style="text-align: center; padding: 24px 16px; background: #f8fafc;">
-      <div style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">타일 · 도배 · 바닥재 · 씽크대 가구</div>
-      <div style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
-        11/18(수) 낮 12시 가구 실측 미팅 및 공정별 일정에 맞춰<br>선정된 세부 모델과 색상이 추가 등록됩니다.
+    <!-- 3. 안방 욕실 스펙 카드 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">BATHROOM · GUEST</div>
+          <div class="spec-card-title">안방 욕실 자재 사양</div>
+        </div>
+        <span class="spec-status recommended">트렌드 추천(협의)</span>
       </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_toilet.jpg','대림바스 CC-603 치마형 투피스 양변기')"><img src="images/mat_toilet.jpg" alt="대림바스 CC-603 치마형 투피스 양변기"></div>
+          <div class="spec-body">
+            <div class="spec-name">대림바스 투피스 양변기</div>
+            <div class="spec-desc">거실 욕실과 <b>동일 계열로 통일</b> · 절수형 · 부품 수급 쉬운 실속 모델</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#eef2f6);"></div>
+          <div class="spec-body">
+            <div class="spec-name">반다리 세면기 (스탠드형)</div>
+            <div class="spec-desc">하부 배관을 가려 깔끔하고 바닥 청소가 쉬운 사각 반다리형 (약 500~600mm)</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_faucet_bath.jpg','무광 SUS304 스테인리스 세면·샤워 수전')"><img src="images/mat_faucet_bath.jpg" alt="무광 SUS304 스테인리스 세면·샤워 수전"></div>
+          <div class="spec-body">
+            <div class="spec-name">무광 수전 세트 (샤워 · 세면)</div>
+            <div class="spec-desc">거실 욕실과 동일한 무광 SUS304로 두 욕실 톤 통일</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f8fafc,#dbe4ee);"></div>
+          <div class="spec-body">
+            <div class="spec-name">코너선반 (젠다이 대체)</div>
+            <div class="spec-desc">모서리 3단 수납으로 마감 · <b>조적 없이 정리</b>되어 공간이 넓어 보임</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#e0f2fe,#bfdbfe);"></div>
+          <div class="spec-body">
+            <div class="spec-name">샤워 파티션 (강화유리 6T)</div>
+            <div class="spec-desc">반고정형 1면 시공 · 세면대 쪽으로 튀는 물을 막아 곰팡이·물때 예방</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 안방 욕실은 <b>젠다이(조적)를 넣지 않는 세팅</b>입니다. 철거·방수·타일 물량이 줄어 공사비와 기간이 함께 절감됩니다.
+      </div>
+    </div>
+
+    <!-- 4. 도배 & 바닥재 스펙 카드 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">WALLPAPER &amp; FLOORING</div>
+          <div class="spec-card-title">도배 &amp; 바닥재</div>
+        </div>
+        <span class="spec-status recommended">트렌드 추천(협의)</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f8f4ec,#ece0cd);"></div>
+          <div class="spec-body">
+            <div class="spec-name">벽지 — 서울벽지 실크 「플레인(PLAIN)」</div>
+            <div class="spec-desc">거실·주방 <b>웜화이트</b> / 침실 <b>라이트그레이·아이보리</b> · 은은한 광의 무지 실크</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#f4f6f8);"></div>
+          <div class="spec-body">
+            <div class="spec-name">천장 도배 — 실크 화이트 (무광)</div>
+            <div class="spec-desc">조명 반사를 줄인 무광 화이트로 천장이 높아 보이는 마감</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/kcc_daisy_oak.jpg','KCC 숲 도담 2.7T · 데이지 오크 (NJ27-4583)')"><img src="images/kcc_daisy_oak.jpg" alt="KCC 숲 도담 2.7T 데이지 오크"></div>
+          <div class="spec-body">
+            <div class="spec-name">바닥재 — KCC 숲 도담 2.7T 「데이지 오크」</div>
+            <div class="spec-desc">거실·주방·침실 전체 · 2.7T 쿠션층 + 편백오일 · 대안은 <b>「프라임 오크 화이트」(NJ27-4187)</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#efe7da,#d8c8ae);"></div>
+          <div class="spec-body">
+            <div class="spec-name">부자재 — 친환경 전분 호로 + 웰딩(융착) 마감</div>
+            <div class="spec-desc">새집증후군 걱정 없는 접착제 · 장판 이음새가 뜨지 않는 융착 시공</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 벽지·장판 모두 <b>거래처 직공급(서울벽지 · KCC)</b> 사양으로, 유통 단계를 줄여 자재비를 낮춘 세팅입니다.
+      </div>
+    </div>
+
+    <!-- 5. 타일 스펙 카드 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">TILE</div>
+          <div class="spec-card-title">타일 (욕실 · 주방 · 현관)</div>
+        </div>
+        <span class="spec-status recommended">트렌드 추천(협의)</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#e7e4df,#c9c4bb);"></div>
+          <div class="spec-body">
+            <div class="spec-name">욕실 벽 — 300×600각 스톤·테라조 매트</div>
+            <div class="spec-desc">그레이/베이지 <b>톤온톤</b> · 유광 대비 물때와 얼룩이 덜 보이는 매트 질감</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#d6d3cd,#a8a29a);"></div>
+          <div class="spec-body">
+            <div class="spec-name">욕실 바닥 — 300×300 논슬립 그레이</div>
+            <div class="spec-desc">미끄럼 방지 3~4등급 · 배수 구배 시공으로 물이 고이지 않게 마감</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#f0f4f8);"></div>
+          <div class="spec-body">
+            <div class="spec-name">주방 벽 — 화이트 300×600 스톤·비앙코 유광</div>
+            <div class="spec-desc">기름때가 부드럽게 닦이는 <b>유광 마감</b> · 주방을 밝고 넓어 보이게</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#4b5563,#1f2937);"></div>
+          <div class="spec-body">
+            <div class="spec-name">현관 바닥 — 600×600각 딥그레이 논슬립 포세린</div>
+            <div class="spec-desc">오염·스크래치에 강한 포세린 · 신발 벗고 들어와도 미끄럽지 않은 표면</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#eef2f6,#cfd8e3);"></div>
+          <div class="spec-body">
+            <div class="spec-name">줄눈 — 에폭시 메지 (그레이/화이트)</div>
+            <div class="spec-desc">백시멘트 대신 에폭시로 곰팡이·변색 방지 · 5년이 지나도 처음 색 유지</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 300×600각은 자재비·시공비가 가장 안정적인 <b>국민 규격</b>입니다. 큰 판(600각·900각)보다 시공 실패 위험이 낮습니다.
+      </div>
+    </div>
+
+    <!-- 6. 주방 가구 & 붙박이장 스펙 카드 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">KITCHEN &amp; FURNITURE</div>
+          <div class="spec-card-title">주방 가구 &amp; 붙박이장</div>
+        </div>
+        <span class="spec-status recommended">트렌드 추천(협의)</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fdfbf7,#f0e8d8);"></div>
+          <div class="spec-body">
+            <div class="spec-name">싱크대 도어 — 매트 PET 화이트 / 캐시미어</div>
+            <div class="spec-desc">E0 친환경 보드 + 매트 PET · 손자국·물때에 강한 요즘 기본 사양</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#eef1f4);"></div>
+          <div class="spec-body">
+            <div class="spec-name">상판 — 인조대리석 스노우 화이트 (무광)</div>
+            <div class="spec-desc">이음새 최소화 · 열에 강하고 기름때가 스며들지 않는 실속 상판</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_sink_bowl.jpg','백조 사각 싱크볼 그랜드 860 (SQSR-860)')"><img src="images/mat_sink_bowl.jpg" alt="백조 사각 싱크볼 그랜드 860"></div>
+          <div class="spec-body">
+            <div class="spec-name">백조 사각 싱크볼 그랜드 860</div>
+            <div class="spec-desc">싱크볼 대야가 깊어 설거지가 편한 정사각 볼 · 30년 단골 모델</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_faucet_kitchen.jpg','더존테크 슈티에 391 거위목 싱크수전 (무광 니켈)')"><img src="images/mat_faucet_kitchen.jpg" alt="더존테크 슈티에 391 거위목 싱크수전"></div>
+          <div class="spec-body">
+            <div class="spec-name">무광 거위목 싱크 수전</div>
+            <div class="spec-desc">높은 목으로 큰 냄비에 물 받기 편한 구조 · 무광 니켈로 거실 조명과 톤 매칭</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_hood.jpg','하츠 로빈 침니후드 (RHO-90S)')"><img src="images/mat_hood.jpg" alt="하츠 로빈 침니후드"></div>
+          <div class="spec-body">
+            <div class="spec-name">하츠(Haatz) 빌트인 · 침니 후드</div>
+            <div class="spec-desc">국내 A/S 1등 하츠 · 흡입력·소음 균형이 좋은 로빈 시리즈 (화이트/실버)</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f6f1e7,#e4d7c3);"></div>
+          <div class="spec-body">
+            <div class="spec-name">신발장 — 매트 화이트 (하부 띄움 + 간접등)</div>
+            <div class="spec-desc">150mm 띄운 하부에 간접등 · 자주 신는 신발을 바로 꿒아 넣는 구조</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fbf9f5,#eae3d7);"></div>
+          <div class="spec-body">
+            <div class="spec-name">붙박이장 — 여닫이 매트 화이트</div>
+            <div class="spec-desc">안방·중방·입구방 3실 · 천장까지 올린 수납으로 먼지 쌓일 틈 없음</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 11/18(수) 12:00 가구 실측 미팅 후 도어 색상·수납 구성·레일 방식이 최종 확정됩니다.
+      </div>
+    </div>
+
+    <!-- 7. 도어 · 몰딩 · 필름 스펙 카드 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">DOOR &amp; FILM</div>
+          <div class="spec-card-title">도어 · 몰딩 · 필름</div>
+        </div>
+        <span class="spec-status recommended">트렌드 추천(협의)</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#edeef0);"></div>
+          <div class="spec-body">
+            <div class="spec-name">방문 · 욕실문 — 영림/예림 ABS 도어 (민자 매트 화이트)</div>
+            <div class="spec-desc">습기에 강한 ABS 재질 · 무늬 없는 민자로 문선이 깔끔한 요즘 기본</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_door_handle.jpg','도무스(DOMUS) 711 니켈 무광 레버 핸들')"><img src="images/mat_door_handle.jpg" alt="도무스 711 무광 레버 핸들"></div>
+          <div class="spec-body">
+            <div class="spec-name">도무스(DOMUS) 711 무광 핸들</div>
+            <div class="spec-desc">덜렁거림 없는 묵직한 레버 · 잔고장 적은 30년 검증 철물</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fbfbfb,#e6e8ea);"></div>
+          <div class="spec-body">
+            <div class="spec-name">몰딩 · 걸레받이 — 슬림 평몰딩 화이트 12mm</div>
+            <div class="spec-desc">장식을 빼고 실루엣만 남긴 미니멀 마감 · 먼지가 끼지 않는 직선</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f7f7f5,#dfe2e6);"></div>
+          <div class="spec-body">
+            <div class="spec-name">필름 — 영림/현대 보닥 무광 솔리드</div>
+            <div class="spec-desc">화이트·라이트그레이 · 방화문 내측과 문틀을 문과 같은 색으로 정리</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 문틀·몰딩·걸레받이를 같은 화이트로 통일하면 층고가 <b>5~10cm 높아 보이는</b> 효과가 있습니다.
+      </div>
+    </div>
+
+    <!-- 8. 조명 & 배선기구 스펙 카드 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">LIGHTING &amp; SWITCH</div>
+          <div class="spec-card-title">조명 &amp; 배선기구</div>
+        </div>
+        <span class="spec-status recommended">트렌드 추천(협의)</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fffdf5,#fef3c7);"></div>
+          <div class="spec-body">
+            <div class="spec-name">거실 조명 — 슬림 엣지 LED 평판등 (4000K 주백색)</div>
+            <div class="spec-desc">천장에 붙는 얇은 판형으로 먼지가 쌓이지 않아 관리가 쉬움</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_downlight.jpg','3인치 COB 덥스팟 다운라이트 매립등 (4000K)')"><img src="images/mat_downlight.jpg" alt="3인치 COB 덥스팟 다운라이트"></div>
+          <div class="spec-body">
+            <div class="spec-name">3인치 COB 덥스팟 매립등</div>
+            <div class="spec-desc">거실 아트월·복도·주방 포인트 · 눈부심 적은 덥스팟 구조</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fffbeb,#fde68a);"></div>
+          <div class="spec-body">
+            <div class="spec-name">침실 · 주방 — 동일 계열 평판등</div>
+            <div class="spec-desc">색온도를 4000K로 통일해 이사 후 전구를 바꾸지 않아도 톤이 유지됨</div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#e2e8f0);"></div>
+          <div class="spec-body">
+            <div class="spec-name">스위치 · 콘센트 — 와이드 화이트 배선기구</div>
+            <div class="spec-desc">나노/르그랑 스타일의 넓은 판형 · 손때가 덜 타는 무광 화이트</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 푸른 빛(6500K)이나 노란 전구색(3000K) 대신 <b>주백색 4000K</b>로 집 전체를 맞추는 것이 요즘 표준입니다.
+      </div>
+    </div>
+
+    <!-- 하단 안내 -->
+    <div class="spec-footnote">
+      ※ 상기 품목은 <b>어은동 한빛아파트 31평형 실속형 표준 세팅</b>입니다. 미팅 중 원하시는 색상·모델로 즉시 변경 반영되며, 변경 시 견적 금액이 조정될 수 있습니다.<br>
+      ※ 실물 사진과 상세 스펙은 상단 <b>「메종플러스 실전 자재 도감」</b>에서 크게 보실 수 있습니다.
     </div>
   </div>
 
@@ -817,6 +1313,17 @@
     </div>
   </div>
 
+  <!-- 자재 실물 사진 확대 모달 -->
+  <div id="photo-modal" class="modal-overlay" onclick="if(event.target.id==='photo-modal')closeSpecPhoto()">
+    <div class="modal-box photo-modal-box">
+      <img id="photo-modal-img" src="" alt="">
+      <div class="photo-modal-bar">
+        <div id="photo-modal-caption" class="photo-modal-caption"></div>
+        <button class="modal-close" onclick="closeSpecPhoto()">✕</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 토스트 알림 메시지 -->
   <div id="toast" class="toast-msg"></div>
 
@@ -860,6 +1367,18 @@
 
     function handleOverlayClick(e) {
       if (e.target.id === 'log-modal') closeLogModal();
+    }
+
+    function openSpecPhoto(src, caption) {
+      document.getElementById('photo-modal-img').src = src;
+      document.getElementById('photo-modal-caption').textContent = caption;
+      document.getElementById('photo-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSpecPhoto() {
+      document.getElementById('photo-modal').classList.remove('open');
+      document.body.style.overflow = '';
     }
 
     function handlePhotoSelect(e) {
