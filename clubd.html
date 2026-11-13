@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>2026 리골프 모임 클럽디 보은 CC 단체전 특별 화보집</title>
 
   <!-- OpenGraph -->
@@ -15,136 +15,246 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #1a1a1a;
+      background-color: #121212;
       color: #f0f0f0;
       font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
       overflow-x: hidden;
     }
     header {
       width: 100%;
       max-width: 1000px;
-      padding: 16px 20px;
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid #262626;
+      background: #1a1a1a;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
     .header-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       letter-spacing: -0.3px;
-      color: #e0e0e0;
+      color: #e8e8e8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .page-indicator {
-      font-size: 14px;
-      color: #c8a97e;
-      font-weight: 700;
-      background: #2a2a2a;
-      padding: 4px 12px;
-      border-radius: 20px;
+    .mode-tabs {
+      display: flex;
+      background: #262626;
+      padding: 3px;
+      border-radius: 8px;
+      gap: 2px;
     }
-    .viewer-container {
+    .mode-tab {
+      background: transparent;
+      border: none;
+      color: #999;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .mode-tab.active {
+      background: #2d5a3f;
+      color: #fff;
+    }
+
+    .tip-banner {
       width: 100%;
       max-width: 1000px;
-      flex: 1;
+      background: #1c2620;
+      color: #9cd1a9;
+      border-bottom: 1px solid #283a2e;
+      padding: 9px 16px;
+      font-size: 12.5px;
+      text-align: center;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 16px;
-      position: relative;
+      gap: 6px;
+      line-height: 1.4;
     }
-    .album-frame {
+
+    /* SCROLL VIEW (Default: Vertical Feed Mode) */
+    .scroll-container {
       width: 100%;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+      max-width: 1000px;
+      padding: 14px 12px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .scroll-item {
+      width: 100%;
+      background: #000;
       border-radius: 8px;
       overflow: hidden;
-      background: #000;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      border: 1px solid #282828;
       position: relative;
     }
-    .album-frame img {
+    .scroll-item img {
       width: 100%;
       height: auto;
       display: block;
-      transition: opacity 0.25s ease;
     }
-    .nav-btn {
+    .page-badge {
       position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.5);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.2);
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      font-size: 20px;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.7);
+      color: #c8a97e;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* SLIDE VIEW (Clean View without overlapping arrows) */
+    .slide-container {
+      width: 100%;
+      max-width: 1000px;
+      padding: 16px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+    .slide-frame {
+      width: 100%;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid #282828;
+      position: relative;
+    }
+    .slide-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: opacity 0.2s ease;
+    }
+    .slide-nav-bar {
+      margin-top: 16px;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      backdrop-filter: blur(4px);
-      transition: background 0.2s;
+      gap: 12px;
     }
-    .nav-btn:hover { background: rgba(0,0,0,0.8); }
-    .prev-btn { left: 24px; }
-    .next-btn { right: 24px; }
-    
+    .slide-page-indicator {
+      font-size: 13px;
+      color: #c8a97e;
+      font-weight: 700;
+      background: #252525;
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid #333;
+    }
+
+    /* TOOLBAR */
     .toolbar {
       width: 100%;
       max-width: 1000px;
-      padding: 16px 20px 24px;
+      padding: 14px 16px 28px;
       display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
+      border-top: 1px solid #222;
+      background: #141414;
+      flex-wrap: wrap;
     }
     .btn {
-      background: #2a2a2a;
-      color: #fff;
-      border: 1px solid #444;
-      padding: 12px 20px;
+      background: #252525;
+      color: #eee;
+      border: 1px solid #3a3a3a;
+      padding: 10px 18px;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       text-decoration: none;
+      transition: background 0.15s;
     }
+    .btn:hover { background: #303030; }
     .btn-primary {
       background: #2d5a3f;
       border-color: #3b7553;
       color: #fff;
     }
+    .btn-primary:hover { background: #356b4a; }
     .btn:active { transform: scale(0.98); }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="header-title">⛳ 리골프 모임 클럽디 보은 CC 단체전 특별 화보집</div>
-    <div class="page-indicator" id="pageIndicator">1 / 5</div>
+    <div class="header-title">⛳ 리골프 클럽디 보은 화보집</div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tabScroll" onclick="setMode('scroll')">📜 스크롤</button>
+      <button class="mode-tab" id="tabSlide" onclick="setMode('slide')">📖 한 장씩</button>
+    </div>
   </header>
 
-  <div class="viewer-container">
-    <div class="album-frame" id="albumFrame">
-      <img id="albumImg" src="clubd-p1.png" alt="리골프 클럽디 보은 화보집">
-    </div>
-    <button class="nav-btn prev-btn" onclick="prevPage()">‹</button>
-    <button class="nav-btn next-btn" onclick="nextPage()">›</button>
+  <div class="tip-banner">
+    <span>💡 <b>가로 회전 안내:</b> 스마트폰을 옆으로(가로로) 돌리시면 사진과 글씨가 화면 가득 시원하게 커집니다!</span>
   </div>
 
-  <div class="toolbar">
-    <button class="btn" onclick="prevPage()">◀ 이전 쪽</button>
-    <button class="btn btn-primary" onclick="nextPage()">다음 쪽 ▶</button>
-    <button class="btn" onclick="shareKakao()">📲 카톡 공유</button>
-  </div>
+  <!-- SCROLL VIEW: No overlapping arrows, smooth vertical reading -->
+  <main class="scroll-container" id="scrollView">
+    <div class="scroll-item">
+      <img src="clubd-p1.png" alt="클럽디 보은 화보집 1쪽 (시계탑 16인 단체전)" loading="eager">
+      <div class="page-badge">1 / 5</div>
+    </div>
+    <div class="scroll-item">
+      <img src="clubd-p2.png" alt="클럽디 보은 화보집 2쪽 (A·B·C·D 4개 조 열전)" loading="lazy">
+      <div class="page-badge">2 / 5</div>
+    </div>
+    <div class="scroll-item">
+      <img src="clubd-p3.png" alt="클럽디 보은 화보집 3쪽 (스윙 화보 및 코스 전경)" loading="lazy">
+      <div class="page-badge">3 / 5</div>
+    </div>
+    <div class="scroll-item">
+      <img src="clubd-p4.png" alt="클럽디 보은 화보집 4쪽 (금·은·동메달 시상식 뒤풀이)" loading="lazy">
+      <div class="page-badge">4 / 5</div>
+    </div>
+    <div class="scroll-item">
+      <img src="clubd-p5.png" alt="클럽디 보은 화보집 5쪽 (에필로그)" loading="lazy">
+      <div class="page-badge">5 / 5</div>
+    </div>
+  </main>
+
+  <!-- SLIDE VIEW: Arrow buttons placed safely below picture, not on top -->
+  <main class="slide-container" id="slideView">
+    <div class="slide-frame">
+      <img id="slideImg" src="clubd-p1.png" alt="클럽디 보은 화보집 슬라이드">
+    </div>
+    <div class="slide-nav-bar">
+      <button class="btn" onclick="prevSlide()">◀ 이전 쪽</button>
+      <span class="slide-page-indicator" id="slideIndicator">1 / 5</span>
+      <button class="btn btn-primary" onclick="nextSlide()">다음 쪽 ▶</button>
+    </div>
+  </main>
+
+  <footer class="toolbar">
+    <button class="btn" onclick="shareKakao()">📲 카톡 공유하기</button>
+    <a class="btn" href="clubd.pdf" download="2026_리골프_클럽디보은_16인단체전_기념화보집.pdf" target="_blank">📥 고화질 PDF 열기·저장</a>
+  </footer>
 
   <script>
     const pages = [
@@ -154,67 +264,61 @@
       'clubd-p4.png',
       'clubd-p5.png'
     ];
-    let currentIndex = 0;
+    let currentSlide = 0;
 
-    const albumImg = document.getElementById('albumImg');
-    const pageIndicator = document.getElementById('pageIndicator');
+    const scrollView = document.getElementById('scrollView');
+    const slideView = document.getElementById('slideView');
+    const tabScroll = document.getElementById('tabScroll');
+    const tabSlide = document.getElementById('tabSlide');
+    const slideImg = document.getElementById('slideImg');
+    const slideIndicator = document.getElementById('slideIndicator');
 
-    function updatePage(index) {
+    function setMode(mode) {
+      if (mode === 'scroll') {
+        scrollView.style.display = 'flex';
+        slideView.style.display = 'none';
+        tabScroll.classList.add('active');
+        tabSlide.classList.remove('active');
+      } else {
+        scrollView.style.display = 'none';
+        slideView.style.display = 'flex';
+        tabSlide.classList.add('active');
+        tabScroll.classList.remove('active');
+        updateSlide(currentSlide);
+      }
+    }
+
+    function updateSlide(index) {
       if (index < 0) index = 0;
       if (index >= pages.length) index = pages.length - 1;
-      currentIndex = index;
-      
-      albumImg.style.opacity = '0.3';
+      currentSlide = index;
+
+      slideImg.style.opacity = '0.3';
       setTimeout(() => {
-        albumImg.src = pages[currentIndex];
-        albumImg.style.opacity = '1';
-        pageIndicator.innerText = `${currentIndex + 1} / ${pages.length}`;
-      }, 150);
+        slideImg.src = pages[currentSlide];
+        slideImg.style.opacity = '1';
+        slideIndicator.innerText = `${currentSlide + 1} / ${pages.length}`;
+      }, 120);
     }
 
-    function prevPage() {
-      if (currentIndex > 0) {
-        updatePage(currentIndex - 1);
-      }
+    function prevSlide() {
+      if (currentSlide > 0) updateSlide(currentSlide - 1);
     }
 
-    function nextPage() {
-      if (currentIndex < pages.length - 1) {
-        updatePage(currentIndex + 1);
-      }
-    }
-
-    // Swipe support for mobile
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    document.addEventListener('touchstart', e => {
-      touchStartX = e.changedTouches[0].screenX;
-    });
-
-    document.addEventListener('touchend', e => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    });
-
-    function handleSwipe() {
-      if (touchEndX < touchStartX - 50) {
-        nextPage();
-      }
-      if (touchEndX > touchStartX + 50) {
-        prevPage();
-      }
+    function nextSlide() {
+      if (currentSlide < pages.length - 1) updateSlide(currentSlide + 1);
     }
 
     function shareKakao() {
+      const shareUrl = window.location.href.split('?')[0];
       if (navigator.share) {
         navigator.share({
           title: '리골프 모임 클럽디 보은 CC 단체전 특별 화보집',
-          text: '16인 4팀 단체 라운딩 기념 포토북 화보집',
-          url: window.location.href
+          text: '시계탑 16인 단체 사진부터 메달 시상식까지! 모바일 화보집',
+          url: shareUrl
         }).catch(() => {});
       } else {
-        navigator.clipboard.writeText(window.location.href).then(() => {
+        navigator.clipboard.writeText(shareUrl).then(() => {
           alert('화보집 링크가 복사되었습니다! 카카오톡 단톡방에 붙여넣기 하세요.');
         });
       }
