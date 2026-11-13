@@ -227,13 +227,13 @@
         <div class="access-title">현장 주소</div>
         <div class="access-val addr">대전광역시 유성구 어은로 57, 129동 1406호</div>
       </div>
-      <div class="access-item" onclick="copyText('종1234')">
-        <div class="access-title">1층 공동현관 비번</div>
-        <div class="access-val">종 1234</div>
+      <div class="access-item" onclick="copyText('비밀번호 없음 (자유 출입)')">
+        <div class="access-title">1층 로비 출입</div>
+        <div class="access-val" style="font-size: 15px; color: #38bdf8;">비번 없음 (자유출입)</div>
       </div>
-      <div class="access-item" onclick="copyText('★1234★')">
+      <div class="access-item" onclick="copyText('301026')">
         <div class="access-title">세대 도어락 비번</div>
-        <div class="access-val">★ 1234 ★</div>
+        <div class="access-val">301026</div>
       </div>
       <div class="access-item full" style="display:flex; justify-content:space-between; align-items:center;">
         <div>
@@ -431,7 +431,7 @@
     }
 
     function copyAccessInfo() {
-      const info = `[메종플러스 현장 안내]\n- 현장: 어은동 한빛아파트 129동 1406호\n- 1층 공동현관 비번: 종1234\n- 세대 도어락 비번: ★1234★\n- 김성수 대표: 010-4420-3007\n- 소음시간: 평일 09:00~17:00 준수`;
+      const info = `[메종플러스 협력업체 현장 안내]\n- 현장: 어은동 한빛아파트 129동 1406호\n- 1층 로비: 비밀번호 없음 (자유 출입)\n- 세대 도어락 비번: 301026\n- 김성수 대표: 010-4420-3007\n- 소음시간: 평일 09:00~17:00 준수 (주말/공휴일 금지)`;
       navigator.clipboard.writeText(info).then(() => {
         showToast('📋 현장 주소와 비밀번호가 복사되었습니다!');
       }).catch(() => {
