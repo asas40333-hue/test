@@ -257,6 +257,107 @@
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .admin-btn:active { opacity: 0.8; }
+
+    /* 모달 팝업 스타일 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 30px;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slideUp 0.25s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-size: 17px; font-weight: 800; color: var(--text-main); }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text-main);
+      outline: none;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: var(--primary-light); }
+    .upload-zone {
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 20px 10px;
+      text-align: center;
+      cursor: pointer;
+      background: #f8fafc;
+      transition: all 0.2s;
+    }
+    .upload-zone:active { background: #f1f5f9; border-color: var(--primary-light); }
+    .upload-btn-submit {
+      width: 100%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .upload-btn-submit:active { background: var(--primary-dark); }
+
+    /* 토스트 알림 */
+    .toast-msg {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 2000;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      display: none;
     }
   </style>
 </head>
@@ -543,12 +644,58 @@
       <div style="font-size: 13px; font-weight: 700;">김성수 대표님 접속 중</div>
     </div>
     <div>
-      <button class="admin-btn" onclick="alert('오늘의 현장 사진 및 공정 메모 등록 창이 열립니다.')">📸 사진/일지 등록</button>
-      <button class="admin-btn" style="background:#059669; margin-left: 6px;" onclick="alert('고객님 카카오톡으로 현장 공유 링크가 발송되었습니다.')">📲 고객 공유</button>
+      <button class="admin-btn" onclick="openLogModal()">📸 사진/일지 등록</button>
+      <button class="admin-btn" style="background:#059669; margin-left: 6px;" onclick="shareApp()">📲 고객 공유</button>
     </div>
   </div>
 
+  <!-- 공정 사진/일지 등록 모달 팝업 -->
+  <div id="log-modal" class="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">📸 오늘의 현장 사진 & 일지 등록</div>
+        <button class="modal-close" onclick="closeLogModal()">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">작업 날짜</label>
+        <input type="date" id="modal-date" class="form-input" value="2026-11-13">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">공정 제목</label>
+        <input type="text" id="modal-title" class="form-input" placeholder="예: 거실 우물천장 목공틀 작업 / 욕실 타일 시공">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">세부 작업 내용 및 고객 안내</label>
+        <textarea id="modal-desc" class="form-textarea" rows="3" placeholder="오늘 진행된 작업 내용이나 입주자 고객님께 남길 메모를 입력해 주세요."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">현장 사진 첨부</label>
+        <div class="upload-zone" onclick="document.getElementById('modal-file').click()">
+          <div style="font-size: 28px; margin-bottom: 4px;">📷</div>
+          <div style="font-size: 13px; font-weight: 700; color: #1e3a8a;">터치하여 사진 촬영 또는 갤러리 선택</div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 2px;">스마트폰으로 찍은 현장 사진을 바로 첨부하세요</div>
+        </div>
+        <input type="file" id="modal-file" accept="image/*" style="display:none;" onchange="handlePhotoSelect(event)">
+        
+        <div id="modal-preview-box" style="display:none; margin-top: 10px; border-radius: 8px; overflow: hidden; max-height: 200px; text-align: center; background: #000;">
+          <img id="modal-preview-img" style="max-width: 100%; max-height: 200px; object-fit: contain;">
+        </div>
+      </div>
+
+      <button class="upload-btn-submit" onclick="submitNewLog()">현장 일지 등록 완료</button>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 메시지 -->
+  <div id="toast" class="toast-msg"></div>
+
   <script>
+    let currentPhotoData = null;
+
     function switchTab(tabName) {
       document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -570,6 +717,170 @@
         badge.style.borderColor = '#bfdbfe';
       }
     }
+
+    function openLogModal() {
+      document.getElementById('log-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLogModal() {
+      document.getElementById('log-modal').classList.remove('open');
+      document.body.style.overflow = '';
+      currentPhotoData = null;
+      document.getElementById('modal-file').value = '';
+      document.getElementById('modal-preview-box').style.display = 'none';
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target.id === 'log-modal') closeLogModal();
+    }
+
+    function handlePhotoSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = function() {
+          // 리사이징하여 용량 최적화 (가로 최대 800px)
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxW = 800;
+          if (width > maxW) {
+            height = Math.round((height * maxW) / width);
+            width = maxW;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          currentPhotoData = canvas.toDataURL('image/jpeg', 0.8);
+          
+          document.getElementById('modal-preview-img').src = currentPhotoData;
+          document.getElementById('modal-preview-box').style.display = 'block';
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function submitNewLog() {
+      const dateVal = document.getElementById('modal-date').value || '2026-11-13';
+      const titleVal = document.getElementById('modal-title').value.trim();
+      const descVal = document.getElementById('modal-desc').value.trim();
+
+      if (!titleVal) {
+        alert('공정 제목을 입력해 주세요.');
+        document.getElementById('modal-title').focus();
+        return;
+      }
+
+      const logItem = {
+        id: Date.now(),
+        date: dateVal,
+        title: titleVal,
+        desc: descVal,
+        photo: currentPhotoData
+      };
+
+      // localStorage에 저장
+      let savedLogs = [];
+      try {
+        savedLogs = JSON.parse(localStorage.getItem('maison_custom_logs') || '[]');
+      } catch (e) { savedLogs = []; }
+      savedLogs.unshift(logItem);
+      try {
+        localStorage.setItem('maison_custom_logs', JSON.stringify(savedLogs));
+      } catch (e) {
+        console.warn('저장 용량 초과로 최근 10개만 유지합니다.');
+        savedLogs = savedLogs.slice(0, 10);
+        localStorage.setItem('maison_custom_logs', JSON.stringify(savedLogs));
+      }
+
+      // 화면에 추가 렌더링
+      renderCustomLogs();
+
+      // 모달 닫기 및 탭 이동
+      closeLogModal();
+      document.querySelectorAll('.nav-tab')[0].click(); // 현장일지 탭으로 이동
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast('🎉 오늘의 현장 일지와 사진이 등록되었습니다!');
+    }
+
+    function renderCustomLogs() {
+      let savedLogs = [];
+      try {
+        savedLogs = JSON.parse(localStorage.getItem('maison_custom_logs') || '[]');
+      } catch (e) { savedLogs = []; }
+
+      const container = document.getElementById('custom-logs-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      savedLogs.forEach(log => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.borderLeft = '4px solid #059669';
+
+        let photoHtml = '';
+        if (log.photo) {
+          photoHtml = `
+            <div style="margin-top: 10px; border-radius: 8px; overflow: hidden;">
+              <img src="${log.photo}" style="width: 100%; max-height: 280px; object-fit: cover; display: block; border-radius: 8px;">
+            </div>
+          `;
+        }
+
+        card.innerHTML = `
+          <div class="log-item" style="border-left-color: #059669;">
+            <div class="log-date" style="color: #059669; font-weight: 800;">${log.date} (새로 등록됨 ✨)</div>
+            <div class="log-work">${log.title}</div>
+          </div>
+          ${log.desc ? `<p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-top: 6px;">${log.desc}</p>` : ''}
+          ${photoHtml}
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+
+    function shareApp() {
+      const shareData = {
+        title: '메종플러스 현장 공유 시스템',
+        text: '어은동 한빛아파트 129동 1406호 실시간 인테리어 공정 공유',
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        navigator.share(shareData).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          showToast('📋 현장 공유 링크가 클립보드에 복사되었습니다!');
+        }).catch(() => {
+          showToast('주소: ' + window.location.href);
+        });
+      }
+    }
+
+    // 초기 실행
+    window.addEventListener('DOMContentLoaded', () => {
+      // 커스텀 로그 컨테이너 준비
+      const logTab = document.getElementById('tab-log');
+      if (logTab) {
+        const customDiv = document.createElement('div');
+        customDiv.id = 'custom-logs-container';
+        logTab.insertBefore(customDiv, logTab.children[1]);
+        renderCustomLogs();
+      }
+    });
   </script>
 </body>
 </html>
