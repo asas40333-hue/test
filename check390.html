@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>390px 검증용</title>
+<style>
+  body { margin: 0; background: #9ca3af; font-family: sans-serif; }
+  .frame { width: 390px; margin: 0 auto; background: #0f172a; }
+  iframe { width: 390px; height: 844px; border: 0; display: block; }
+</style>
+</head>
+<body>
+<div class="frame"><iframe id="f" src="diary.html"></iframe></div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const f = document.getElementById('f');
+  if (q.get('src')) f.src = q.get('src');
+  if (q.get('h')) f.style.height = q.get('h') + 'px';
+</script>
+</body>
+</html>
