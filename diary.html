@@ -977,6 +977,7 @@ const ed = {
     ed.setCat((e && e.cat) || 'walk');
     draftPhotos = e && e.photos ? e.photos.slice() : [];
     drawPreviews();
+    ed.initial = ed.snapshot();
     $('edDelete').classList.toggle('hidden', !isEdit);
     $('editor').classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -987,13 +988,25 @@ const ed = {
     document.body.style.overflow = '';
     editingId = null;
     draftPhotos = [];
+    ed.initial = null;
     $('fPhotos').value = '';
   },
   cat:'walk',
   setCat(c){
     ed.cat = c;
     $('fCat').querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.cat===c));
-  }
+  },
+  snapshot(){
+    return JSON.stringify([$('fDate').value, $('fMood').value, $('fLoc').value, ed.cat, $('fTitle').value, $('fBody').value, draftPhotos.length]);
+  },
+  isDirty(){
+    return ed.initial !== null && ed.snapshot() !== ed.initial;
+  },
+  requestClose(){
+    if(ed.isDirty() && !confirm('작성 중인 기록이 아직 저장되지 않았습니다.\n그냥 닫을까요?')) return;
+    ed.close();
+  },
+  initial:null
 };
 
 function buildCatPicker(){
@@ -1212,8 +1225,7 @@ function importJSON(mode){
           else { map.set(x.id, x); added++; }
         });
         if(save(Array.from(map.values()))){ renderTimeline(); renderCalendar(); toast(added+'편을 더했습니다.'); }
-      }
-    };
+      }    };
     rd.readAsText(f);
   };
   inp.click();
@@ -1324,15 +1336,15 @@ function wire(){
   document.querySelectorAll('[data-close]').forEach(b=>{
     b.addEventListener('click', ()=>{
       const id = b.dataset.close;
-      if(id === 'editor') ed.close();
-      else $(id).classList.remove('open'), document.body.style.overflow='';
+      if(id === 'editor') ed.requestClose();
+      else { $(id).classList.remove('open'); document.body.style.overflow=''; }
       if(id === 'more' || id === 'help') storageInfo();
     });
   });
   document.querySelectorAll('.sheet').forEach(sh=>{
     sh.addEventListener('click', ev=>{
       if(ev.target === sh){
-        if(sh.id === 'editor') ed.close();
+        if(sh.id === 'editor') ed.requestClose();
         else { sh.classList.remove('open'); document.body.style.overflow=''; }
       }
     });
