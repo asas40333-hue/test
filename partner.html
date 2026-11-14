@@ -9,7 +9,7 @@
   <!-- 카카오톡 및 SNS 링크 미리보기 카드 (오픈그래프) -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="[메종플러스] 협력업체 현장 가이드 & 공정표">
-  <meta property="og:description" content="어은동 한빛 129동 1406호 (31평형) · 1층 로비 비번 없음 · 현관 비번은 카톡 별도 안내 · 소음시간 09~18시">
+  <meta property="og:description" content="어은동 한빛 129동 1406호 (31평형) · 1층 로비 비번 없음 · 출입 정보·공정표 · 소음시간 09~18시">
   <meta property="og:image" content="https://asas40333-hue.github.io/test/og-partner.png">
   <meta property="og:url" content="https://asas40333-hue.github.io/test/partner.html">
 
@@ -256,10 +256,9 @@
         <div class="access-title">1층 로비 출입</div>
         <div class="access-val" style="font-size: 15px; color: #38bdf8;">비번 없음 (자유출입)</div>
       </div>
-      <div class="access-item full">
-        <div class="access-title">세대 현관 비밀번호</div>
-        <div style="font-size: 13px; font-weight: 800; color: #fbbf24; line-height: 1.45;">🔒 현관 비밀번호는 카톡으로 별도 안내드립니다</div>
-        <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">번호가 필요하시면 김성수 대표님께 카톡 주세요</div>
+      <div class="access-item full" onclick="copyText('301026')" style="cursor:pointer;">
+        <div class="access-title">세대 현관 비밀번호 (탭하여 복사)</div>
+        <div class="access-val">301026</div>
       </div>
       <div class="access-item full" style="display:flex; justify-content:space-between; align-items:center;">
         <div>
@@ -443,8 +442,8 @@
     <a href="tel:01044203007" class="bottom-btn btn-call">
       📞 김성수 대표님 통화
     </a>
-    <button class="bottom-btn btn-copy" onclick="copyAddress()">
-      📋 주소 복사
+    <button class="bottom-btn btn-copy" onclick="copyAccessInfo()">
+      📋 주소·비번 복사
     </button>
   </div>
 
@@ -466,10 +465,10 @@
       });
     }
 
-    function copyAddress() {
-      const info = `[메종플러스 협력업체 현장 안내]\n- 현장: 어은동 한빛아파트 129동 1406호 (31평형)\n- 주소: 대전광역시 유성구 어은로 57, 129동 1406호\n- 1층 로비: 비밀번호 없음 (자유 출입)\n- 현관 비밀번호: 카톡으로 별도 안내드립니다\n- 김성수 대표: 010-4420-3007\n- 소음시간: 평일 09:00~18:00 준수 (주말/공휴일 금지)`;
+    function copyAccessInfo() {
+      const info = `[메종플러스 협력업체 현장 안내]\n- 현장: 어은동 한빛아파트 129동 1406호 (31평형)\n- 주소: 대전광역시 유성구 어은로 57, 129동 1406호\n- 1층 로비: 비밀번호 없음 (자유 출입)\n- 세대 현관 비밀번호: 301026\n- 김성수 대표: 010-4420-3007\n- 소음시간: 평일 09:00~18:00 준수 (주말/공휴일 금지)`;
       navigator.clipboard.writeText(info).then(() => {
-        showToast('📋 현장 주소가 복사되었습니다!');
+        showToast('📋 현장 주소와 비밀번호가 복사되었습니다!');
       }).catch(() => {
         showToast('복사 완료');
       });
