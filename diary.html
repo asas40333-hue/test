@@ -126,6 +126,8 @@ body::before{
   font-size:15px;color:var(--ink);min-width:0;padding:11px 0
 }
 .search-box input::placeholder{color:#B3A794;font-size:14px}
+.search-box input::-webkit-search-cancel-button,
+.search-box input::-webkit-search-decoration{-webkit-appearance:none;display:none}
 .clear-q{
   border:0;background:#EDE4D3;color:var(--ink-soft);width:22px;height:22px;border-radius:50%;
   font-size:11px;cursor:pointer;display:none;align-items:center;justify-content:center;flex:none
@@ -193,7 +195,7 @@ body::before{
 }
 .photos.one img{max-height:430px}
 .photos.two{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.photos.two img{aspect-ratio:3/4;height:100%}
+.photos.two img{aspect-ratio:1/1;height:100%}
 .photos.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .photos.grid img{aspect-ratio:1/1}
 .card-foot{
@@ -208,8 +210,8 @@ body::before{
 }
 .card-actions{margin-left:auto;display:flex;gap:2px;flex:none}
 .icon-btn{
-  border:0;background:transparent;color:var(--muted);font-family:var(--sans);font-size:12px;
-  padding:8px 8px;border-radius:8px;cursor:pointer;min-height:36px
+  border:0;background:transparent;color:var(--muted);font-family:var(--sans);font-size:12.5px;
+  padding:9px 10px;border-radius:8px;cursor:pointer;min-height:40px
 }
 .icon-btn:active{background:var(--paper-2);color:var(--ink)}
 
@@ -221,7 +223,7 @@ body::before{
 .empty .hint{margin-top:14px;font-family:var(--sans);font-size:12px;color:#A99D89}
 
 /* ── 달력 ───────────────────────────── */
-.cal-head{display:flex;align-items:center;justify-content:center;gap:14px;margin:2px 0 16px}
+.cal-head{display:flex;align-items:center;justify-content:center;gap:14px;margin:2px 0 16px;position:relative}
 .cal-title{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:.08em;min-width:132px;text-align:center}
 .nav-btn{
   width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);
@@ -230,7 +232,8 @@ body::before{
 .nav-btn:active{background:var(--paper-2)}
 .today-btn{
   border:1px solid var(--line);background:var(--card);color:var(--ink-soft);
-  font-family:var(--sans);font-size:12px;border-radius:20px;padding:8px 13px;cursor:pointer
+  font-family:var(--sans);font-size:12px;border-radius:20px;padding:8px 13px;cursor:pointer;
+  position:absolute;right:0;top:50%;transform:translateY(-50%)
 }
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:8px}
 .wd{text-align:center;font-family:var(--sans);font-size:11.5px;color:var(--muted);padding:6px 0;letter-spacing:.05em}
@@ -281,9 +284,9 @@ body::before{
 /* ── 기록 버튼 ──────────────────────── */
 .fab{
   position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom));
-  z-index:40;border:0;border-radius:30px;padding:15px 24px;cursor:pointer;
+  z-index:40;border:0;border-radius:30px;padding:15px 22px;cursor:pointer;white-space:nowrap;
   background:linear-gradient(180deg,#8C5A3C,#78492F);color:#FDF8EE;
-  font-family:var(--serif);font-size:15px;font-weight:500;letter-spacing:.03em;
+  font-family:var(--serif);font-size:15px;font-weight:500;letter-spacing:.02em;
   box-shadow:0 10px 26px -10px rgba(80,45,20,.65),0 2px 0 rgba(255,255,255,.12) inset;
   display:flex;align-items:center;gap:7px;max-width:calc(100% - 36px)
 }
@@ -341,7 +344,7 @@ body::before{
   border:1px solid var(--line);background:var(--card);color:var(--ink-soft);
   font-family:var(--sans);font-size:13px;border-radius:20px;padding:10px 13px;cursor:pointer
 }
-.cat-pick button.on{background:var(--ink);border-color:var(--ink);color:#FBF6EC}
+.cat-pick button.on{background:var(--brown);border-color:var(--brown);color:#FBF6EC}
 .photo-add{
   display:flex;align-items:center;justify-content:center;gap:8px;border:1px dashed #D8C7AE;
   background:rgba(255,253,248,.6);border-radius:10px;padding:18px;cursor:pointer;
@@ -452,7 +455,7 @@ body::before{
 
   <header class="app-head">
     <button class="more-btn" id="btnMore" aria-label="더보기">⋯</button>
-    <div class="eyebrow">Daily Essay</div>
+    <div class="eyebrow">매일의 수필</div>
     <h1>성수의 하루</h1>
     <p class="sub">사진 한 장과 감상 한 줄로 엮는, 나의 작은 수필집</p>
     <div class="head-rule"></div>
@@ -488,6 +491,7 @@ body::before{
         <button class="nav-btn" id="calPrev" aria-label="이전 달">‹</button>
         <div class="cal-title" id="calTitle">2026년 11월</div>
         <button class="nav-btn" id="calNext" aria-label="다음 달">›</button>
+        <button class="today-btn" id="calToday">오늘</button>
       </div>
       <div class="cal-grid" id="calGrid"></div>
       <p class="cal-note">사진이 있는 날을 눌러 보세요. 그날의 기록이 아래에 펼쳐집니다.</p>
@@ -1267,6 +1271,11 @@ function wire(){
     state.cm++; if(state.cm>12){ state.cm=1; state.cy++; }
     const mes = entriesInMonth(state.cy, state.cm);
     state.sel = mes.length ? mes[0].date : null;
+    renderCalendar();
+  });
+  $('calToday').addEventListener('click', ()=>{
+    state.cy = today.getFullYear(); state.cm = today.getMonth()+1;
+    state.sel = TODAY;
     renderCalendar();
   });
 
