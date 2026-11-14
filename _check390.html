@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>390px 검증용 임시 페이지</title>
+<style>
+  html,body{margin:0;background:#d9d9d9;font:12px/1.5 -apple-system,sans-serif;color:#333}
+  .bar{padding:6px 10px;font-weight:700}
+  iframe{display:block;border:0;background:#fff;margin:0 10px 14px;width:390px}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">390px</div>
+<iframe id="tall" src="./diary.html?v=chk" style="height:3200px"></iframe>
+<script>
+  document.getElementById('bar').textContent = '390px 폭 iframe · ' + new Date().toLocaleTimeString('ko-KR');
+</script>
+</body>
+</html>
