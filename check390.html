@@ -8,11 +8,12 @@
   html,body{margin:0;background:#d9d9d9;font:12px/1.5 -apple-system,sans-serif;color:#333}
   .bar{padding:6px 10px;font-weight:700}
   iframe{display:block;border:0;background:#fff;margin:0 10px 14px;width:390px}
+  body{background:#fff}
 </style>
 </head>
 <body>
 <div class="bar" id="bar">390px</div>
-<iframe id="tall" src="./diary.html?v=chk" style="height:900px"></iframe>
+<iframe id="tall" src="./diary.html?v=chk" style="height:3000px"></iframe>
 <script>
   document.getElementById('bar').textContent = '390px 폭 iframe · ' + new Date().toLocaleTimeString('ko-KR');
 </script>
