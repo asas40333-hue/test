@@ -139,11 +139,11 @@ body::before{
   padding:0 12px;height:46px;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap
 }
 .btn-print:active{background:var(--paper-2)}
-.chips{display:flex;gap:7px;overflow-x:auto;padding:11px 2px 3px;scrollbar-width:none;-ms-overflow-style:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:11px 2px 3px;scrollbar-width:none;-ms-overflow-style:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{
   flex:none;border:1px solid var(--line);background:rgba(255,253,248,.6);color:var(--ink-soft);
-  font-family:var(--sans);font-size:12.5px;border-radius:20px;padding:7px 13px;cursor:pointer;
+  font-family:var(--sans);font-size:12.5px;border-radius:20px;padding:7px 11px;cursor:pointer;
   white-space:nowrap;transition:all .15s
 }
 .chip.active{background:var(--ink);border-color:var(--ink);color:#FBF6EC}
