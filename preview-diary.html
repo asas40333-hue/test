@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><title>모바일 미리보기 · 성수의 하루</title>
 <style>
-  html,body{margin:0;background:#e9e4da;font-family:sans-serif}
-  .row{display:flex;gap:24px;padding:24px;align-items:flex-start}
-  .phone{width:390px;height:844px;border-radius:28px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.25);background:#fff;flex:none}
-  .phone iframe{width:390px;height:844px;border:0;display:block}
-  .lbl{font-size:13px;color:#555;margin-bottom:8px}
+  html,body{margin:0;background:#dcd6cb;font-family:sans-serif}
+  .row{display:flex;gap:22px;padding:22px;align-items:flex-start}
+  .col{flex:none}
+  .lbl{font-size:12px;color:#555;margin-bottom:7px;letter-spacing:.02em}
+  .phone{width:392px;border:1px solid #c9c2b5;border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 10px 26px rgba(0,0,0,.18)}
+  .phone iframe{width:390px;border:0;display:block}
+  #a iframe{height:2700px}
+  #b iframe{height:1500px}
 </style></head>
 <body>
 <div class="row">
-  <div><div class="lbl">390 × 844 · 성수의 하루</div><div class="phone"><iframe id="a" src="./diary.html"></iframe></div></div>
+  <div class="col" id="a"><div class="lbl">A · 390px · 수필집 타임라인</div><div class="phone"><iframe src="./diary.html?v=2"></iframe></div></div>
+  <div class="col" id="b"><div class="lbl">B · 390px · 기억의 달력</div><div class="phone"><iframe src="./diary.html?v=2"></iframe></div></div>
 </div>
 </body></html>
