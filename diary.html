@@ -282,8 +282,12 @@ body::before{
 }
 
 /* ── 기록 버튼 ──────────────────────── */
+body::after{
+  content:"";position:fixed;left:0;right:0;bottom:0;height:104px;pointer-events:none;z-index:35;
+  background:linear-gradient(to top, rgba(250,246,238,.98) 38%, rgba(250,246,238,.86) 62%, rgba(250,246,238,0) 100%)
+}
 .fab{
-  position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom));
+  position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));
   z-index:40;border:0;border-radius:30px;padding:15px 22px;cursor:pointer;white-space:nowrap;
   background:linear-gradient(180deg,#8C5A3C,#78492F);color:#FDF8EE;
   font-family:var(--serif);font-size:15px;font-weight:500;letter-spacing:.02em;
@@ -435,6 +439,7 @@ body::before{
   body{background:#fff;padding:0}
   body::before{display:none}
   .wrap,.app-head,.tabs,.search-wrap,main,.fab,.sheet,#viewer,#toast,.more-btn{display:none !important}
+  body::after{display:none !important}
   #printBook{display:block !important}
   .pb-entry{page-break-inside:avoid}
 }
