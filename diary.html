@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
 <title>성수의 하루 · 나의 작은 수필집</title>
 
 <meta property="og:type" content="website">
@@ -406,8 +407,28 @@ body::after{
 .menu-item .tx{flex:1}
 .menu-item .tx small{display:block;font-size:11.5px;color:var(--muted);margin-top:3px;font-family:var(--sans)}
 .menu-item:last-child{border-bottom:0}
-.storage-box{margin:14px 0 4px;padding:14px;background:var(--card);border:1px solid var(--line-soft);border-radius:10px}
-.storage-box .row{display:flex;justify-content:space-between;font-family:var(--sans);font-size:12px;color:var(--ink-soft);margin-bottom:8px}
+/* ── 백업 안내 배너 ─────────────────── */
+.backup-note{
+  margin:0 0 18px;padding:13px 15px 12px;border:1px solid #DCE5D8;border-radius:10px;
+  background:linear-gradient(180deg,#F4F8F0,#EEF3E9);font-family:var(--sans)
+}
+.backup-note .bn-tx{font-size:12.5px;line-height:1.7;color:#41604A;letter-spacing:.01em;word-break:keep-all}
+.backup-note .bn-tx b{display:block;font-weight:600;color:#33513C;margin-bottom:3px}
+.backup-note .bn-act{display:flex;align-items:center;gap:8px;margin-top:11px}
+.backup-note .bn-act button{
+  border:1px solid #C9D8C2;background:#FFFDF8;color:#4A6B53;border-radius:8px;
+  font-family:var(--sans);font-size:12px;font-weight:500;padding:8px 13px;cursor:pointer;min-height:32px
+}
+.backup-note .bn-act button.go{background:#4A6B53;border-color:#4A6B53;color:#FBF9F2}
+.backup-note .bn-act button:active{filter:brightness(.96)}
+.storage-box{margin:14px 0 4px;padding:14px 14px 13px;background:var(--card);border:1px solid var(--line-soft);border-radius:10px}
+.storage-box .row{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  font-family:var(--sans);font-size:12px;line-height:1.5;color:var(--ink-soft);margin-bottom:8px
+}
+.storage-box .row .k{min-width:0;flex:1 1 auto;word-break:keep-all;overflow-wrap:normal}
+.storage-box .row .v{flex:0 0 auto;white-space:nowrap;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.storage-box .row.sub{margin:10px 0 0;padding-top:9px;border-top:1px dashed var(--line-soft);font-size:11.5px;color:var(--muted)}
 .bar{height:6px;background:#EDE4D3;border-radius:4px;overflow:hidden}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,#4A6B53,#8C5A3C);width:0%}
 .help-list{font-family:var(--sans);font-size:13px;line-height:1.85;color:var(--ink-2)}
@@ -471,6 +492,14 @@ body::after{
     </div>
   </header>
 
+  <div class="backup-note hidden" id="backupNote">
+    <p class="bn-tx"><b>마지막 백업 후 30일이 지났어요.</b>안전한 보관을 위해 백업 파일을 내려받아 주세요.</p>
+    <div class="bn-act">
+      <button type="button" class="go" id="backupNow">백업 내려받기</button>
+      <button type="button" id="backupLater">나중에</button>
+    </div>
+  </div>
+
   <nav class="tabs">
     <button class="tab active" data-view="timeline">📖 수필집</button>
     <button class="tab" data-view="calendar">📅 기억의 달력</button>
@@ -528,7 +557,6 @@ body::after{
           <option>🌫️ 안개</option>
           <option>❄️ 눈</option>
           <option>🍂 바람</option>
-          <option>🌙 밤</option>
         </select>
       </div>
       <div class="field">
@@ -552,7 +580,7 @@ body::after{
         <label class="photo-add" for="fPhotos">📷 사진 고르기 (여러 장 가능)</label>
         <input type="file" id="fPhotos" accept="image/*" multiple hidden>
         <div class="photo-previews" id="photoPreviews"></div>
-        <p class="help">사진은 자동으로 줄여서(가로 1000px) 이 휴대폰에 저장합니다. 한 편에 6장까지.</p>
+        <p class="help">사진은 자동으로 줄여서(긴 쪽 1000px) 이 휴대폰에 저장합니다. 한 편에 6장까지.</p>
       </div>
     </div>
     <div class="sheet-foot">
@@ -588,12 +616,13 @@ body::after{
         <span class="tx">사용 안내<small>저장 위치, 홈 화면 추가, 인쇄 방법</small></span>
       </button>
       <div class="storage-box">
-        <div class="row"><span>이 휴대폰에 저장된 양</span><span id="storageTxt">—</span></div>
+        <div class="row"><span class="k">이 휴대폰에 저장된 양</span><span class="v" id="storageTxt">—</span></div>
         <div class="bar"><i id="storageBar"></i></div>
+        <div class="row sub"><span class="k">마지막 백업</span><span class="v" id="backupTxt">—</span></div>
       </div>
       <button class="menu-item" id="mBackToSite" style="margin-top:8px">
         <span class="ic">🏠</span>
-        <span class="tx">메종플러스 현장 앱으로<small>index.html 로 돌아갑니다</small></span>
+        <span class="tx">현장 앱으로 돌아가기<small>메종플러스 인테리어 현장 앱 첫 화면으로 갑니다</small></span>
       </button>
     </div>
   </div>
@@ -644,6 +673,10 @@ body::after{
 /* ───────── 기본 정의 ───────── */
 const STORE_KEY = 'syh_entries_v2';
 const DELETED_KEY = 'syh_deleted_ids_v1';   // 사용자가 직접 지운 기본 글의 id (되살리지 않기 위해)
+const BACKUP_KEY  = 'syh_last_backup_v1';   // 마지막으로 백업 파일을 내려받은 시각(ms)
+const FIRST_KEY   = 'syh_first_record_v1';  // 첫 기록을 남긴 시각(ms)
+const NOTE_KEY    = 'syh_backup_note_v1';   // 백업 안내를 '나중에'로 접어 둔 시각(ms)
+const BACKUP_DAYS = 30;
 const WEEK = ['일','월','화','수','목','금','토'];
 const MAX_PHOTOS = 6;
 
@@ -742,6 +775,8 @@ function toast(msg){
 }
 
 /* ───────── 저장 ───────── */
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 function loadDeleted(){
   try{
     const a = JSON.parse(localStorage.getItem(DELETED_KEY) || '[]');
@@ -1161,6 +1196,7 @@ function saveEntry(){
 
   const wasEditing = !!editingId;
   if(save(next)){
+    if(!lsGet(FIRST_KEY)) lsSet(FIRST_KEY, String(Date.now()));
     ed.close();
     state.sel = rec.date;
     const p = parts(rec.date);
@@ -1253,6 +1289,9 @@ function exportJSON(){
   a.download = '성수의하루_백업_'+TODAY+'.json';
   document.body.appendChild(a); a.click();
   setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1200);
+  lsSet(BACKUP_KEY, String(Date.now()));
+  checkBackupNote();
+  $('backupTxt').textContent = backupDateLabel();
   toast('백업 파일을 내려받았습니다.');
 }
 
@@ -1272,7 +1311,7 @@ function importJSON(mode){
       if(!Array.isArray(inc)){ toast('백업 파일 형식이 아닙니다.'); return; }
 
       if(mode === 'replace'){
-        if(!confirm('지금 기록 '+load().length+'편을 모두 지우고, 백업의 '+inc.length+'편으로 바꿉니다.\n계속할까요?')) return;
+        if(!confirm('기존 기록이 모두 지워지고 선택한 백업 파일로 덮어씌워집니다.\n\n지금 기록 '+load().length+'편 → 백업 '+inc.length+'편\n\n정말 진행할까요?')) return;
         if(save(inc)){
           const keep = {};
           inc.forEach(x=>{ if(x && x.id) keep[x.id] = true; });
@@ -1296,6 +1335,33 @@ function importJSON(mode){
   inp.click();
 }
 
+/* ───────── 백업 안내 ───────── */
+function backupBaseTime(list){
+  const b = Number(lsGet(BACKUP_KEY) || 0);
+  if(b > 0) return b;                                  // 마지막 백업이 기준
+  let f = Number(lsGet(FIRST_KEY) || 0);
+  if(f > 0) return f;
+  const created = (list || []).map(x=>Number(x && x.created) || 0).filter(t=>t > 0);
+  f = created.length ? Math.min.apply(null, created) : Date.now();   // 첫 기록이 기준
+  lsSet(FIRST_KEY, String(f));
+  return f;
+}
+function backupDateLabel(){
+  const b = Number(lsGet(BACKUP_KEY) || 0);
+  if(!b) return '아직 없음';
+  const d = new Date(b);
+  return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
+}
+function checkBackupNote(){
+  const el = $('backupNote');
+  if(!el) return;
+  const list = load();
+  const days = Math.floor((Date.now() - backupBaseTime(list)) / 86400000);
+  const snooze = Number(lsGet(NOTE_KEY) || 0);
+  const folded = snooze > 0 && (Date.now() - snooze) < 7*86400000;   // '나중에'는 7일만 접어 둔다
+  el.classList.toggle('hidden', !(list.length && days >= BACKUP_DAYS && !folded));
+}
+
 /* ───────── 저장 공간 ───────── */
 function storageInfo(){
   let bytes = 0;
@@ -1305,8 +1371,10 @@ function storageInfo(){
   }catch(e){}
   const mb = bytes/1048576;
   const pct = Math.min(100, (bytes/5242880)*100);
-  $('storageTxt').textContent = mb < 0.1 ? (Math.round(bytes/1024)+' KB') : (mb.toFixed(1)+' MB')+' / 5 MB';
+  const size = mb >= 0.1 ? (mb.toFixed(1)+' MB') : (Math.max(1, Math.round(bytes/1024))+' KB');
+  $('storageTxt').textContent = size+' / 5 MB';
   $('storageBar').style.width = Math.max(2, pct)+'%';
+  if($('backupTxt')) $('backupTxt').textContent = backupDateLabel();
 }
 
 /* ───────── 이벤트 ───────── */
@@ -1438,6 +1506,12 @@ function wire(){
     $('help').classList.add('open');
   });
   $('mBackToSite').addEventListener('click', ()=>{ location.href = './index.html'; });
+  $('backupNow').addEventListener('click', exportJSON);
+  $('backupLater').addEventListener('click', ()=>{
+    lsSet(NOTE_KEY, String(Date.now()));
+    checkBackupNote();
+    toast('백업 안내를 잠시 미뤄 두었습니다.');
+  });
 
   // 사진 확대
   $('vClose').addEventListener('click', closeViewer);
@@ -1468,6 +1542,7 @@ function init(){
   wire();
   renderTimeline();
   renderCalendar();
+  checkBackupNote();
 }
 init();
 
