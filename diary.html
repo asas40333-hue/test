@@ -643,6 +643,7 @@ body::after{
 
 /* ───────── 기본 정의 ───────── */
 const STORE_KEY = 'syh_entries_v2';
+const DELETED_KEY = 'syh_deleted_ids_v1';   // 사용자가 직접 지운 기본 글의 id (되살리지 않기 위해)
 const WEEK = ['일','월','화','수','목','금','토'];
 const MAX_PHOTOS = 6;
 
@@ -685,6 +686,17 @@ const SAMPLE = [
     title:'비 내리는 토요일 아침',
     body:'새벽 다섯 시 반, 빗소리에 눈이 떠졌다. 커튼을 걷으니 유천동 골목이 젖어 있었다. 비 오는 아침은 늘 조용해서 좋다.\n\n따뜻한 물 한 잔을 놓고 일본어 단어 몇 개를 읽었다. 혀가 굳어 뜻대로 소리가 안 나와도, 하루에 한 장씩 넘기는 것만으로 뿌듯하다. 그다음엔 어제 들은 이야기를 떠올리며 화면을 두드렸다. 나이 들어 배운다는 건, 자꾸 새로 시작한다는 것 같아서 좋다.\n\n밀린 퍼팅 연습은 거실 매트 위에서 조금. 창밖의 비를 보며 오늘 하루는 느긋하게, 집 안에서 보내기로 마음먹었다.',
     photos:[]
+  },
+  {
+    id:'s-yucheon-20261114-noon',
+    date:'2026-11-14',
+    time:'12:05:00',
+    mood:'🌧️ 비',
+    loc:'대전 유천동 · 비 오는 토요일 정오',
+    cat:'walk',
+    title:'비 오는 정오, 창밖으로 내려다본 늦가을',
+    body:'토요일 정오, 내리는 비를 피해 창밖을 내려다보니 젖은 아스팔트 위로 붉고 노란 단풍이 유난히 선명하다.\n아이들 없는 조용한 놀이터 둘레로 떨어진 노란 잎들이 가을의 끝자락을 알려주는 듯하다.\n우산 하나에 의지해 걸어가는 이웃의 모습마저 평화롭게 느껴지는, 바쁜 월요일을 앞둔 고요한 주말의 한 페이지.',
+    photos:['images/diary-20261114-rain.jpg']
   }
 ];
 
@@ -719,19 +731,55 @@ function toast(msg){
 }
 
 /* ───────── 저장 ───────── */
+function loadDeleted(){
+  try{
+    const a = JSON.parse(localStorage.getItem(DELETED_KEY) || '[]');
+    return Array.isArray(a) ? a : [];
+  }catch(e){ return []; }
+}
+function markDeleted(ids){
+  const add = (Array.isArray(ids) ? ids : [ids]).filter(Boolean);
+  if(!add.length) return;
+  const a = loadDeleted();
+  add.forEach(id=>{ if(a.indexOf(id) === -1) a.push(id); });
+  try{ localStorage.setItem(DELETED_KEY, JSON.stringify(a)); }catch(e){}
+}
+function seedCreated(e){
+  return Date.parse(e.date+'T'+(e.time || '09:00:00'));
+}
+
 function load(){
   let raw = null;
   try{ raw = localStorage.getItem(STORE_KEY); }catch(e){ raw = null; }
   if(raw === null){
-    // 첫 실행: 표본 기록을 심는다
-    const seed = SAMPLE.map(e => Object.assign({}, e, {sample:true, created:Date.parse(e.date+'T09:00:00')}));
+    // 첫 실행: 기본 기록을 심는다
+    const seed = SAMPLE.map(e => Object.assign({}, e, {sample:true, created:seedCreated(e)}));
     try{ localStorage.setItem(STORE_KEY, JSON.stringify(seed)); }catch(e){}
     return seed;
   }
+  let arr = [];
   try{
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr : [];
-  }catch(e){ return []; }
+    const parsed = JSON.parse(raw);
+    arr = Array.isArray(parsed) ? parsed : [];
+  }catch(e){ arr = []; }
+
+  // 새로 더해진 기본 기록(SAMPLE)만 골라 합친다.
+  // 이미 가진 id(사용자가 고치거나 직접 쓴 글)와 사용자가 지운 글은 건드리지 않는다.
+  try{
+    const deleted = loadDeleted();
+    const have = {};
+    arr.forEach(x=>{ if(x && x.id) have[x.id] = true; });
+    let changed = false;
+    SAMPLE.forEach(d=>{
+      if(!d || !d.id) return;
+      if(have[d.id]) return;
+      if(deleted.indexOf(d.id) !== -1) return;
+      arr.push(Object.assign({}, d, {sample:true, created:seedCreated(d)}));
+      changed = true;
+    });
+    if(changed) localStorage.setItem(STORE_KEY, JSON.stringify(arr));
+  }catch(e){}
+  return arr;
 }
 function save(list){
   try{
@@ -1119,6 +1167,7 @@ function deleteEntry(id){
   const label = (target.title || dateLabel(target.date));
   if(!confirm('이 기록을 지울까요?\n\n「'+label+'」\n\n지운 기록은 되돌릴 수 없습니다.')) return;
   if(save(list.filter(x=>x.id!==id))){
+    markDeleted(id);   // 기본 글을 직접 지우셨다면 다시 나타나지 않게 기억한다
     renderTimeline(); renderCalendar();
     toast('기록을 지웠습니다.');
   }
@@ -1213,7 +1262,12 @@ function importJSON(mode){
 
       if(mode === 'replace'){
         if(!confirm('지금 기록 '+load().length+'편을 모두 지우고, 백업의 '+inc.length+'편으로 바꿉니다.\n계속할까요?')) return;
-        if(save(inc)){ renderTimeline(); renderCalendar(); toast('백업으로 바꾸었습니다 ('+inc.length+'편).'); }
+        if(save(inc)){
+          const keep = {};
+          inc.forEach(x=>{ if(x && x.id) keep[x.id] = true; });
+          markDeleted(SAMPLE.filter(d=>!keep[d.id]).map(d=>d.id));   // 백업에 없는 기본 글은 되살리지 않는다
+          renderTimeline(); renderCalendar(); toast('백업으로 바꾸었습니다 ('+inc.length+'편).');
+        }
       } else {
         const cur = load();
         const map = new Map(cur.map(x=>[x.id, x]));
