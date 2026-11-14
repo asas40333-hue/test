@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>메종플러스 고객 현장 공유 시스템</title>
 
   <!-- 카카오톡 및 SNS 링크 미리보기 카드 (오픈그래프) -->
@@ -36,7 +37,7 @@
       --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 80px; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 24px; }
 
     /* 헤더 */
     .app-header {
@@ -52,17 +53,6 @@
     }
     .brand-title { font-size: 13px; font-weight: 700; color: var(--primary); letter-spacing: -0.3px; }
     .project-name { font-size: 17px; font-weight: 800; color: var(--text); margin-top: 2px; }
-    .mode-badge {
-      background: #eff6ff;
-      color: var(--primary);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 5px 10px;
-      border-radius: 20px;
-      cursor: pointer;
-      border: 1px solid #bfdbfe;
-    }
-
     /* 상단 프로그레스 카드 */
     .status-card {
       background: linear-gradient(135deg, #1e3a8a, #2563eb);
@@ -72,10 +62,10 @@
       border-radius: var(--radius);
       box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
     }
-    .status-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .status-stage { font-size: 14px; font-weight: 600; opacity: 0.9; }
-    .status-dday { background: rgba(255, 255, 255, 0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
-    .status-percent { font-size: 32px; font-weight: 900; margin-bottom: 8px; }
+    .status-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .status-stage { font-size: 13.5px; font-weight: 600; opacity: 0.9; word-break: keep-all; }
+    .status-dday { background: rgba(255, 255, 255, 0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .status-percent { font-size: 26px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.6px; line-height: 1.25; word-break: keep-all; }
     .progress-bar-bg { background: rgba(255, 255, 255, 0.25); height: 8px; border-radius: 4px; overflow: hidden; }
     .progress-bar-fill { background: #34d399; height: 100%; width: 45%; border-radius: 4px; transition: width 0.3s ease; }
     .status-sub { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; opacity: 0.85; }
@@ -266,6 +256,7 @@
     }
     .spec-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .spec-thumb.photo { cursor: zoom-in; }
+    .spec-thumb.icon { display: flex; align-items: center; justify-content: center; font-size: 21px; }
     .spec-body { flex: 1; min-width: 0; }
     .spec-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.35; letter-spacing: -0.3px; }
     .spec-desc { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
@@ -375,34 +366,6 @@
     .pay-tag.paid { background: #dcfce7; color: #15803d; }
     .pay-tag.pending { background: #fef3c7; color: #b45309; }
 
-    /* 대표님 관리 모드 플로팅 바 */
-    .admin-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #0f172a;
-      color: #fff;
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 100;
-      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
-    }
-    .admin-btn {
-      background: var(--primary-light);
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-    .admin-btn:active { opacity: 0.8; }
-
     /* 모달 팝업 스타일 */
     .modal-overlay {
       position: fixed;
@@ -447,60 +410,6 @@
       cursor: pointer;
       padding: 4px;
     }
-    .form-group { margin-bottom: 14px; }
-    .form-label { display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px; }
-    .form-input, .form-textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 14px;
-      color: var(--text-main);
-      outline: none;
-      box-sizing: border-box;
-      font-family: inherit;
-    }
-    .form-input:focus, .form-textarea:focus { border-color: var(--primary-light); }
-    .upload-zone {
-      border: 2px dashed #cbd5e1;
-      border-radius: 10px;
-      padding: 20px 10px;
-      text-align: center;
-      cursor: pointer;
-      background: #f8fafc;
-      transition: all 0.2s;
-    }
-    .upload-zone:active { background: #f1f5f9; border-color: var(--primary-light); }
-    .upload-btn-submit {
-      width: 100%;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      padding: 14px;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    .upload-btn-submit:active { background: var(--primary-dark); }
-
-    /* 토스트 알림 */
-    .toast-msg {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #0f172a;
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 700;
-      z-index: 2000;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -511,18 +420,17 @@
       <div class="brand-title">메종플러스 인테리어</div>
       <div class="project-name">어은동 한빛아파트 129동 1406호 (31평형)</div>
     </div>
-    <div class="mode-badge" onclick="toggleMode()">고객 전용 뷰 👁️</div>
   </header>
 
   <!-- 상단 프로그레스 요약 카드 -->
   <div class="status-card">
     <div class="status-top">
-      <span class="status-stage">현재 상태: <strong>보관이사 & 샷시 실측 완료</strong></span>
-      <span class="status-dday">착공 D-3 · 완공 D-27</span>
+      <span class="status-stage" id="status-stage">현재 상태: <strong>보관이사·샷시 실측 완료</strong></span>
+      <span class="status-dday" id="status-dday">착공 D-1 · 완공 D-25</span>
     </div>
-    <div class="status-percent">착공 준비 완료 (11.16 시작)</div>
+    <div class="status-percent" id="status-percent">착공 준비 완료</div>
     <div class="progress-bar-bg">
-      <div class="progress-bar-fill" style="width: 10%;"></div>
+      <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
     </div>
     <div class="status-sub">
       <span>착공일: 2026.11.16(월)</span>
@@ -532,26 +440,36 @@
 
   <!-- 탭 내비게이션 -->
   <nav class="nav-tabs">
-    <div class="nav-tab active" onclick="switchTab('log')">📸 현장일지</div>
-    <div class="nav-tab" onclick="switchTab('spec')">🧱 자재스펙</div>
-    <div class="nav-tab" onclick="switchTab('schedule')">📅 공정일정</div>
-    <div class="nav-tab" onclick="switchTab('payment')">💰 공사대금</div>
+    <div class="nav-tab active" onclick="switchTab('log', this)">📸 현장일지</div>
+    <div class="nav-tab" onclick="switchTab('spec', this)">🧱 자재스펙</div>
+    <div class="nav-tab" onclick="switchTab('schedule', this)">📅 공정일정</div>
+    <div class="nav-tab" onclick="switchTab('payment', this)">📄 계약·정산</div>
   </nav>
 
   <!-- 1. 현장 일지 탭 -->
   <div id="tab-log" class="tab-content active">
     <div class="section-title">
-      오늘의 현장 리포트
-      <span class="section-desc">대표님이 직접 기록한 현장</span>
+      현장 일지
+      <span class="section-desc">메종플러스 대표가 직접 기록합니다</span>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+      <div class="log-item" style="border-left-color: var(--accent);">
+        <div class="log-date">2026.11.15 (일) · 착공 전날</div>
+        <div class="log-work">착공 전 준비 완료 — 자재·창호(샷시) 스펙 점검 완료</div>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-top: 6px;">
+        확정 자재 스펙과 샷시 실측치를 최종 점검했습니다. 11/16(월) 가구 철거를 시작으로 공사를 진행하며, 이후 작업 내용과 사진은 날짜별로 이 일지에 기록됩니다.
+      </p>
     </div>
 
     <div class="card">
       <div class="log-item">
-        <div class="log-date">2026.11.13 (오늘)</div>
+        <div class="log-date">2026.11.13 (금)</div>
         <div class="log-work">익스프레스 짐 보관이사 출고 및 샷시 사전 정밀 실측 완료</div>
       </div>
       <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-        입주자 고객님 짐 보관이사 안전하게 반출 완료되었습니다. 샷시 대표님과 현장에서 창호 규격 및 개구부 사전 실측 진행하여 다음 주 11/18(수) 샷시 시공 준비 마쳤습니다.
+        입주자 고객님 짐 보관이사 안전하게 반출 완료되었습니다. 샷시 대표님과 현장에서 창호 규격 및 개구부 사전 실측 진행하여 11/18(수) 샷시 시공 준비 마쳤습니다.
       </p>
       <div class="photo-grid">
         <div class="photo-item">
@@ -565,14 +483,10 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="log-item" style="border-left-color: #94a3b8;">
-        <div class="log-date">2026.11.16 (착공 1일차)</div>
-        <div class="log-work">욕실 전체 철거 및 바닥 방수 1차 도포</div>
-      </div>
-      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-        기존 타일 및 위생도기 전면 철거 후 고스락 1차 액체방수 완료. 양생 상태 확인 후 내일 2차 우레탄 방수 들어갑니다.
-      </p>
+    <div class="card" style="text-align: center; padding: 32px 20px;">
+      <div style="font-size: 30px; margin-bottom: 10px;">📷</div>
+      <div style="font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 6px;">11/16(월) 착공 첫날부터 사진이 쌓입니다</div>
+      <div style="font-size: 12.5px; color: var(--text-muted); line-height: 1.6;">공사가 진행되는 동안 날짜별 현장 사진과 작업 내용을<br>이 일지에 차례로 올려 드립니다.</div>
     </div>
   </div>
 
@@ -772,10 +686,11 @@
           </div>
         </div>
 
-        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
-          <div style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">힘펠 휴젠트 복합 환기시스템</div>
-          <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-            온풍·제습·환기·드라이 기능 일체형 스마트 환풍기
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_hugent.jpg','힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1)')"><img src="images/mat_hugent.jpg" alt="힘펠 휴젠트 복합 환기시스템"></div>
+          <div class="spec-body">
+            <div class="spec-name">힘펠 휴젠트 복합 환기시스템</div>
+            <div class="spec-desc">온풍·제습·환기·드라이 기능 일체형 스마트 환풍기 (FHD-P150S1)</div>
           </div>
         </div>
 
@@ -814,7 +729,7 @@
     <div class="card" style="margin-bottom: 16px;">
       <div class="spec-card-head">
         <div>
-          <div class="spec-cat-en">BATHROOM · GUEST</div>
+          <div class="spec-cat-en">BATHROOM · MASTER</div>
           <div class="spec-card-title">안방 욕실 자재 사양</div>
         </div>
         <span class="spec-status recommended">트렌드 추천(협의)</span>
@@ -822,9 +737,9 @@
 
       <div class="spec-list">
         <div class="spec-row">
-          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_toilet.jpg','대림바스 CC-603 치마형 투피스 양변기')"><img src="images/mat_toilet.jpg" alt="대림바스 CC-603 치마형 투피스 양변기"></div>
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);">🚽</div>
           <div class="spec-body">
-            <div class="spec-name">대림바스 투피스 양변기</div>
+            <div class="spec-name">대림바스 투피스 양변기 (안방)</div>
             <div class="spec-desc">거실 욕실과 <b>동일 계열로 통일</b> · 절수형 · 부품 수급 쉬운 실속 모델</div>
           </div>
         </div>
@@ -838,7 +753,7 @@
         </div>
 
         <div class="spec-row">
-          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_faucet_bath.jpg','무광 SUS304 스테인리스 세면·샤워 수전')"><img src="images/mat_faucet_bath.jpg" alt="무광 SUS304 스테인리스 세면·샤워 수전"></div>
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#f1f5f9,#e2e8f0);">🚿</div>
           <div class="spec-body">
             <div class="spec-name">무광 수전 세트 (샤워 · 세면)</div>
             <div class="spec-desc">거실 욕실과 동일한 무광 SUS304로 두 욕실 톤 통일</div>
@@ -1160,94 +1075,94 @@
 
     <div class="card">
       <div class="timeline">
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-11-16" data-end="2026-11-16">
           <div class="timeline-dot"></div>
           <div class="timeline-date">11.16(월) · 1일차</div>
           <div class="timeline-title">가구 철거 (착공일)</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-11-17" data-end="2026-11-17">
           <div class="timeline-dot"></div>
           <div class="timeline-date">11.17(화) · 2일차 ⚠️</div>
           <div class="timeline-title">욕실 철거 · 욕실 1차 방수 · 문/문틀 목공 철거</div>
           <div class="timeline-notice">※ 소음 발생 예정 공정 (거실 욕실 젠다이 조적 제외)</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-11-18" data-end="2026-11-18">
           <div class="timeline-dot"></div>
           <div class="timeline-date">11.18(수) · 3일차 ⚠️</div>
           <div class="timeline-title">욕실 2차 방수 · 샷시 철거 및 창호 시공</div>
-          <div style="font-size: 13px; font-weight: 700; color: var(--primary-light); margin-top: 4px;">📍 [12:00] 맞춤 가구 현장 정밀 실측 미팅 (주방 씽크대 및 붙박이장)</div>
+          <div style="font-size: 13px; font-weight: 700; color: var(--primary-light); margin-top: 4px;">📍 [12:00] 맞춤 가구 현장 정밀 실측 미팅 (주방 싱크대 및 붙박이장)</div>
           <div class="timeline-notice">※ 샷시 반입 및 철거 소음 공정 / 정오 12:00 가구 실측 미팅</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-11-19" data-end="2026-11-20">
           <div class="timeline-dot"></div>
           <div class="timeline-date">11.19(목) ~ 11.20(금) · 4~5일차</div>
           <div class="timeline-title">목공 공사 (천장 몰딩, 문틀, 벽체 단열 및 보강)</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-11-23" data-end="2026-11-25">
           <div class="timeline-dot"></div>
           <div class="timeline-date">11.23(월) ~ 11.25(수) · 6~8일차</div>
           <div class="timeline-title">타일 시공 (욕실 벽·바닥, 주방, 현관) 및 메지(줄눈)</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-11-26" data-end="2026-11-26">
           <div class="timeline-dot"></div>
           <div class="timeline-date">11.26(목) · 9일차</div>
           <div class="timeline-title">욕실 기구 세팅 (거실 카운터 세면기·도기·수전) & 필름 시공</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-11-27" data-end="2026-11-27">
           <div class="timeline-dot"></div>
           <div class="timeline-date">11.27(금) · 10일차</div>
           <div class="timeline-title">발코니 수성칠 (베란다 친환경 페인트 도장)</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-11-30" data-end="2026-12-01">
           <div class="timeline-dot"></div>
           <div class="timeline-date">11.30(월) ~ 12.01(화) · 11~12일차</div>
           <div class="timeline-title">도배 공사 (벽면 기초 밑작업 및 실크벽지 정배)</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-12-02" data-end="2026-12-02">
           <div class="timeline-dot"></div>
           <div class="timeline-date">12.02(수) · 13일차</div>
-          <div class="timeline-title">씽크대(싱크대) 및 주방 가구 세팅</div>
+          <div class="timeline-title">싱크대 및 주방 가구 세팅</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-12-03" data-end="2026-12-03">
           <div class="timeline-dot"></div>
           <div class="timeline-date">12.03(목) · 14일차</div>
           <div class="timeline-title">조명 기구 시공 (LED 매립등, 스위치, 콘센트 교체)</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-12-04" data-end="2026-12-04">
           <div class="timeline-dot"></div>
           <div class="timeline-date">12.04(금) · 15일차</div>
           <div class="timeline-title">장판 시공 (친환경 바닥재 마감)</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-12-07" data-end="2026-12-07">
           <div class="timeline-dot"></div>
           <div class="timeline-date">12.07(월) · 16일차</div>
           <div class="timeline-title">방문 및 중문 시공</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-12-08" data-end="2026-12-08">
           <div class="timeline-dot"></div>
           <div class="timeline-date">12.08(화) · 17일차</div>
           <div class="timeline-title">전체 공정 마감 점검 및 세부 잔손보기</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-12-09" data-end="2026-12-09">
           <div class="timeline-dot"></div>
           <div class="timeline-date">12.09(수) · 18일차 ✨</div>
           <div class="timeline-title">전문 입주청소 (준공 정밀 청소)</div>
         </div>
 
-        <div class="timeline-step">
+        <div class="timeline-step" data-start="2026-12-10" data-end="2026-12-10">
           <div class="timeline-dot"></div>
           <div class="timeline-date">12.10(목) · 19일차 🎉</div>
           <div class="timeline-title">고객 최종 준공 검수 및 현장 인수인계 (완공)</div>
@@ -1256,70 +1171,43 @@
     </div>
   </div>
 
-  <!-- 4. 공사 대금 정산 탭 -->
+  <!-- 4. 계약 · 정산 안내 탭 -->
   <div id="tab-payment" class="tab-content">
     <div class="section-title">
-      공사 대금 및 정산 내역
-      <span class="section-desc">계약금 · 중도금 · 잔금 현황</span>
+      계약 및 정산 안내
+      <span class="section-desc">계약서 기준으로 안내드립니다</span>
     </div>
 
-    <div class="card" style="text-align: center; padding: 50px 20px; color: var(--text-muted);">
-      <div style="font-size: 36px; margin-bottom: 12px;">💰</div>
-      <div style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">공사 대금 내역 협의 중</div>
-      <div style="font-size: 13px; line-height: 1.5;">세부 공사 금액 및 정산 내역은<br>고객님과 최종 협의 후 투명하게 반영될 예정입니다.</div>
+    <div class="card">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="width: 38px; height: 38px; border-radius: 10px; background: #eff6ff; display: flex; align-items: center; justify-content: center; font-size: 19px;">📄</div>
+        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">계약서 · 상세 견적서</div>
+      </div>
+      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;">
+        공사 범위와 자재 사양이 확정된 최종 계약서와 상세 견적서는 대면 미팅 또는 문자로 전달드립니다.
+        이 화면에는 계약서와 동일한 내용만 반영하며, 임의로 금액을 표시하지 않습니다.
+      </p>
     </div>
-  </div>
 
-  <!-- 하단 대표님 관리 모드 바 -->
-  <div class="admin-bar">
-    <div>
-      <div style="font-size: 11px; opacity: 0.8;">메종플러스 관리자 모드</div>
-      <div style="font-size: 13px; font-weight: 700;">김성수 대표님 접속 중</div>
+    <div class="card">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="width: 38px; height: 38px; border-radius: 10px; background: #ecfdf5; display: flex; align-items: center; justify-content: center; font-size: 19px;">💳</div>
+        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">대금 일정 (계약금 · 중도금 · 잔금)</div>
+      </div>
+      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;">
+        대금은 계약서에 명시된 일정과 금액대로 진행됩니다. 입금이 확인되면 이 화면의 정산 현황에 날짜와 함께 표시해 드리고,
+        공정 변경으로 금액이 조정될 경우에는 반영 전에 먼저 말씀드립니다.
+      </p>
     </div>
-    <div>
-      <button class="admin-btn" onclick="openLogModal()">📸 사진/일지 등록</button>
-      <button class="admin-btn" style="background:#059669; margin-left: 6px;" onclick="shareApp()">📲 고객 공유</button>
-    </div>
-  </div>
 
-  <!-- 공정 사진/일지 등록 모달 팝업 -->
-  <div id="log-modal" class="modal-overlay" onclick="handleOverlayClick(event)">
-    <div class="modal-box">
-      <div class="modal-header">
-        <div class="modal-title">📸 오늘의 현장 사진 & 일지 등록</div>
-        <button class="modal-close" onclick="closeLogModal()">✕</button>
+    <div class="card">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="width: 38px; height: 38px; border-radius: 10px; background: #fffbeb; display: flex; align-items: center; justify-content: center; font-size: 19px;">☎️</div>
+        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">정산 문의</div>
       </div>
-
-      <div class="form-group">
-        <label class="form-label">작업 날짜</label>
-        <input type="date" id="modal-date" class="form-input" value="2026-11-13">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">공정 제목</label>
-        <input type="text" id="modal-title" class="form-input" placeholder="예: 거실 우물천장 목공틀 작업 / 욕실 타일 시공">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">세부 작업 내용 및 고객 안내</label>
-        <textarea id="modal-desc" class="form-textarea" rows="3" placeholder="오늘 진행된 작업 내용이나 입주자 고객님께 남길 메모를 입력해 주세요."></textarea>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">현장 사진 첨부</label>
-        <div class="upload-zone" onclick="document.getElementById('modal-file').click()">
-          <div style="font-size: 28px; margin-bottom: 4px;">📷</div>
-          <div style="font-size: 13px; font-weight: 700; color: #1e3a8a;">터치하여 사진 촬영 또는 갤러리 선택</div>
-          <div style="font-size: 11px; color: #64748b; margin-top: 2px;">스마트폰으로 찍은 현장 사진을 바로 첨부하세요</div>
-        </div>
-        <input type="file" id="modal-file" accept="image/*" style="display:none;" onchange="handlePhotoSelect(event)">
-        
-        <div id="modal-preview-box" style="display:none; margin-top: 10px; border-radius: 8px; overflow: hidden; max-height: 200px; text-align: center; background: #000;">
-          <img id="modal-preview-img" style="max-width: 100%; max-height: 200px; object-fit: contain;">
-        </div>
-      </div>
-
-      <button class="upload-btn-submit" onclick="submitNewLog()">현장 일지 등록 완료</button>
+      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;">
+        금액·일정과 관련해 궁금하신 점은 메종플러스 대표님께 편하게 연락 주시면 바로 확인해 드립니다.
+      </p>
     </div>
   </div>
 
@@ -1334,49 +1222,103 @@
     </div>
   </div>
 
-  <!-- 토스트 알림 메시지 -->
-  <div id="toast" class="toast-msg"></div>
-
   <script>
-    let currentPhotoData = null;
+    /* ───────── 공정 기준일 (한국 시간 기준 자동 계산) ───────── */
+    const SITE_START = { y: 2026, m: 11, d: 16 };   // 착공일
+    const SITE_END   = { y: 2026, m: 12, d: 10 };   // 완공 인도일
+    const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-    function switchTab(tabName) {
-      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      event.target.classList.add('active');
-      document.getElementById('tab-' + tabName).classList.add('active');
+    function utcDate(y, m, d) { return Date.UTC(y, m - 1, d); }
+
+    // 기기 시간대와 무관하게 '한국 시간(Asia/Seoul)' 기준 오늘 날짜를 UTC 자정 기준 값으로 반환
+    function seoulToday() {
+      try {
+        const parts = new Intl.DateTimeFormat('en-CA', {
+          timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit'
+        }).formatToParts(new Date());
+        const pick = function (type) {
+          const hit = parts.find(function (p) { return p.type === type; });
+          return hit ? Number(hit.value) : NaN;
+        };
+        const y = pick('year'), m = pick('month'), d = pick('day');
+        if (y && m && d) return utcDate(y, m, d);
+      } catch (e) { /* Intl 미지원 기기는 아래 기기 날짜로 대체 */ }
+      const now = new Date();
+      return utcDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
     }
 
-    function toggleMode() {
-      const badge = document.querySelector('.mode-badge');
-      if (badge.innerText.includes('고객')) {
-        badge.innerText = '대표님 관리자 뷰 ⚙️';
-        badge.style.background = '#fef3c7';
-        badge.style.color = '#b45309';
-        badge.style.borderColor = '#fde68a';
+    function utcFromText(text) {
+      const p = text.split('-').map(Number);
+      return utcDate(p[0], p[1], p[2]);
+    }
+
+    function daysFrom(a, b) { return Math.round((b - a) / MS_PER_DAY); }
+
+    // 주어진 날짜(UTC 자정 기준)에 해당하는 D-day·진행 상태를 계산만 하는 함수
+    function computeStatus(today) {
+      const start = utcDate(SITE_START.y, SITE_START.m, SITE_START.d);
+      const end = utcDate(SITE_END.y, SITE_END.m, SITE_END.d);
+      const leftToStart = daysFrom(today, start);   // 착공까지 남은 일수
+      const leftToEnd = daysFrom(today, end);       // 완공까지 남은 일수
+      const workDay = 1 - leftToStart;              // 공사 일차 (착공일 = 1일차)
+
+      let ddayText, stageText, headlineText, percent;
+
+      if (leftToStart > 0) {
+        ddayText = '착공 D-' + leftToStart + ' · 완공 D-' + leftToEnd;
+        stageText = '보관이사·샷시 실측 완료, 착공 준비 중';
+        headlineText = '착공 준비 완료';
+        percent = 0;
+      } else if (leftToEnd < 0) {
+        ddayText = '착공 D+' + (-leftToStart) + ' · 공사 완료';
+        stageText = '준공 완료';
+        headlineText = '준공 완료';
+        percent = 100;
       } else {
-        badge.innerText = '고객 전용 뷰 👁️';
-        badge.style.background = '#eff6ff';
-        badge.style.color = '#1e3a8a';
-        badge.style.borderColor = '#bfdbfe';
+        const totalDays = daysFrom(start, end) + 1;
+        percent = Math.min(100, Math.max(0, Math.round((workDay / totalDays) * 100)));
+        ddayText = (leftToStart === 0 ? 'D-Day · 공사 1일차' : '공사 ' + workDay + '일차')
+                 + ' · 완공 ' + (leftToEnd === 0 ? 'D-Day' : 'D-' + leftToEnd);
+        stageText = leftToEnd === 0 ? '최종 준공 검수 · 인수인계' : '공사 진행 중';
+        headlineText = '공사 ' + workDay + '일차 · 공정률 ' + percent + '%';
       }
+
+      return { ddayText: ddayText, stageText: stageText, headlineText: headlineText, percent: percent };
     }
 
-    function openLogModal() {
-      document.getElementById('log-modal').classList.add('open');
-      document.body.style.overflow = 'hidden';
+    function updateProgress() {
+      const status = computeStatus(seoulToday());
+
+      const ddayEl = document.getElementById('status-dday');
+      if (ddayEl) ddayEl.textContent = status.ddayText;
+      const stageEl = document.getElementById('status-stage');
+      if (stageEl) stageEl.innerHTML = '현재 상태: <strong>' + status.stageText + '</strong>';
+      const percentEl = document.getElementById('status-percent');
+      if (percentEl) percentEl.textContent = status.headlineText;
+      const barEl = document.getElementById('progress-fill');
+      if (barEl) barEl.style.width = status.percent + '%';
     }
 
-    function closeLogModal() {
-      document.getElementById('log-modal').classList.remove('open');
-      document.body.style.overflow = '';
-      currentPhotoData = null;
-      document.getElementById('modal-file').value = '';
-      document.getElementById('modal-preview-box').style.display = 'none';
+    // 공정표: 지난 단계는 완료, 오늘 단계는 진행 중으로 표시
+    function updateTimeline() {
+      const today = seoulToday();
+      document.querySelectorAll('.timeline-step').forEach(function (step) {
+        const s = step.dataset.start;
+        if (!s) return;
+        const e = step.dataset.end || s;
+        step.classList.remove('done', 'current');
+        if (today > utcFromText(e)) step.classList.add('done');
+        else if (today >= utcFromText(s)) step.classList.add('current');
+      });
     }
 
-    function handleOverlayClick(e) {
-      if (e.target.id === 'log-modal') closeLogModal();
+    function switchTab(tabName, el) {
+      document.querySelectorAll('.nav-tab').forEach(function (t) { t.classList.remove('active'); });
+      document.querySelectorAll('.tab-content').forEach(function (c) { c.classList.remove('active'); });
+      const target = document.getElementById('tab-' + tabName);
+      if (target) target.classList.add('active');
+      if (el) el.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function openSpecPhoto(src, caption) {
@@ -1391,151 +1333,9 @@
       document.body.style.overflow = '';
     }
 
-    function handlePhotoSelect(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const img = new Image();
-        img.onload = function() {
-          // 리사이징하여 용량 최적화 (가로 최대 800px)
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          const maxW = 800;
-          if (width > maxW) {
-            height = Math.round((height * maxW) / width);
-            width = maxW;
-          }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          currentPhotoData = canvas.toDataURL('image/jpeg', 0.8);
-          
-          document.getElementById('modal-preview-img').src = currentPhotoData;
-          document.getElementById('modal-preview-box').style.display = 'block';
-        };
-        img.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function submitNewLog() {
-      const dateVal = document.getElementById('modal-date').value || '2026-11-13';
-      const titleVal = document.getElementById('modal-title').value.trim();
-      const descVal = document.getElementById('modal-desc').value.trim();
-
-      if (!titleVal) {
-        alert('공정 제목을 입력해 주세요.');
-        document.getElementById('modal-title').focus();
-        return;
-      }
-
-      const logItem = {
-        id: Date.now(),
-        date: dateVal,
-        title: titleVal,
-        desc: descVal,
-        photo: currentPhotoData
-      };
-
-      // localStorage에 저장
-      let savedLogs = [];
-      try {
-        savedLogs = JSON.parse(localStorage.getItem('maison_custom_logs') || '[]');
-      } catch (e) { savedLogs = []; }
-      savedLogs.unshift(logItem);
-      try {
-        localStorage.setItem('maison_custom_logs', JSON.stringify(savedLogs));
-      } catch (e) {
-        console.warn('저장 용량 초과로 최근 10개만 유지합니다.');
-        savedLogs = savedLogs.slice(0, 10);
-        localStorage.setItem('maison_custom_logs', JSON.stringify(savedLogs));
-      }
-
-      // 화면에 추가 렌더링
-      renderCustomLogs();
-
-      // 모달 닫기 및 탭 이동
-      closeLogModal();
-      document.querySelectorAll('.nav-tab')[0].click(); // 현장일지 탭으로 이동
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      showToast('🎉 오늘의 현장 일지와 사진이 등록되었습니다!');
-    }
-
-    function renderCustomLogs() {
-      let savedLogs = [];
-      try {
-        savedLogs = JSON.parse(localStorage.getItem('maison_custom_logs') || '[]');
-      } catch (e) { savedLogs = []; }
-
-      const container = document.getElementById('custom-logs-container');
-      if (!container) return;
-      container.innerHTML = '';
-
-      savedLogs.forEach(log => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.style.borderLeft = '4px solid #059669';
-
-        let photoHtml = '';
-        if (log.photo) {
-          photoHtml = `
-            <div style="margin-top: 10px; border-radius: 8px; overflow: hidden;">
-              <img src="${log.photo}" style="width: 100%; max-height: 280px; object-fit: cover; display: block; border-radius: 8px;">
-            </div>
-          `;
-        }
-
-        card.innerHTML = `
-          <div class="log-item" style="border-left-color: #059669;">
-            <div class="log-date" style="color: #059669; font-weight: 800;">${log.date} (새로 등록됨 ✨)</div>
-            <div class="log-work">${log.title}</div>
-          </div>
-          ${log.desc ? `<p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-top: 6px;">${log.desc}</p>` : ''}
-          ${photoHtml}
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.innerText = msg;
-      toast.style.display = 'block';
-      setTimeout(() => { toast.style.display = 'none'; }, 3000);
-    }
-
-    function shareApp() {
-      const shareData = {
-        title: '메종플러스 현장 공유 시스템',
-        text: '어은동 한빛아파트 129동 1406호 (31평형) 실시간 인테리어 공정 공유',
-        url: window.location.href
-      };
-
-      if (navigator.share) {
-        navigator.share(shareData).catch(() => {});
-      } else {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-          showToast('📋 현장 공유 링크가 클립보드에 복사되었습니다!');
-        }).catch(() => {
-          showToast('주소: ' + window.location.href);
-        });
-      }
-    }
-
-    // 초기 실행
-    window.addEventListener('DOMContentLoaded', () => {
-      // 커스텀 로그 컨테이너 준비
-      const logTab = document.getElementById('tab-log');
-      if (logTab) {
-        const customDiv = document.createElement('div');
-        customDiv.id = 'custom-logs-container';
-        logTab.insertBefore(customDiv, logTab.children[1]);
-        renderCustomLogs();
-      }
+    document.addEventListener('DOMContentLoaded', function () {
+      updateProgress();
+      updateTimeline();
     });
   </script>
 </body>
