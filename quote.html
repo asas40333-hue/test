@@ -110,8 +110,25 @@
   .item-name{font-size:13.5px;font-weight:700;letter-spacing:-.4px;color:var(--ink);}
   .item-sub{font-size:10.5px;font-weight:600;color:var(--ink-3);letter-spacing:-.3px;margin-top:1px;}
   .item-amt{font-size:12.5px;font-weight:800;color:var(--navy);letter-spacing:-.4px;
-    min-width:62px;text-align:right;font-variant-numeric:tabular-nums;}
+    min-width:62px;text-align:right;font-variant-numeric:tabular-nums;
+    padding:4px 3px;border-radius:7px;}
   .item-amt.off{color:var(--ink-3);font-weight:600;}
+  .item-amt[data-key]{cursor:pointer;border-bottom:1.5px dashed #cbd5e1;
+    -webkit-tap-highlight-color:transparent;transition:background .15s,border-color .15s;}
+  .item-amt[data-key]:active{background:#eff4ff;}
+  .item-amt.manual{color:#b45309;border-bottom-color:#f0b060;}
+  .item-amt.manual::before{content:"직접";display:block;font-size:8px;font-weight:800;
+    color:#b45309;letter-spacing:-.2px;line-height:1;margin-bottom:1px;}
+  .item-amt.editing{border-bottom:none;background:#eff4ff;padding:2px;}
+  .item-amt.editing::before{display:none;}
+  input.amt-edit{-webkit-appearance:none;appearance:none;width:64px;box-sizing:border-box;
+    border:1.5px solid var(--navy);border-radius:7px;background:#fff;outline:none;
+    font-family:inherit;font-size:12.5px;font-weight:800;color:var(--navy);
+    text-align:right;padding:3px 5px;letter-spacing:-.4px;
+    font-variant-numeric:tabular-nums;}
+  .amt-guide{font-size:10.5px;font-weight:700;color:#9a5a06;background:#fff8ec;
+    border:1px solid #f6dfb8;border-radius:9px;padding:6px 9px;margin:0 0 12px;
+    letter-spacing:-.3px;line-height:1.4;}
 
   /* 토글 스위치 */
   .switch{flex:none;width:48px;height:28px;border-radius:20px;background:#cbd5e1;
@@ -158,6 +175,7 @@
   .r-line{display:flex;justify-content:space-between;gap:8px;
     font-size:11.5px;padding:3.5px 0;letter-spacing:-.3px;color:#cbd5e1;}
   .r-line span:last-child{font-weight:700;color:#f1f5f9;font-variant-numeric:tabular-nums;flex:none;}
+  .r-line i{font-style:normal;color:#fbbf24;font-size:9.5px;font-weight:700;letter-spacing:-.1px;}
   .r-line.sum{border-top:1px solid rgba(255,255,255,.14);margin-top:5px;padding-top:7px;
     font-size:12.5px;font-weight:800;color:#fff;}
 
@@ -287,15 +305,16 @@
       <h2>공종 선택</h2>
       <span class="hint">필요한 것만 켜기</span>
     </div>
+    <div class="amt-guide">금액을 눌러 직접 고칠 수 있습니다 · 만원 단위</div>
 
     <!-- 창호 -->
     <div class="item">
       <div class="item-row">
         <div class="item-txt">
           <div class="item-name">창호 교체</div>
-          <div class="item-sub">LX지인 뷰프레임 / 일반</div>
+          <div class="item-sub" id="sub-window">LX지인 뷰프레임 / 일반</div>
         </div>
-        <div class="item-amt" id="amt-window">1,152만</div>
+        <div class="item-amt" id="amt-window" data-key="window" role="button" tabindex="0" aria-label="창호 금액 직접 입력">1,152만</div>
       </div>
       <div class="seg" id="seg-window">
         <button data-v="none" type="button">미포함</button>
@@ -309,9 +328,9 @@
       <div class="item-row">
         <div class="item-txt">
           <div class="item-name">공용(거실) 욕실</div>
-          <div class="item-sub">타일·도기·수전·방수</div>
+          <div class="item-sub" id="sub-bath1">타일·도기·수전·방수</div>
         </div>
-        <div class="item-amt" id="amt-bath1">420만</div>
+        <div class="item-amt" id="amt-bath1" data-key="bath1" role="button" tabindex="0" aria-label="공용 욕실 금액 직접 입력">420만</div>
         <button class="switch on" id="sw-bath1" type="button" role="switch" aria-checked="true" aria-label="공용 욕실"></button>
       </div>
     </div>
@@ -319,9 +338,9 @@
       <div class="item-row">
         <div class="item-txt">
           <div class="item-name">안방 욕실</div>
-          <div class="item-sub">타일·도기·수전·방수</div>
+          <div class="item-sub" id="sub-bath2">타일·도기·수전·방수</div>
         </div>
-        <div class="item-amt" id="amt-bath2">420만</div>
+        <div class="item-amt" id="amt-bath2" data-key="bath2" role="button" tabindex="0" aria-label="안방 욕실 금액 직접 입력">420만</div>
         <button class="switch on" id="sw-bath2" type="button" role="switch" aria-checked="true" aria-label="안방 욕실"></button>
       </div>
     </div>
@@ -331,9 +350,9 @@
       <div class="item-row">
         <div class="item-txt">
           <div class="item-name">도배</div>
-          <div class="item-sub">실크벽지 · 서울벽지</div>
+          <div class="item-sub" id="sub-paper">실크벽지 · 서울벽지</div>
         </div>
-        <div class="item-amt" id="amt-paper">304만</div>
+        <div class="item-amt" id="amt-paper" data-key="paper" role="button" tabindex="0" aria-label="도배 금액 직접 입력">304만</div>
         <button class="switch on" id="sw-paper" type="button" role="switch" aria-checked="true" aria-label="도배"></button>
       </div>
     </div>
@@ -345,7 +364,7 @@
           <div class="item-name">바닥재</div>
           <div class="item-sub" id="floorSub">KCC 장판 2.7T</div>
         </div>
-        <div class="item-amt" id="amt-floor">336만</div>
+        <div class="item-amt" id="amt-floor" data-key="floor" role="button" tabindex="0" aria-label="바닥재 금액 직접 입력">336만</div>
         <button class="switch on" id="sw-floor" type="button" role="switch" aria-checked="true" aria-label="바닥재"></button>
       </div>
       <div class="seg" id="seg-floor">
@@ -359,9 +378,9 @@
       <div class="item-row">
         <div class="item-txt">
           <div class="item-name">주방 싱크대</div>
-          <div class="item-sub">PET 무광 · 상·하부</div>
+          <div class="item-sub" id="sub-kitchen">PET 무광 · 상·하부</div>
         </div>
-        <div class="item-amt" id="amt-kitchen">585만</div>
+        <div class="item-amt" id="amt-kitchen" data-key="kitchen" role="button" tabindex="0" aria-label="주방 금액 직접 입력">585만</div>
         <button class="switch on" id="sw-kitchen" type="button" role="switch" aria-checked="true" aria-label="주방"></button>
       </div>
     </div>
@@ -371,9 +390,9 @@
       <div class="item-row">
         <div class="item-txt">
           <div class="item-name">신발장 · 붙박이장</div>
-          <div class="item-sub">현관·안방·드레스룸</div>
+          <div class="item-sub" id="sub-storage">현관·안방·드레스룸</div>
         </div>
-        <div class="item-amt" id="amt-storage">496만</div>
+        <div class="item-amt" id="amt-storage" data-key="storage" role="button" tabindex="0" aria-label="수납 금액 직접 입력">496만</div>
         <button class="switch on" id="sw-storage" type="button" role="switch" aria-checked="true" aria-label="수납"></button>
       </div>
     </div>
@@ -383,9 +402,9 @@
       <div class="item-row">
         <div class="item-txt">
           <div class="item-name">도어 · 문틀</div>
-          <div class="item-sub">ABS / 필름 마감</div>
+          <div class="item-sub" id="sub-door">ABS / 필름 마감</div>
         </div>
-        <div class="item-amt" id="amt-door">210만</div>
+        <div class="item-amt" id="amt-door" data-key="door" role="button" tabindex="0" aria-label="도어 금액 직접 입력">210만</div>
         <button class="switch on" id="sw-door" type="button" role="switch" aria-checked="true" aria-label="도어"></button>
       </div>
     </div>
@@ -395,9 +414,9 @@
       <div class="item-row">
         <div class="item-txt">
           <div class="item-name">조명 · 배선</div>
-          <div class="item-sub">매립등 · 스위치 교체</div>
+          <div class="item-sub" id="sub-light">매립등 · 스위치 교체</div>
         </div>
-        <div class="item-amt" id="amt-light">454만</div>
+        <div class="item-amt" id="amt-light" data-key="light" role="button" tabindex="0" aria-label="조명 금액 직접 입력">454만</div>
         <button class="switch on" id="sw-light" type="button" role="switch" aria-checked="true" aria-label="조명"></button>
       </div>
     </div>
@@ -407,9 +426,9 @@
       <div class="item-row">
         <div class="item-txt">
           <div class="item-name">철거 · 폐기물 · 보양</div>
-          <div class="item-sub">철거·보양·폐기물 반출</div>
+          <div class="item-sub" id="sub-demol">철거·보양·폐기물 반출</div>
         </div>
-        <div class="item-amt" id="amt-demol">320만</div>
+        <div class="item-amt" id="amt-demol" data-key="demol" role="button" tabindex="0" aria-label="철거 금액 직접 입력">320만</div>
         <button class="switch on" id="sw-demol" type="button" role="switch" aria-checked="true" aria-label="철거·보양·폐기물"></button>
       </div>
     </div>
@@ -491,11 +510,14 @@
   var DEF = { pyeong:32, grade:"standard",
               window:"full", bath1:true, bath2:true, paper:true,
               floor:true, floorType:"sheet", kitchen:true,
-              storage:true, door:true, light:true, demol:true };
+              storage:true, door:true, light:true, demol:true, manual:{} };
 
   var st = JSON.parse(JSON.stringify(DEF));
   var el = function(id){ return document.getElementById(id); };
   var fmt = function(n){ return Math.round(n).toLocaleString("ko-KR"); };
+  var amtCells = [].slice.call(document.querySelectorAll(".item-amt[data-key]"));
+  var cellByKey = {};
+  amtCells.forEach(function(c){ cellByKey[c.dataset.key] = c; });
 
   function manLabel(v){
     v = Math.round(v);
@@ -506,28 +528,54 @@
     return fmt(v) + "만";
   }
 
-  /* ── 계산 ── */
-  function calc(){
+  /* ── 자동 계산 금액 (공종별 · 만원) ── */
+  function autoAmts(){
     var p = st.pyeong, g = GR[st.grade].f;
     var sf = 0.9 + 0.1 * (p/31);     // 고정 단가 항목(주방·도어)의 평형 보정
+    return {
+      window: st.window === "full" ? p*P.windowFull*g
+            : st.window === "partial" ? p*P.windowPart*g : 0,
+      bath1: st.bath1 ? P.bath*g : 0,
+      bath2: st.bath2 ? P.bath*g : 0,
+      paper: st.paper ? p*P.paper*g : 0,
+      floor: st.floor ? p*(st.floorType === "maru" ? P.floorMaru : P.floorSheet)*g : 0,
+      kitchen: st.kitchen ? P.kitchen*sf*g : 0,
+      storage: st.storage ? p*P.storage*g : 0,
+      door: st.door ? P.door*sf*g : 0,
+      light: st.light ? p*P.light*g : 0,
+      demol: st.demol ? p*P.demol : 0
+    };
+  }
+
+  /* 직접 입력한 금액(만원)이 있으면 그 값을, 없으면 자동 계산값 */
+  function amtOf(key, auto){
+    return (st.manual[key] != null) ? st.manual[key] : auto[key];
+  }
+
+  /* ── 계산 ── */
+  function calc(){
+    var p = st.pyeong;
+    var A = autoAmts();
     var rows = [];
 
-    if (st.window === "full")
-      rows.push({ k:"창호", n:"창호 전체 교체 (LX지인 뷰프레임)", a:p*P.windowFull*g });
-    else if (st.window === "partial")
-      rows.push({ k:"창호", n:"창호 부분 교체 (거실·안방)", a:p*P.windowPart*g });
+    function add(key, k, n){
+      var auto = A[key];
+      if (!auto) return;                 // 꺼진 공종·미포함
+      rows.push({ key:key, k:k, n:n, a:amtOf(key, A), auto:auto,
+                  manual: st.manual[key] != null });
+    }
 
-    if (st.bath1) rows.push({ k:"욕실", n:"공용(거실) 욕실", a:P.bath*g });
-    if (st.bath2) rows.push({ k:"욕실", n:"안방 욕실", a:P.bath*g });
-    if (st.paper) rows.push({ k:"도배", n:"도배 (실크벽지)", a:p*P.paper*g });
-    if (st.floor) rows.push({
-      k:"바닥", n:(st.floorType === "maru" ? "바닥 강마루" : "바닥 장판 2.7T"),
-      a:p*(st.floorType === "maru" ? P.floorMaru : P.floorSheet)*g });
-    if (st.kitchen) rows.push({ k:"주방", n:"주방 싱크대 (PET 무광)", a:P.kitchen*sf*g });
-    if (st.storage) rows.push({ k:"수납", n:"신발장·붙박이장", a:p*P.storage*g });
-    if (st.door) rows.push({ k:"도어", n:"도어·문틀 (ABS/필름)", a:P.door*sf*g });
-    if (st.light) rows.push({ k:"조명", n:"조명·배선 (매립등)", a:p*P.light*g });
-    if (st.demol) rows.push({ k:"철거", n:"철거·폐기물·보양", a:p*P.demol });
+    if (st.window === "full") add("window", "창호", "창호 전체 교체 (LX지인 뷰프레임)");
+    else if (st.window === "partial") add("window", "창호", "창호 부분 교체 (거실·안방)");
+    if (st.bath1) add("bath1", "욕실", "공용(거실) 욕실");
+    if (st.bath2) add("bath2", "욕실", "안방 욕실");
+    if (st.paper) add("paper", "도배", "도배 (실크벽지)");
+    if (st.floor) add("floor", "바닥", st.floorType === "maru" ? "바닥 강마루" : "바닥 장판 2.7T");
+    if (st.kitchen) add("kitchen", "주방", "주방 싱크대 (PET 무광)");
+    if (st.storage) add("storage", "수납", "신발장·붙박이장");
+    if (st.door) add("door", "도어", "도어·문틀 (ABS/필름)");
+    if (st.light) add("light", "조명", "조명·배선 (매립등)");
+    add("demol", "철거", "철거·폐기물·보양");
 
     var sum = rows.reduce(function(s,r){ return s + r.a; }, 0);
 
@@ -553,8 +601,7 @@
 
   /* ── 화면 반영 ── */
   function render(){
-    var p = st.pyeong, g = GR[st.grade].f;
-    var sf = 0.9 + 0.1 * (p/31);
+    var p = st.pyeong;
     var r = calc();
 
     // 평형
@@ -570,24 +617,37 @@
       b.classList.toggle("on", b.dataset.g === st.grade);
     });
 
-    // 공종 금액
-    var amt = {
-      "amt-window": st.window === "full" ? p*P.windowFull*g
-                   : st.window === "partial" ? p*P.windowPart*g : 0,
-      "amt-bath1": st.bath1 ? P.bath*g : 0,
-      "amt-bath2": st.bath2 ? P.bath*g : 0,
-      "amt-paper": st.paper ? p*P.paper*g : 0,
-      "amt-floor": st.floor ? p*(st.floorType === "maru" ? P.floorMaru : P.floorSheet)*g : 0,
-      "amt-kitchen": st.kitchen ? P.kitchen*sf*g : 0,
-      "amt-storage": st.storage ? p*P.storage*g : 0,
-      "amt-door": st.door ? P.door*sf*g : 0,
-      "amt-light": st.light ? p*P.light*g : 0,
-      "amt-demol": st.demol ? p*P.demol : 0
+    // 공종 금액 (직접 입력 반영)
+    var A = autoAmts();
+    amtCells.forEach(function(cell){
+      var key = cell.dataset.key;
+      if (editingKey === key) return;              // 입력 중인 칸은 그대로
+      cell.classList.remove("editing");
+      var auto = A[key];
+      var man = (st.manual[key] != null) && auto > 0;
+      var v = man ? st.manual[key] : auto;
+      cell.textContent = v ? manLabel(v) : "미포함";
+      cell.classList.toggle("off", !v);
+      cell.classList.toggle("manual", !!man);
+    });
+
+    // 공종 설명 (직접 입력 표시)
+    var subs = {
+      window:["sub-window", "LX지인 뷰프레임 / 일반"],
+      bath1:["sub-bath1", "타일·도기·수전·방수"],
+      bath2:["sub-bath2", "타일·도기·수전·방수"],
+      paper:["sub-paper", "실크벽지 · 서울벽지"],
+      floor:["floorSub", st.floorType === "maru" ? "강마루 2.5T 이상" : "KCC 장판 2.7T"],
+      kitchen:["sub-kitchen", "PET 무광 · 상·하부"],
+      storage:["sub-storage", "현관·안방·드레스룸"],
+      door:["sub-door", "ABS / 필름 마감"],
+      light:["sub-light", "매립등 · 스위치 교체"],
+      demol:["sub-demol", "철거·보양·폐기물 반출"]
     };
-    Object.keys(amt).forEach(function(id){
-      var n = el(id); if (!n) return;
-      n.textContent = amt[id] ? manLabel(amt[id]) : "미포함";
-      n.classList.toggle("off", !amt[id]);
+    Object.keys(subs).forEach(function(key){
+      var node = el(subs[key][0]); if (!node) return;
+      var man = (st.manual[key] != null) && A[key] > 0;
+      node.textContent = subs[key][1] + (man ? " · 직접 입력" : "");
     });
 
     // 세그먼트 상태
@@ -599,7 +659,6 @@
     });
     el("seg-floor").style.opacity = st.floor ? 1 : .45;
     el("seg-floor").style.pointerEvents = st.floor ? "auto" : "none";
-    el("floorSub").textContent = st.floorType === "maru" ? "강마루 2.5T 이상" : "KCC 장판 2.7T";
 
     // 스위치
     [["sw-bath1","bath1"],["sw-bath2","bath2"],["sw-paper","paper"],
@@ -619,8 +678,8 @@
 
     var html = "";
     r.rows.forEach(function(row){
-      html += '<div class="r-line"><span>' + row.n + '</span><span>' +
-              manLabel(row.a) + '</span></div>';
+      html += '<div class="r-line"><span>' + row.n + (row.manual ? " <i>(조정)</i>" : "") +
+              '</span><span>' + manLabel(row.a) + '</span></div>';
     });
     el("rLines").innerHTML = html;
     el("rSumVal").textContent = manLabel(r.sum);
@@ -661,7 +720,7 @@
     L.push("");
     L.push("[공종별 내역 · 공급가액]");
     r.rows.forEach(function(row){
-      L.push("· " + row.n + " : " + manLabel(row.a) + "원");
+      L.push("· " + row.n + (row.manual ? " (직접 입력)" : "") + " : " + manLabel(row.a) + "원");
     });
     L.push("· 합계 : " + manLabel(r.sum) + "원 (부가세 별도)");
     L.push("");
@@ -702,6 +761,83 @@
       fallback();
     }
   }
+
+  /* ── 공종 금액 직접 입력 ── */
+  var editingKey = null;
+
+  function isOn(key){
+    if (key === "window") return st.window !== "none";
+    return !!st[key];
+  }
+
+  function commitAmt(key, raw){
+    if (editingKey !== key) return;          // 이미 닫힌 입력
+    editingKey = null;
+    var s = String(raw == null ? "" : raw).replace(/[^0-9]/g, "");
+    var v = s ? parseInt(s, 10) : 0;
+    var auto = Math.round(autoAmts()[key]);
+    if (!v){
+      delete st.manual[key];
+      toast("자동 계산 금액으로 되돌렸습니다");
+    } else {
+      st.manual[key] = v;
+      toast(manLabel(v) + "원 적용 · 자동 " + manLabel(auto));
+    }
+    render();
+  }
+
+  function openAmtEditor(key){
+    if (!isOn(key)){ toast("공종을 먼저 켜 주세요"); return; }
+    if (editingKey === key) return;
+    if (editingKey){                         // 열려 있던 다른 금액은 확정하고 넘어감
+      var prev = document.querySelector(".item-amt.editing input");
+      if (prev) prev.blur();
+    }
+    var cell = cellByKey[key]; if (!cell) return;
+    var auto = Math.round(autoAmts()[key]);
+    var cur = (st.manual[key] != null) ? st.manual[key] : auto;
+
+    var inp = document.createElement("input");
+    inp.type = "text";
+    inp.inputMode = "numeric";
+    inp.setAttribute("pattern", "[0-9]*");
+    inp.setAttribute("autocomplete", "off");
+    inp.className = "amt-edit";
+    inp.setAttribute("aria-label", "금액 직접 입력 (만원)");
+    inp.value = String(cur);
+
+    cell.classList.add("editing");
+    cell.textContent = "";
+    cell.appendChild(inp);
+    editingKey = key;
+
+    inp.focus();
+    try { inp.select(); } catch(e){}
+
+    inp.addEventListener("keydown", function(ev){
+      if (ev.key === "Enter"){ ev.preventDefault(); inp.blur(); }
+      else if (ev.key === "Escape"){
+        ev.preventDefault();
+        editingKey = null;
+        toast("취소했습니다");
+        render();
+      }
+    });
+    inp.addEventListener("blur", function(){ commitAmt(key, inp.value); });
+  }
+
+  amtCells.forEach(function(cell){
+    cell.addEventListener("click", function(ev){
+      if (ev.target && ev.target.className === "amt-edit") return;
+      openAmtEditor(cell.dataset.key);
+    });
+    cell.addEventListener("keydown", function(ev){
+      if (ev.key === "Enter" || ev.key === " "){
+        ev.preventDefault();
+        openAmtEditor(cell.dataset.key);
+      }
+    });
+  });
 
   /* ── 이벤트 ── */
   el("presets").addEventListener("click", function(e){
