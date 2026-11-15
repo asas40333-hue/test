@@ -407,10 +407,10 @@
       <div class="item-row">
         <div class="item-txt">
           <div class="item-name">철거 · 폐기물 · 보양</div>
-          <div class="item-sub">기본 포함 (해제 불가)</div>
+          <div class="item-sub">철거·보양·폐기물 반출</div>
         </div>
         <div class="item-amt" id="amt-demol">320만</div>
-        <button class="switch on locked" type="button" role="switch" aria-checked="true" aria-label="철거 기본 포함" disabled></button>
+        <button class="switch on" id="sw-demol" type="button" role="switch" aria-checked="true" aria-label="철거·보양·폐기물"></button>
       </div>
     </div>
   </section>
@@ -491,7 +491,7 @@
   var DEF = { pyeong:32, grade:"standard",
               window:"full", bath1:true, bath2:true, paper:true,
               floor:true, floorType:"sheet", kitchen:true,
-              storage:true, door:true, light:true };
+              storage:true, door:true, light:true, demol:true };
 
   var st = JSON.parse(JSON.stringify(DEF));
   var el = function(id){ return document.getElementById(id); };
@@ -527,7 +527,7 @@
     if (st.storage) rows.push({ k:"수납", n:"신발장·붙박이장", a:p*P.storage*g });
     if (st.door) rows.push({ k:"도어", n:"도어·문틀 (ABS/필름)", a:P.door*sf*g });
     if (st.light) rows.push({ k:"조명", n:"조명·배선 (매립등)", a:p*P.light*g });
-    rows.push({ k:"철거", n:"철거·폐기물·보양", a:p*P.demol });
+    if (st.demol) rows.push({ k:"철거", n:"철거·폐기물·보양", a:p*P.demol });
 
     var sum = rows.reduce(function(s,r){ return s + r.a; }, 0);
 
@@ -582,7 +582,7 @@
       "amt-storage": st.storage ? p*P.storage*g : 0,
       "amt-door": st.door ? P.door*sf*g : 0,
       "amt-light": st.light ? p*P.light*g : 0,
-      "amt-demol": p*P.demol
+      "amt-demol": st.demol ? p*P.demol : 0
     };
     Object.keys(amt).forEach(function(id){
       var n = el(id); if (!n) return;
@@ -604,7 +604,7 @@
     // 스위치
     [["sw-bath1","bath1"],["sw-bath2","bath2"],["sw-paper","paper"],
      ["sw-floor","floor"],["sw-kitchen","kitchen"],["sw-storage","storage"],
-     ["sw-door","door"],["sw-light","light"]].forEach(function(pair){
+     ["sw-door","door"],["sw-light","light"],["sw-demol","demol"]].forEach(function(pair){
       var b = el(pair[0]);
       b.classList.toggle("on", !!st[pair[1]]);
       b.setAttribute("aria-checked", st[pair[1]] ? "true" : "false");
@@ -648,7 +648,7 @@
     if (st.storage) on.push("신발장·붙박이장");
     if (st.door) on.push("도어·문틀");
     if (st.light) on.push("조명·배선");
-    on.push("철거·폐기물 포함");
+    if (st.demol) on.push("철거·폐기물 포함");
 
     var L = [];
     L.push("[메종플러스 간편 견적]");
@@ -725,7 +725,7 @@
   });
   [["sw-bath1","bath1"],["sw-bath2","bath2"],["sw-paper","paper"],
    ["sw-floor","floor"],["sw-kitchen","kitchen"],["sw-storage","storage"],
-   ["sw-door","door"],["sw-light","light"]].forEach(function(pair){
+   ["sw-door","door"],["sw-light","light"],["sw-demol","demol"]].forEach(function(pair){
     el(pair[0]).addEventListener("click", function(){
       st[pair[1]] = !st[pair[1]]; render();
     });
