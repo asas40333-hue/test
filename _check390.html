@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>390px 검증 프레임</title>
+<style>
+  html,body{margin:0;padding:0;background:#dfe4ec;}
+  #frameWrap{width:390px;margin:0;background:#fff;}
+  iframe{width:390px;height:2000px;border:0;display:block;background:#fff;}
+</style>
+</head>
+<body>
+<div id="frameWrap">
+  <iframe id="fr" src="./quote.html" scrolling="no"></iframe>
+</div>
+<script>
+  // iframe 내용 높이에 맞춰 프레임 높이 자동 조정
+  setTimeout(function(){
+    try{
+      var f = document.getElementById('fr');
+      var h = f.contentDocument.documentElement.scrollHeight;
+      f.style.height = h + 'px';
+      document.getElementById('frameWrap').style.height = h + 'px';
+      document.title = '390px h=' + h;
+    }catch(e){ document.title = 'err ' + e.message; }
+  }, 1200);
+</script>
+</body>
+</html>
