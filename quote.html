@@ -545,7 +545,7 @@
     days += GR[st.grade].day;
     var wk = days/7;
     var wLo = Math.max(2, Math.floor(wk));
-    var wHi = (wk - Math.floor(wk) < 0.25) ? wLo : wLo + 1;
+    var wHi = wLo + 1;
 
     return { rows:rows, sum:sum, wLo:wLo, wHi:wHi,
              lo:Math.floor(sum*0.96/50)*50, hi:Math.ceil(sum*1.06/50)*50 };
