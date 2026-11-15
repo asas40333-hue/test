@@ -390,6 +390,11 @@
   }
   #toast.on{opacity:1;transform:translate(-50%,0)}
 
+  @media(max-width:430px){
+    html{scrollbar-width:none}
+    html::-webkit-scrollbar{width:0;height:0;display:none}
+  }
+
   @media(max-width:360px){
     .onb-q{font-size:22px}
     .mh-title{font-size:20px}
@@ -886,6 +891,7 @@ function bindSummary(){
     if(!S.startedAt) S.startedAt = todayStr();
     saveState();
     pr = { stepDone:[false,false,false], output:null, name:'', completed:false };
+    restoreToday();
     showTab('practice');
     toast(wasSame?'코스를 다시 시작합니다':'나만의 코스가 만들어졌어요!');
   });
@@ -968,13 +974,14 @@ function renderPractice(){
   const steps=buildSteps(p);
   const total=pr.stepDone.filter(Boolean).length;
   const pct=Math.round(total/3*100);
-  const todayDone=S.records.some(r=>r.date===todayStr());
   const todayRec=S.records.find(r=>r.date===todayStr());
   const dayNo=todayRec?todayRec.day:nextDayNo();
+  const sameToday=!!(todayRec && todayRec.field===p.field && todayRec.goal===p.goal);
+  const heroChip = pr.completed||sameToday ? '오늘 완료' : (todayRec ? '오늘 1회 완주' : 'Day '+dayNo);
 
   wrap.innerHTML = `
     <div class="mission-hero">
-      <div class="mh-top"><span class="mh-day">${todayDone?'오늘 완료':'Day '+dayNo}</span><span>${f.label} · ${GOALS[p.goal].label}</span></div>
+      <div class="mh-top"><span class="mh-day">${heroChip}</span><span>${f.label} · ${GOALS[p.goal].label}</span></div>
       <h2 class="mh-title">${m.title}</h2>
       <div class="mh-chips">
         <span class="chip em">⏱ 약 15분</span>
@@ -1029,7 +1036,7 @@ function renderPractice(){
       <p class="muted" style="margin-bottom:8px">하루 15분, 이렇게 이어집니다. (앞의 5일)</p>
       <div class="course-list">
         ${CURRICULUM[p.goal].map((t,i)=>{
-          const isDone = i===0 ? (todayDone||pr.completed) : (S.records.length>i);
+          const isDone = i===0 ? (sameToday||pr.completed) : (S.records.length>i);
           return `<div class="course-row ${i===0?'now':''} ${isDone?'done':''}">
             <div class="cr-day"><b>${i+1}</b><span>일차</span></div>
             <div class="cr-tx">
@@ -1486,6 +1493,8 @@ function restoreToday(){
   if(pr.completed || pr.output) return;
   const r=S.records.find(x=>x.date===todayStr());
   if(!r) return;
+  const p=S.profile;
+  if(!p || r.field!==p.field || r.goal!==p.goal) return;
   pr.stepDone=[true,true,true];
   pr.output={ title:r.title, lines:r.lines||[] };
   pr.name=r.name||'';
