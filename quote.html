@@ -815,6 +815,7 @@
     try { inp.select(); } catch(e){}
 
     inp.addEventListener("keydown", function(ev){
+      ev.stopPropagation();                 // 셀 키다운 핸들러로 새지 않게
       if (ev.key === "Enter"){ ev.preventDefault(); inp.blur(); }
       else if (ev.key === "Escape"){
         ev.preventDefault();
