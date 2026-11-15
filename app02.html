@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#2b1d14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>메종플러스 자재 물량 계산기 · 현장용</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  :root{
+    --brown:#2b1d14; --brown-2:#3d2a1c; --brown-3:#5a4230;
+    --navy:#16243a; --navy-2:#22344f;
+    --gold:#c9a227; --gold-lt:#e6bf4f;
+    --emerald:#0f766e; --emerald-lt:#14b8a6;
+    --bg:#f6f3ee; --card:#ffffff; --line:#e7e0d4;
+    --ink:#221a13; --ink-2:#5a4b3d; --ink-3:#9a8b7b;
+    --r:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;
+    font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--bg);color:var(--ink);line-height:1.5;font-size:16px;
+    max-width:430px;margin:0 auto;padding-bottom:168px;overflow-x:hidden;}
+  .hide{display:none !important;}
+
+  /* header */
+  header{position:sticky;top:0;z-index:60;background:var(--brown);
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:11px 16px;border-bottom:1px solid rgba(201,162,39,.28);}
+  .brand{display:flex;align-items:center;gap:9px;min-width:0;}
+  .brand-logo{width:34px;height:34px;flex:none;border-radius:9px;
+    background:linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 100%);
+    color:#2b1d14;display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:15px;letter-spacing:-.5px;}
+  .brand-title{font-size:15px;font-weight:800;letter-spacing:-.4px;line-height:1.2;color:#fdf9f2;}
+  .brand-sub{font-size:10.5px;font-weight:600;color:#c9b79f;letter-spacing:-.1px;}
+  .h-tag{flex:none;font-size:10.5px;font-weight:800;color:var(--gold-lt);
+    border:1px solid rgba(201,162,39,.6);background:rgba(201,162,39,.12);
+    padding:4px 8px;border-radius:20px;letter-spacing:-.2px;}
+
+  /* hero */
+  .hero{background:linear-gradient(140deg,#2b1d14 0%,#16243a 100%);color:#fff;padding:18px 18px 16px;}
+  .hero-badge{display:inline-flex;align-items:center;gap:5px;
+    background:rgba(20,184,166,.16);border:1px solid rgba(20,184,166,.55);
+    color:#5eead4;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:-.2px;margin-bottom:9px;}
+  .hero h1{font-size:21px;font-weight:800;letter-spacing:-.9px;line-height:1.3;}
+  .hero h1 em{font-style:normal;color:var(--gold-lt);}
+  .hero p{margin-top:7px;font-size:13px;color:#cdbfae;letter-spacing:-.3px;line-height:1.55;}
+
+  /* tabs */
+  nav.tabs{position:sticky;top:57px;z-index:50;background:#fff;border-bottom:1px solid var(--line);
+    display:flex;gap:2px;padding:6px 8px 0;box-shadow:0 2px 6px rgba(43,29,20,.05);}
+  .tab{flex:1;border:0;background:transparent;padding:10px 2px 11px;font-size:14.5px;font-weight:700;
+    color:var(--ink-3);letter-spacing:-.5px;border-bottom:3px solid transparent;cursor:pointer;}
+  .tab .ico{display:block;font-size:17px;line-height:1.1;margin-bottom:2px;}
+  .tab.on{color:var(--brown);border-bottom-color:var(--gold);}
+
+  main{padding:14px 14px 0;}
+  .panel{display:none;}
+  .panel.on{display:block;animation:fade .18s ease;}
+  @keyframes fade{from{opacity:.4;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    box-shadow:0 1px 3px rgba(43,29,20,.06);padding:15px 14px;margin-bottom:12px;}
+  .card-head{display:flex;align-items:center;gap:8px;margin-bottom:13px;}
+  .step{width:22px;height:22px;flex:none;border-radius:7px;background:var(--brown);
+    color:var(--gold-lt);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .card-head h2{font-size:15.5px;font-weight:800;letter-spacing:-.5px;}
+  .card-head .hint{margin-left:auto;font-size:11px;color:var(--ink-3);font-weight:700;letter-spacing:-.2px;}
+
+  .field{margin-bottom:11px;}
+  .field:last-child{margin-bottom:0;}
+  .field > label, .flabel{display:block;font-size:14px;font-weight:700;color:var(--ink-2);
+    letter-spacing:-.4px;margin-bottom:6px;}
+  .flabel .u{font-size:12px;color:var(--ink-3);font-weight:600;margin-left:3px;}
+  .frow{display:grid;grid-template-columns:minmax(0,1fr) 118px;align-items:center;gap:10px;margin-bottom:10px;}
+  .frow:last-child{margin-bottom:0;}
+  .frow > label{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-.5px;}
+  .frow > label small{display:block;font-size:11.5px;color:var(--ink-3);font-weight:600;letter-spacing:-.2px;}
+  input[type=number], input[type=text]{width:100%;font-size:17px;font-weight:700;color:var(--ink);
+    text-align:right;padding:11px 12px;border:1.5px solid var(--line);border-radius:11px;background:#fdfbf8;
+    letter-spacing:-.3px;-moz-appearance:textfield;appearance:textfield;}
+  input[type=text]{text-align:left;font-weight:600;font-size:16px;}
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  input:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(201,162,39,.13);}
+
+  .seg{display:flex;gap:6px;background:#f3eee6;padding:4px;border-radius:12px;}
+  .seg-btn{flex:1;min-width:0;border:0;background:transparent;padding:10px 4px;border-radius:9px;
+    font-size:13.5px;font-weight:700;color:var(--ink-2);letter-spacing:-.5px;cursor:pointer;
+    line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .seg-btn.on{background:#fff;color:var(--brown);box-shadow:0 1px 4px rgba(43,29,20,.14);font-weight:800;}
+  .seg-btn.on.wall{color:#8a5b1f;}
+  .seg.cols2{display:grid;grid-template-columns:1fr 1fr;}
+
+  .switch{position:relative;width:52px;height:30px;justify-self:end;flex:none;}
+  .switch input{opacity:0;width:0;height:0;position:absolute;}
+  .switch .sl{position:absolute;inset:0;background:#d8cec0;border-radius:30px;transition:.18s;cursor:pointer;}
+  .switch .sl:before{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;background:#fff;
+    border-radius:50%;transition:.18s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+  .switch input:checked + .sl{background:var(--emerald);}
+  .switch input:checked + .sl:before{transform:translateX(22px);}
+
+  /* result */
+  .res{background:linear-gradient(150deg,#2b1d14 0%,#16243a 100%);border:0;color:#fff;
+    padding:16px 15px;position:relative;overflow:hidden;}
+  .res:before{content:"";position:absolute;right:-40px;top:-40px;width:130px;height:130px;border-radius:50%;
+    background:radial-gradient(circle,rgba(201,162,39,.24),transparent 70%);}
+  .res-top{display:flex;align-items:flex-end;gap:7px;flex-wrap:wrap;position:relative;}
+  .res-num{font-size:40px;font-weight:800;letter-spacing:-2px;line-height:1;color:var(--gold-lt);}
+  .res-unit{font-size:16px;font-weight:800;color:var(--gold-lt);margin-bottom:5px;letter-spacing:-.4px;}
+  .res-label{margin-left:auto;font-size:12px;font-weight:700;color:#c9b79f;letter-spacing:-.3px;margin-bottom:6px;text-align:right;}
+  .res-sub{margin-top:7px;font-size:13px;color:#cdbfae;letter-spacing:-.3px;position:relative;}
+  .res-list{list-style:none;margin-top:12px;border-top:1px solid rgba(255,255,255,.13);padding-top:10px;position:relative;}
+  .res-list li{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+    padding:6px 0;font-size:14px;color:#eadfd0;letter-spacing:-.3px;}
+  .res-list li b{color:#fff;font-weight:800;font-size:15px;}
+  .res-list li .k{color:#b9a894;font-size:12.5px;margin-left:4px;}
+  .res-list li.tot{border-top:1px dashed rgba(255,255,255,.18);margin-top:5px;padding-top:9px;color:#5eead4;font-weight:800;}
+  .res-note{margin-top:10px;font-size:11.5px;color:#a8967f;line-height:1.5;letter-spacing:-.2px;position:relative;}
+
+  .add-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;
+    border:0;border-radius:14px;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 100%);
+    color:#2b1d14;font-size:17px;font-weight:800;letter-spacing:-.5px;cursor:pointer;
+    box-shadow:0 4px 14px rgba(201,162,39,.3);margin-bottom:14px;}
+  .add-btn:active{transform:scale(.985);}
+  .add-btn.ghost{background:#fff;border:1.5px solid var(--line);color:var(--brown);box-shadow:none;font-size:15px;height:48px;}
+
+  /* cart bar */
+  .cartbar{position:fixed;left:0;right:0;bottom:0;z-index:70;max-width:430px;margin:0 auto;
+    background:var(--brown);border-top:1px solid rgba(201,162,39,.3);
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    display:flex;align-items:center;gap:10px;transform:translateY(120%);transition:.22s;}
+  .cartbar.show{transform:none;}
+  .cb-info{min-width:0;flex:1;}
+  .cb-count{font-size:11.5px;font-weight:800;color:var(--gold-lt);letter-spacing:-.2px;}
+  .cb-name{font-size:13px;font-weight:600;color:#e6dccd;letter-spacing:-.3px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cb-btn{flex:none;border:0;border-radius:11px;background:linear-gradient(135deg,var(--gold),var(--gold-lt));
+    color:#2b1d14;font-size:14.5px;font-weight:800;padding:12px 15px;letter-spacing:-.4px;cursor:pointer;}
+
+  /* sheet */
+  .ov{position:fixed;inset:0;background:rgba(20,12,6,.5);z-index:80;opacity:0;pointer-events:none;transition:.2s;}
+  .ov.show{opacity:1;pointer-events:auto;}
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:90;max-width:430px;margin:0 auto;
+    background:#fff;border-radius:22px 22px 0 0;max-height:86vh;display:flex;flex-direction:column;
+    transform:translateY(102%);transition:.25s cubic-bezier(.3,.9,.3,1);}
+  .sheet.show{transform:none;}
+  .sheet-h{display:flex;align-items:center;gap:8px;padding:16px 16px 12px;border-bottom:1px solid var(--line);flex:none;}
+  .sheet-h h3{font-size:17px;font-weight:800;letter-spacing:-.6px;}
+  .sheet-h .cnt{font-size:12px;font-weight:800;color:#fff;background:var(--emerald);
+    padding:2px 8px;border-radius:20px;letter-spacing:-.2px;}
+  .x-btn{margin-left:auto;border:0;background:#f3eee6;width:34px;height:34px;border-radius:50%;
+    font-size:16px;color:var(--ink-2);cursor:pointer;line-height:1;}
+  .sheet-b{overflow-y:auto;padding:12px 16px 8px;flex:1;-webkit-overflow-scrolling:touch;}
+  .site-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;align-items:center;
+    background:#fbf8f3;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px;}
+  .site-row label{font-size:12.5px;font-weight:800;color:var(--ink-2);letter-spacing:-.3px;}
+  .site-row input{border:0;background:transparent;padding:0;font-size:15px;font-weight:700;text-align:left;}
+  .site-row input:focus{box-shadow:none;}
+  .cart-item{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:center;
+    padding:11px 0;border-bottom:1px solid #f1ebe2;}
+  .ci-main{min-width:0;}
+  .ci-name{font-size:15.5px;font-weight:800;letter-spacing:-.4px;line-height:1.35;}
+  .ci-spec{font-size:11.5px;color:var(--ink-3);font-weight:600;letter-spacing:-.2px;margin-top:1px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ci-qty{font-size:15px;font-weight:800;color:var(--emerald);letter-spacing:-.4px;white-space:nowrap;}
+  .ci-del{border:0;background:#f6efe6;color:#a2896f;width:30px;height:30px;border-radius:8px;
+    font-size:15px;line-height:1;cursor:pointer;}
+  .empty{padding:34px 10px;text-align:center;color:var(--ink-3);font-size:14px;letter-spacing:-.3px;line-height:1.7;}
+  .empty b{display:block;font-size:15px;color:var(--ink-2);margin-bottom:4px;}
+  .sheet-f{padding:12px 16px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);
+    display:flex;flex-direction:column;gap:8px;flex:none;background:#fff;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .btn-primary{height:54px;border:0;border-radius:14px;background:var(--brown);color:#fff;
+    font-size:16.5px;font-weight:800;letter-spacing:-.5px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:7px;}
+  .btn-primary:disabled{background:#cfc6ba;color:#f6f2ec;}
+  .btn-line{height:46px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink-2);
+    font-size:14px;font-weight:800;letter-spacing:-.4px;cursor:pointer;}
+
+  /* toast */
+  .toast{position:fixed;left:50%;bottom:calc(154px + env(safe-area-inset-bottom));transform:translate(-50%,12px);
+    background:#1c140e;color:#fff;font-size:14px;font-weight:700;letter-spacing:-.3px;padding:12px 18px;
+    border-radius:12px;z-index:120;opacity:0;transition:.2s;pointer-events:none;max-width:86vw;text-align:center;
+    box-shadow:0 8px 24px rgba(0,0,0,.28);}
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+  .toast.ok{background:#0f766e;}
+  .toast.warn{background:#a8410f;}
+
+  .tip{font-size:12px;color:var(--ink-3);letter-spacing:-.2px;line-height:1.6;margin-top:9px;}
+  .tip b{color:var(--ink-2);}
+  .brandline{margin:18px 0 10px;text-align:center;font-size:11.5px;color:#b7a794;letter-spacing:-.2px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-logo">M+</div>
+    <div>
+      <div class="brand-title">메종플러스 자재 물량 계산기</div>
+      <div class="brand-sub">MAISON PLUS · 현장 발주용</div>
+    </div>
+  </div>
+  <div class="h-tag">02호</div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">📍 현장 실측 → 발주까지 30초</div>
+  <h1>줄자만 있으면 <em>발주 수량</em>이 나옵니다</h1>
+  <p>벽지·바닥·타일·페인트 네 공종을 한 화면에서. 계산 결과를 담아 카톡으로 바로 보내세요.</p>
+</div>
+
+<nav class="tabs" role="tablist">
+  <button class="tab on" data-tab="wall" role="tab"><span class="ico">🧱</span>벽지</button>
+  <button class="tab" data-tab="floor" role="tab"><span class="ico">🪵</span>바닥</button>
+  <button class="tab" data-tab="tile" role="tab"><span class="ico">🔲</span>타일</button>
+  <button class="tab" data-tab="paint" role="tab"><span class="ico">🎨</span>페인트</button>
+</nav>
+
+<main>
+
+  <!-- ══════════ 벽지 ══════════ -->
+  <section class="panel on" id="panel-wall">
+    <div class="card">
+      <div class="card-head"><span class="step">1</span><h2>벽지 · 도배</h2><span class="hint">실측 입력</span></div>
+
+      <div class="field">
+        <div class="seg" id="segWallMode">
+          <button class="seg-btn on" data-val="dim">가로·세로·높이</button>
+          <button class="seg-btn" data-val="pyeong">평수로 입력</button>
+        </div>
+      </div>
+
+      <div id="wallDim">
+        <div class="frow"><label>가로 <small>m</small></label><input id="w-w" type="number" inputmode="decimal" step="0.1" min="0" value="3.3"></div>
+        <div class="frow"><label>세로 <small>m</small></label><input id="w-h" type="number" inputmode="decimal" step="0.1" min="0" value="3.6"></div>
+        <div class="frow"><label>천장고 <small>m · 기본 2.3</small></label><input id="w-c" type="number" inputmode="decimal" step="0.1" min="0" value="2.3"></div>
+      </div>
+
+      <div id="wallPyeong" class="hide">
+        <div class="frow"><label>바닥 평수 <small>평 · 벽면적 2.6배 가정</small></label><input id="w-p" type="number" inputmode="decimal" step="0.5" min="0" value="9"></div>
+      </div>
+
+      <div class="frow"><label>천장 포함 <small>천장까지 도배할 때</small></label>
+        <label class="switch"><input id="w-ceil" type="checkbox" checked><span class="sl"></span></label>
+      </div>
+
+      <div class="field" style="margin-top:12px">
+        <label class="flabel">벽지 종류</label>
+        <div class="seg" id="segWallType">
+          <button class="seg-btn on" data-val="실크">실크 106×15.5m</button>
+          <button class="seg-btn" data-val="합지">합지 93×17.75m</button>
+        </div>
+      </div>
+
+      <div class="frow"><label>로스율 <small>% · 기본 10</small></label><input id="w-loss" type="number" inputmode="decimal" step="1" min="0" max="40" value="10"></div>
+      <div class="frow"><label>초배 포함 <small>부직포 초배지 계산</small></label>
+        <label class="switch"><input id="w-base" type="checkbox" checked><span class="sl"></span></label>
+      </div>
+    </div>
+
+    <div class="card res" id="wallRes"></div>
+    <button class="add-btn" data-add="wall">🧾 발주 목록에 담기</button>
+    <div class="tip">롤 면적은 <b>실크 1.06×15.5=16.4m²</b>, <b>합지 0.93×17.75=16.5m²</b> 기준입니다. 천장고 컷 손실은 로스율 10%에 포함해 잡았습니다.</div>
+    <div class="brandline">MAISON PLUS · 자재 물량 계산기</div>
+  </section>
+
+  <!-- ══════════ 바닥 ══════════ -->
+  <section class="panel" id="panel-floor">
+    <div class="card">
+      <div class="card-head"><span class="step">1</span><h2>바닥 · 마루 / 장판</h2><span class="hint">면적 입력</span></div>
+
+      <div class="field">
+        <div class="seg" id="segFloorMode">
+          <button class="seg-btn on" data-val="마루">강마루</button>
+          <button class="seg-btn" data-val="장판">장판</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="seg" id="segFloorUnit">
+          <button class="seg-btn on" data-val="m2">면적 m²</button>
+          <button class="seg-btn" data-val="pyeong">평수</button>
+        </div>
+      </div>
+
+      <div id="floorM2">
+        <div class="frow"><label>바닥 면적 <small>m²</small></label><input id="f-area" type="number" inputmode="decimal" step="0.1" min="0" value="33"></div>
+      </div>
+      <div id="floorPyeong" class="hide">
+        <div class="frow"><label>바닥 평수 <small>평</small></label><input id="f-p" type="number" inputmode="decimal" step="0.5" min="0" value="10"></div>
+      </div>
+
+      <div id="floorBoxRow">
+        <div class="frow"><label>1박스 면적 <small>m² · 기본 3.24</small></label><input id="f-box" type="number" inputmode="decimal" step="0.01" min="0" value="3.24"></div>
+      </div>
+      <div id="floorWidthRow" class="hide">
+        <div class="frow"><label>장판 폭 <small>m · 기본 1.8</small></label><input id="f-width" type="number" inputmode="decimal" step="0.1" min="0" value="1.8"></div>
+      </div>
+
+      <div class="frow"><label>로스율 <small>% · 기본 10</small></label><input id="f-loss" type="number" inputmode="decimal" step="1" min="0" max="40" value="10"></div>
+    </div>
+
+    <div class="card res" id="floorRes"></div>
+    <button class="add-btn" data-add="floor">🧾 발주 목록에 담기</button>
+    <div class="tip">강마루 1박스 <b>3.24m²(약 1평)</b> 기준, 장판은 <b>폭 1.8m 롤</b>에서 필요한 길이로 계산합니다. 걸레받이는 정사각 가정 둘레입니다.</div>
+    <div class="brandline">MAISON PLUS · 자재 물량 계산기</div>
+  </section>
+
+  <!-- ══════════ 타일 ══════════ -->
+  <section class="panel" id="panel-tile">
+    <div class="card">
+      <div class="card-head"><span class="step">1</span><h2>타일 · 욕실 / 현관</h2><span class="hint">벽·바닥</span></div>
+
+      <div class="field">
+        <div class="seg" id="segTileMode">
+          <button class="seg-btn on" data-val="area">면적으로 입력</button>
+          <button class="seg-btn" data-val="dim">가로·세로</button>
+        </div>
+      </div>
+
+      <div id="tileAreaRow">
+        <div class="frow"><label>시공 면적 <small>m²</small></label><input id="t-area" type="number" inputmode="decimal" step="0.1" min="0" value="12"></div>
+      </div>
+      <div id="tileDimRow" class="hide">
+        <div class="frow"><label>가로 <small>m</small></label><input id="t-w" type="number" inputmode="decimal" step="0.1" min="0" value="1.8"></div>
+        <div class="frow"><label>세로 <small>m</small></label><input id="t-h" type="number" inputmode="decimal" step="0.1" min="0" value="2.4"></div>
+        <div class="frow"><label>면적 수량 <small>같은 면적 몇 곳</small></label><input id="t-cnt" type="number" inputmode="numeric" step="1" min="1" value="1"></div>
+      </div>
+
+      <div class="field" style="margin-top:12px">
+        <label class="flabel">타일 규격</label>
+        <div class="seg" id="segTileSpec">
+          <button class="seg-btn on" data-val="300x600">300×600</button>
+          <button class="seg-btn" data-val="600x600">600×600</button>
+          <button class="seg-btn" data-val="300x300">300×300</button>
+        </div>
+      </div>
+
+      <div class="frow"><label>1박스 장수 <small>장 · 규격별 자동</small></label><input id="t-perbox" type="number" inputmode="numeric" step="1" min="1" value="6"></div>
+      <div class="frow"><label>로스율 <small>% · 10~15 권장</small></label><input id="t-loss" type="number" inputmode="decimal" step="1" min="5" max="30" value="10"></div>
+    </div>
+
+    <div class="card res" id="tileRes"></div>
+    <button class="add-btn" data-add="tile">🧾 발주 목록에 담기</button>
+    <div class="tip">로스율은 컷·파손 몫입니다. <b>욕실 벽 10~12%</b>, <b>현관·패턴 배열 15%</b>를 권합니다. 박스 장수는 브랜드마다 달라 직접 고칠 수 있습니다.</div>
+    <div class="brandline">MAISON PLUS · 자재 물량 계산기</div>
+  </section>
+
+  <!-- ══════════ 페인트 ══════════ -->
+  <section class="panel" id="panel-paint">
+    <div class="card">
+      <div class="card-head"><span class="step">1</span><h2>페인트 · 도장</h2><span class="hint">면적·횟수</span></div>
+
+      <div class="frow"><label>도장 면적 <small>m² · 벽+천장 합계</small></label><input id="p-area" type="number" inputmode="decimal" step="0.1" min="0" value="80"></div>
+      <div class="frow"><label>도장 횟수 <small>회 · 기본 2회</small></label><input id="p-coats" type="number" inputmode="numeric" step="1" min="1" max="5" value="2"></div>
+      <div class="frow"><label>1L 도포량 <small>m²/회 · 기본 7</small></label><input id="p-perl" type="number" inputmode="decimal" step="0.5" min="3" value="7"></div>
+      <div class="frow"><label>프라이머 1회 <small>바탕 처리 포함</small></label>
+        <label class="switch"><input id="p-primer" type="checkbox" checked><span class="sl"></span></label>
+      </div>
+    </div>
+
+    <div class="card res" id="paintRes"></div>
+    <button class="add-btn" data-add="paint">🧾 발주 목록에 담기</button>
+    <div class="tip">수성페인트 <b>1L ≈ 7m²(1회)</b> 기준입니다. 18L 말통이 가장 저렴하고, 남는 양은 4L·1L 캔으로 채웁니다.</div>
+    <div class="brandline">MAISON PLUS · 자재 물량 계산기</div>
+  </section>
+
+</main>
+
+<!-- cart bar -->
+<div class="cartbar" id="cartbar">
+  <div class="cb-info">
+    <div class="cb-count" id="cbCount">발주 목록 0개</div>
+    <div class="cb-name" id="cbName">담긴 자재가 없습니다</div>
+  </div>
+  <button class="cb-btn" id="openCart">발주 목록 보기</button>
+</div>
+
+<div class="ov" id="ov"></div>
+
+<div class="sheet" id="cartSheet">
+  <div class="sheet-h">
+    <h3>자재 발주 목록</h3><span class="cnt" id="sheetCnt">0</span>
+    <button class="x-btn" id="closeCart">✕</button>
+  </div>
+  <div class="sheet-b">
+    <div class="site-row">
+      <label>현장명</label>
+      <input id="site" type="text" placeholder="예: 한빛아파트 129동 1406호">
+    </div>
+    <div id="cartList"></div>
+  </div>
+  <div class="sheet-f">
+    <button class="btn-primary" id="copyBtn">💬 카톡 발주 문자 복사</button>
+    <div class="row2">
+      <button class="btn-line" id="clearBtn">목록 비우기</button>
+      <button class="btn-line" id="closeBtn2">계속 계산하기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var LS_CART = "mp_app02_cart_v1", LS_SITE = "mp_app02_site_v1";
+
+  var state = {
+    wallMode:"dim", wallType:"실크",
+    floorMode:"마루", floorUnit:"m2",
+    tileMode:"area", tileSpec:"300x600",
+    cart: [], payload: {}
+  };
+
+  var TILE = {
+    "300x600": {w:0.30, h:0.60, perBox:6,  label:"300×600"},
+    "600x600": {w:0.60, h:0.60, perBox:4,  label:"600×600"},
+    "300x300": {w:0.30, h:0.30, perBox:11, label:"300×300"}
+  };
+
+  /* ── helpers ── */
+  function num(id){
+    var v = parseFloat(String($(id).value).replace(/,/g,""));
+    return isFinite(v) ? v : 0;
+  }
+  function n1(v){ return Math.ceil(v*10)/10; }
+  function n2(v){ return Math.ceil(v*100)/100; }
+  function fm(v, d){
+    if (d === undefined) d = (v >= 100 ? 0 : 1);
+    var s = Number(v).toFixed(d);
+    if (s.indexOf(".") > -1) s = s.replace(/\.?0+$/,"");
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];
+    });
+  }
+
+  var toastTimer = null;
+  function toast(msg, kind){
+    var t = $("toast");
+    t.textContent = msg;
+    t.className = "toast show" + (kind ? " " + kind : "");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.className = "toast" + (kind ? " " + kind : ""); }, 2100);
+  }
+
+  /* ── tabs ── */
+  var tabs = document.querySelectorAll(".tab");
+  Array.prototype.forEach.call(tabs, function(btn){
+    btn.addEventListener("click", function(){
+      Array.prototype.forEach.call(tabs, function(b){ b.classList.remove("on"); });
+      btn.classList.add("on");
+      var panels = document.querySelectorAll(".panel");
+      Array.prototype.forEach.call(panels, function(p){ p.classList.remove("on"); });
+      $("panel-" + btn.dataset.tab).classList.add("on");
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  });
+
+  /* ── segmented controls ── */
+  function bindSeg(id, key, after){
+    var box = $(id);
+    box.addEventListener("click", function(e){
+      var b = e.target.closest(".seg-btn");
+      if (!b) return;
+      Array.prototype.forEach.call(box.querySelectorAll(".seg-btn"), function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+      state[key] = b.dataset.val;
+      if (after) after(b.dataset.val);
+      recalcAll();
+    });
+  }
+
+  bindSeg("segWallMode", "wallMode", function(v){
+    $("wallDim").classList.toggle("hide", v !== "dim");
+    $("wallPyeong").classList.toggle("hide", v !== "pyeong");
+  });
+  bindSeg("segWallType", "wallType");
+  bindSeg("segFloorMode", "floorMode", function(v){
+    $("floorBoxRow").classList.toggle("hide", v !== "마루");
+    $("floorWidthRow").classList.toggle("hide", v !== "장판");
+  });
+  bindSeg("segFloorUnit", "floorUnit", function(v){
+    $("floorM2").classList.toggle("hide", v !== "m2");
+    $("floorPyeong").classList.toggle("hide", v !== "pyeong");
+  });
+  bindSeg("segTileMode", "tileMode", function(v){
+    $("tileAreaRow").classList.toggle("hide", v !== "area");
+    $("tileDimRow").classList.toggle("hide", v !== "dim");
+  });
+  bindSeg("segTileSpec", "tileSpec", function(v){
+    $("t-perbox").value = TILE[v].perBox;
+  });
+
+  /* ── 벽지 계산 ── */
+  function calcWall(){
+    var ceilOn = $("w-ceil").checked;
+    var area = 0, sub = "", perimeter = 0;
+    if (state.wallMode === "dim"){
+      var w = num("w-w"), h = num("w-h"), c = num("w-c");
+      if (w <= 0 || h <= 0 || c <= 0) return null;
+      area = 2 * (w + h) * c + (ceilOn ? w * h : 0);
+      perimeter = 2 * (w + h);
+      sub = "가로 " + fm(w) + "m × 세로 " + fm(h) + "m · 천장 " + fm(c) + "m";
+    } else {
+      var p = num("w-p");
+      if (p <= 0) return null;
+      var fl = p * 3.3058;
+      area = fl * 2.6 + (ceilOn ? fl : 0);
+      perimeter = 4 * Math.sqrt(fl);
+      sub = fm(p) + "평 → 바닥 " + fm(fl) + "m² (벽면적 2.6배 가정)";
+    }
+    var loss = Math.max(0, num("w-loss"));
+    var cov = state.wallType === "실크" ? (1.06 * 15.5) : (0.93 * 17.75);
+    var rolls = Math.ceil(area * (1 + loss / 100) / cov);
+    var glueKg = area / 5.5;
+    var glueBags = Math.max(1, Math.ceil(glueKg));
+    var baseRolls = Math.ceil(area * 1.05 / 53);
+    var withBase = $("w-base").checked;
+    var spec = state.wallType === "실크" ? "폭 106cm × 15.5m · 1롤 16.4m²" : "폭 93cm × 17.75m · 1롤 16.5m²";
+
+    var rows = [
+      ["도배 면적", fm(area) + " m²"],
+      ["도배풀", "약 " + fm(glueKg) + "kg / 1kg " + glueBags + "포"]
+    ];
+    if (withBase) rows.push(["초배지(부직포)", baseRolls + "롤"]);
+    rows.push(["부자재", "헤라·칼·모서리 마감 1세트"]);
+
+    var lines = [
+      {name: state.wallType + "벽지", spec: spec, qty: rolls + "롤"},
+      {name: "도배풀 (1kg)", spec: "친환경 도배풀", qty: glueBags + "포"}
+    ];
+    if (withBase) lines.push({name:"부직포 초배지", spec:"1.06m × 50m 1롤 53m²", qty: baseRolls + "롤"});
+
+    return {
+      key:"wall", main: rolls, unit:"롤", label: state.wallType + "벽지 필요량",
+      sub: sub + " · 로스 " + fm(loss) + "%",
+      rows: rows, lines: lines,
+      note: "롤 면적 " + fm(cov, 1) + "m² 기준 · 천장 " + (ceilOn ? "포함" : "제외")
+    };
+  }
+
+  /* ── 바닥 계산 ── */
+  function calcFloor(){
+    var area;
+    if (state.floorUnit === "m2"){ area = num("f-area"); }
+    else { area = num("f-p") * 3.3058; }
+    if (area <= 0) return null;
+    var loss = Math.max(0, num("f-loss"));
+    var withLoss = area * (1 + loss / 100);
+    var perimeter = n1(4 * Math.sqrt(area));
+    var rows = [], lines = [], main, unit, label, sub, note;
+
+    if (state.floorMode === "마루"){
+      var boxArea = num("f-box"); if (boxArea <= 0) boxArea = 3.24;
+      var boxes = Math.ceil(withLoss / boxArea);
+      var bond = Math.max(1, Math.ceil(area / 12));
+      main = boxes; unit = "박스"; label = "강마루 필요량";
+      sub = "바닥 " + fm(area) + "m² · 로스 " + fm(loss) + "%";
+      rows = [
+        ["1박스 면적", fm(boxArea, 2) + " m²"],
+        ["실시공 면적", fm(withLoss) + " m² (로스 포함)"],
+        ["걸레받이", "약 " + fm(perimeter) + " m"],
+        ["마루본드", bond + "통 (4kg)"]
+      ];
+      lines = [
+        {name:"강마루", spec:"1박스 " + fm(boxArea,2) + "m²", qty: boxes + "박스"},
+        {name:"걸레받이", spec:"정사각 둘레 추정", qty: "약 " + fm(perimeter) + "m"},
+        {name:"마루본드 (4kg)", spec:"약 12m²/통", qty: bond + "통"}
+      ];
+      note = "1박스 3.24m² ≈ 1평 · 둘레는 정사각 가정";
+    } else {
+      var width = num("f-width"); if (width <= 0) width = 1.8;
+      var len = n1(withLoss / width);
+      var bond2 = Math.max(1, Math.ceil(area / 15));
+      main = len; unit = "m"; label = "장판 필요 길이";
+      sub = "바닥 " + fm(area) + "m² · 폭 " + fm(width) + "m 기준";
+      rows = [
+        ["장판 폭", fm(width) + " m"],
+        ["실시공 면적", fm(withLoss) + " m² (로스 포함)"],
+        ["걸레받이", "약 " + fm(perimeter) + " m"],
+        ["장판본드", bond2 + "통 (4kg)"]
+      ];
+      lines = [
+        {name:"장판", spec:"폭 " + fm(width) + "m 절단", qty: fm(len) + "m"},
+        {name:"걸레받이", spec:"정사각 둘레 추정", qty: "약 " + fm(perimeter) + "m"},
+        {name:"장판본드 (4kg)", spec:"약 15m²/통", qty: bond2 + "통"}
+      ];
+      note = "폭 " + fm(width) + "m 롤에서 " + fm(len) + "m 절단 발주";
+    }
+    return {key:"floor", main: main, unit: unit, label: label, sub: sub, rows: rows, lines: lines, note: note};
+  }
+
+  /* ── 타일 계산 ── */
+  function calcTile(){
+    var area = 0;
+    if (state.tileMode === "area"){
+      area = num("t-area");
+    } else {
+      var w = num("t-w"), h = num("t-h"), cnt = Math.max(1, Math.round(num("t-cnt")) || 1);
+      area = w * h * cnt;
+    }
+    if (area <= 0) return null;
+    var spec = TILE[state.tileSpec];
+    var perBox = Math.max(1, Math.round(num("t-perbox")) || spec.perBox);
+    var loss = Math.max(0, num("t-loss"));
+    var withLoss = area * (1 + loss / 100);
+    var tileA = spec.w * spec.h;
+    var pieces = Math.ceil(withLoss / tileA);
+    var boxes = Math.ceil(pieces / perBox);
+    var bond = Math.max(1, Math.ceil(area / 4.5));
+    var grout = Math.max(1, Math.ceil(area / 20));
+
+    return {
+      key:"tile", main: pieces, unit:"장", label: spec.label + " 타일 필요량",
+      sub: "면적 " + fm(area) + "m² · 로스 " + fm(loss) + "%",
+      rows: [
+        ["규격 / 1장 면적", spec.label + " · " + fm(tileA, 2) + "m²"],
+        ["박스 수", boxes + "박스 (" + perBox + "장/박스)"],
+        ["실시공 면적", fm(withLoss) + " m²"],
+        ["타일본드", bond + "포 (20kg)"],
+        ["줄눈재", grout + "포"]
+      ],
+      lines: [
+        {name:"타일 " + spec.label, spec:"1박스 " + perBox + "장 · " + fm(perBox*tileA,2) + "m²", qty: pieces + "장 (" + boxes + "박스)"},
+        {name:"타일본드 (20kg)", spec:"약 4.5m²/포", qty: bond + "포"},
+        {name:"줄눈재", spec:"약 20m²/포", qty: grout + "포"}
+      ],
+      note: "1장 " + fm(tileA,2) + "m² · " + perBox + "장/박스 기준"
+    };
+  }
+
+  /* ── 페인트 계산 ── */
+  function calcPaint(){
+    var area = num("p-area");
+    if (area <= 0) return null;
+    var coats = Math.max(1, Math.round(num("p-coats")) || 1);
+    var perL = num("p-perl"); if (perL <= 0) perL = 7;
+    var liters = area * coats / perL;
+    var need = n1(liters);
+    var primer = $("p-primer").checked ? n1(area / perL) : 0;
+
+    var remain = need, p18 = 0, p4 = 0, p1 = 0;
+    if (remain >= 18){ p18 = Math.floor(remain / 18); remain -= p18 * 18; }
+    if (remain >= 4){ p4 = Math.floor(remain / 4); remain -= p4 * 4; }
+    if (remain > 0.05){ p1 = Math.ceil(remain); }
+
+    var combi = [];
+    if (p18) combi.push("18L " + p18 + "통");
+    if (p4) combi.push("4L " + p4 + "캔");
+    if (p1) combi.push("1L " + p1 + "캔");
+    if (!combi.length) combi.push("1L 1캔");
+
+    var rollers = Math.max(1, Math.ceil(area / 40));
+    var tapes = Math.max(1, Math.ceil(area / 25));
+
+    var rows = [
+      ["도장 면적 × 횟수", fm(area) + "m² × " + coats + "회"],
+      ["1L 도포량", fm(perL) + " m²/회"],
+      ["캔 조합", combi.join(" + ")]
+    ];
+    if (primer > 0) rows.push(["프라이머(1회)", fm(primer) + " L"]);
+    rows.push(["부자재", "롤러·붓 " + rollers + "세트 · 마스킹테이프 " + tapes + "개"]);
+
+    var lines = [
+      {name:"수성페인트", spec: combi.join(" + ") + " · 총 " + fm(need) + "L", qty: fm(need) + "L"}
+    ];
+    if (primer > 0) lines.push({name:"프라이머", spec:"바탕 처리 1회", qty: fm(primer) + "L"});
+    lines.push({name:"도장 부자재", spec:"롤러·붓 세트 / 마스킹테이프 " + tapes + "개", qty: rollers + "세트"});
+
+    return {
+      key:"paint", main: fm(need), unit:"L", label: "수성페인트 필요량",
+      sub: "면적 " + fm(area) + "m² × " + coats + "회 · 1L " + fm(perL) + "m²",
+      rows: rows, lines: lines,
+      note: "18L 말통 " + p18 + " · 4L " + p4 + " · 1L " + p1 + " 조합"
+    };
+  }
+
+  var CALC = {wall: calcWall, floor: calcFloor, tile: calcTile, paint: calcPaint};
+
+  function renderResult(key, r){
+    var box = $(key + "Res");
+    if (!r){
+      box.innerHTML = '<div class="res-top"><span class="res-num">—</span>' +
+        '<span class="res-label">치수를 입력해 주세요</span></div>' +
+        '<div class="res-sub">값을 넣으면 바로 계산됩니다.</div>';
+      return;
+    }
+    var rows = r.rows.map(function(row){
+      return "<li><span>" + esc(row[0]) + "</span><b>" + esc(row[1]) + "</b></li>";
+    }).join("");
+    box.innerHTML =
+      '<div class="res-top">' +
+        '<span class="res-num">' + esc(r.main) + '</span>' +
+        '<span class="res-unit">' + esc(r.unit) + '</span>' +
+        '<span class="res-label">' + esc(r.label) + '</span>' +
+      '</div>' +
+      '<div class="res-sub">' + esc(r.sub) + '</div>' +
+      '<ul class="res-list">' + rows + '</ul>' +
+      '<div class="res-note">' + esc(r.note || "") + "</div>";
+  }
+
+  function recalcAll(){
+    ["wall","floor","tile","paint"].forEach(function(k){
+      var r = CALC[k]();
+      state.payload[k] = r;
+      renderResult(k, r);
+    });
+  }
+
+  /* ── cart ── */
+  function loadCart(){
+    try {
+      var raw = localStorage.getItem(LS_CART);
+      if (raw){ var arr = JSON.parse(raw); if (Array.isArray(arr)) state.cart = arr; }
+    } catch(e){ state.cart = []; }
+    try {
+      var s = localStorage.getItem(LS_SITE);
+      if (s) $("site").value = s;
+    } catch(e){}
+    renderCart();
+  }
+  function saveCart(){
+    try { localStorage.setItem(LS_CART, JSON.stringify(state.cart)); } catch(e){}
+  }
+  function renderCart(){
+    var n = state.cart.length;
+    $("cbCount").textContent = "발주 목록 " + n + "개";
+    $("sheetCnt").textContent = n;
+    $("cartbar").classList.toggle("show", n > 0);
+    $("cbName").textContent = n ? state.cart[0].name + (n > 1 ? " 외 " + (n-1) + "개" : "") : "담긴 자재가 없습니다";
+    $("copyBtn").disabled = n === 0;
+
+    var list = $("cartList");
+    if (!n){
+      list.innerHTML = '<div class="empty"><b>아직 담긴 자재가 없습니다</b>' +
+        '공종 탭에서 계산한 뒤<br>“발주 목록에 담기”를 눌러 주세요.</div>';
+      return;
+    }
+    list.innerHTML = state.cart.map(function(it, i){
+      return '<div class="cart-item">' +
+        '<div class="ci-main"><div class="ci-name">' + esc(it.name) + '</div>' +
+        '<div class="ci-spec">' + esc(it.spec || "") + '</div></div>' +
+        '<div class="ci-qty">' + esc(it.qty) + '</div>' +
+        '<button class="ci-del" data-del="' + i + '" aria-label="삭제">✕</button>' +
+      '</div>';
+    }).join("");
+  }
+
+  document.addEventListener("click", function(e){
+    var del = e.target.closest("[data-del]");
+    if (del){
+      var i = parseInt(del.dataset.del, 10);
+      var rm = state.cart[i];
+      state.cart.splice(i, 1);
+      saveCart(); renderCart();
+      toast("‘" + (rm ? rm.name : "품목") + "’을 뺐습니다");
+    }
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-add]"), function(btn){
+    btn.addEventListener("click", function(){
+      var key = btn.dataset.add;
+      var r = state.payload[key];
+      if (!r){ toast("치수를 먼저 입력해 주세요", "warn"); return; }
+      var added = 0;
+      r.lines.forEach(function(line){
+        state.cart.push({name:line.name, spec:line.spec || "", qty:line.qty, from:key});
+        added++;
+      });
+      saveCart(); renderCart();
+      toast("✅ 발주 목록에 " + added + "개 품목을 담았습니다", "ok");
+      setTimeout(function(){ $("cartbar").scrollIntoView({block:"nearest", behavior:"smooth"}); }, 120);
+    });
+  });
+
+  function openCart(){
+    renderCart();
+    $("ov").classList.add("show");
+    $("cartSheet").classList.add("show");
+  }
+  function closeCart(){
+    $("ov").classList.remove("show");
+    $("cartSheet").classList.remove("show");
+  }
+  $("openCart").addEventListener("click", openCart);
+  $("closeCart").addEventListener("click", closeCart);
+  $("closeBtn2").addEventListener("click", closeCart);
+  $("ov").addEventListener("click", closeCart);
+
+  $("clearBtn").addEventListener("click", function(){
+    if (!state.cart.length){ toast("이미 비어 있습니다"); return; }
+    state.cart = [];
+    saveCart(); renderCart();
+    toast("목록을 비웠습니다");
+  });
+
+  $("site").addEventListener("input", function(){
+    try { localStorage.setItem(LS_SITE, $("site").value); } catch(e){}
+  });
+
+  function buildText(){
+    var d = new Date();
+    var ymd = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+    var site = ($("site").value || "").trim();
+    var out = ["[메종플러스 자재 발주 요청]"];
+    if (site) out.push("현장: " + site);
+    out.push("일자: " + ymd);
+    out.push("");
+    state.cart.forEach(function(it, i){
+      out.push((i+1) + ". " + it.name + (it.spec ? " (" + it.spec + ")" : "") + " — " + it.qty);
+    });
+    out.push("");
+    out.push("총 " + state.cart.length + "개 품목 · 위 수량으로 발주 부탁드립니다.");
+    out.push("— 메종플러스");
+    return out.join("\n");
+  }
+
+  $("copyBtn").addEventListener("click", function(){
+    if (!state.cart.length){ toast("담긴 자재가 없습니다", "warn"); return; }
+    var text = buildText();
+    var done = function(ok){
+      toast(ok ? "✅ 발주 문자를 복사했습니다" : "복사가 막혔습니다. 길게 눌러 복사해 주세요", ok ? "ok" : "warn");
+    };
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ fallback(); });
+    } else { fallback(); }
+    function fallback(){
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly","");
+        ta.style.position = "fixed"; ta.style.top = "-1000px"; ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select(); ta.setSelectionRange(0, ta.value.length);
+        var ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        done(ok);
+      } catch(e){ done(false); }
+    }
+  });
+
+  /* ── live recalc ── */
+  document.addEventListener("input", function(e){
+    if (e.target.tagName === "INPUT") recalcAll();
+  });
+  document.addEventListener("change", function(e){
+    if (e.target.type === "checkbox") recalcAll();
+  });
+
+  loadCart();
+  recalcAll();
+})();
+</script>
+</body>
+</html>
