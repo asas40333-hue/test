@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>메종플러스 1분 간편 견적기 · 상담용</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  :root{
+    --navy:#1e3a8a; --navy-light:#2563eb; --navy-deep:#0f172a;
+    --gold:#d97706; --gold-light:#f59e0b;
+    --bg:#f5f7fb; --card:#ffffff; --line:#e2e8f0;
+    --ink:#0f172a; --ink-2:#475569; --ink-3:#94a3b8;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;
+    font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--bg);color:var(--ink);line-height:1.45;
+    padding-bottom:104px;font-size:15px;
+    max-width:430px;margin:0 auto;}
+
+  /* ── header ── */
+  header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+    padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .brand{display:flex;align-items:center;gap:9px;min-width:0;}
+  .brand-logo{width:34px;height:34px;flex:none;border-radius:9px;
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;}
+  .brand-title{font-size:15px;font-weight:800;letter-spacing:-.4px;line-height:1.2;}
+  .brand-sub{font-size:10.5px;font-weight:600;color:var(--ink-3);letter-spacing:-.2px;}
+  .h-tag{flex:none;font-size:10.5px;font-weight:800;color:var(--gold);
+    border:1px solid var(--gold);background:rgba(217,119,6,.08);
+    padding:4px 8px;border-radius:20px;letter-spacing:-.2px;}
+
+  /* ── hero ── */
+  .hero{background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);
+    color:#fff;padding:20px 18px 18px;}
+  .hero-badge{display:inline-flex;align-items:center;gap:5px;
+    background:rgba(217,119,6,.22);border:1px solid rgba(245,158,11,.55);
+    color:#fbbf24;font-size:10.5px;font-weight:800;padding:3px 9px;
+    border-radius:6px;letter-spacing:-.2px;margin-bottom:9px;}
+  .hero h1{font-size:21px;font-weight:800;letter-spacing:-.9px;line-height:1.28;}
+  .hero h1 em{font-style:normal;color:#fbbf24;}
+  .hero p{margin-top:7px;font-size:12.5px;color:#cbd5e1;letter-spacing:-.3px;line-height:1.5;}
+
+  /* ── sections ── */
+  main{padding:14px 14px 0;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);padding:15px 14px;margin-bottom:12px;}
+  .card-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .step{width:21px;height:21px;flex:none;border-radius:6px;background:var(--navy);
+    color:#fff;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .card-head h2{font-size:14.5px;font-weight:800;letter-spacing:-.45px;}
+  .card-head .hint{margin-left:auto;font-size:10.5px;color:var(--ink-3);font-weight:600;letter-spacing:-.2px;}
+
+  /* ── 평형 프리셋 ── */
+  .presets{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+  .preset{border:1.5px solid var(--line);background:#fbfcfe;border-radius:12px;
+    padding:11px 4px 9px;text-align:center;cursor:pointer;transition:.15s;
+    min-height:62px;display:flex;flex-direction:column;justify-content:center;gap:2px;}
+  .preset .p-num{font-size:17px;font-weight:800;letter-spacing:-.6px;color:var(--ink);}
+  .preset .p-lbl{font-size:10px;font-weight:700;color:var(--ink-3);letter-spacing:-.3px;}
+  .preset.on{border-color:var(--navy);background:linear-gradient(180deg,#eff4ff,#e5edff);}
+  .preset.on .p-num{color:var(--navy);}
+  .preset.on .p-lbl{color:var(--navy-light);}
+
+  .slider-row{margin-top:14px;}
+  .slider-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;}
+  .slider-top .s-lbl{font-size:11.5px;font-weight:700;color:var(--ink-2);letter-spacing:-.3px;}
+  .slider-top .s-val{font-size:16px;font-weight:800;color:var(--navy);letter-spacing:-.6px;}
+  .slider-top .s-val small{font-size:11px;font-weight:700;color:var(--ink-3);margin-left:2px;}
+  input[type=range]{-webkit-appearance:none;width:100%;height:34px;background:transparent;cursor:pointer;}
+  input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
+    background:linear-gradient(90deg,#1e3a8a 0%,#2563eb var(--fill,40%),#e2e8f0 var(--fill,40%),#e2e8f0 100%);}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-10px;
+    border-radius:50%;background:#fff;border:3px solid var(--navy);
+    box-shadow:0 2px 6px rgba(30,58,138,.3);}
+  input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:#e2e8f0;}
+  input[type=range]::-moz-range-progress{height:6px;border-radius:3px;background:var(--navy);}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;
+    background:#fff;border:3px solid var(--navy);}
+  .scale{display:flex;justify-content:space-between;font-size:9.5px;font-weight:600;
+    color:var(--ink-3);margin-top:-4px;padding:0 2px;}
+
+  /* ── 등급 ── */
+  .grades{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+  .grade{border:1.5px solid var(--line);background:#fbfcfe;border-radius:12px;
+    padding:10px 6px;text-align:center;cursor:pointer;transition:.15s;position:relative;}
+  .grade .g-name{font-size:13px;font-weight:800;letter-spacing:-.4px;color:var(--ink);}
+  .grade .g-desc{font-size:9.5px;font-weight:600;color:var(--ink-3);margin-top:3px;
+    letter-spacing:-.3px;line-height:1.3;}
+  .grade.on{border-color:var(--navy);background:linear-gradient(180deg,#eff4ff,#e5edff);}
+  .grade.on .g-name{color:var(--navy);}
+  .grade.on .g-desc{color:var(--navy-light);}
+  .grade .badge{position:absolute;top:-7px;left:50%;transform:translateX(-50%);
+    background:var(--gold);color:#fff;font-size:8.5px;font-weight:800;
+    padding:1px 6px;border-radius:20px;letter-spacing:-.2px;white-space:nowrap;}
+
+  /* ── 공종 리스트 ── */
+  .item{border-top:1px solid #eef2f7;padding:12px 0 10px;}
+  .item:first-of-type{border-top:none;padding-top:2px;}
+  .item-row{display:flex;align-items:center;gap:10px;}
+  .item-txt{flex:1;min-width:0;}
+  .item-name{font-size:13.5px;font-weight:700;letter-spacing:-.4px;color:var(--ink);}
+  .item-sub{font-size:10.5px;font-weight:600;color:var(--ink-3);letter-spacing:-.3px;margin-top:1px;}
+  .item-amt{font-size:12.5px;font-weight:800;color:var(--navy);letter-spacing:-.4px;
+    min-width:62px;text-align:right;font-variant-numeric:tabular-nums;}
+  .item-amt.off{color:var(--ink-3);font-weight:600;}
+
+  /* 토글 스위치 */
+  .switch{flex:none;width:48px;height:28px;border-radius:20px;background:#cbd5e1;
+    position:relative;transition:.18s;border:none;cursor:pointer;padding:0;}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;
+    border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.18s;}
+  .switch.on{background:var(--navy);}
+  .switch.on::after{left:23px;}
+  .switch:disabled{opacity:.75;cursor:default;}
+  .switch.locked{background:#94a3b8;}
+
+  /* 세그먼트 (창호/바닥) */
+  .seg{display:flex;gap:5px;margin-top:9px;}
+  .seg button{flex:1;min-height:38px;border:1.2px solid var(--line);background:#fbfcfe;
+    border-radius:9px;font-size:11px;font-weight:700;color:var(--ink-2);
+    letter-spacing:-.4px;cursor:pointer;padding:4px 2px;line-height:1.2;transition:.15s;}
+  .seg button.on{border-color:var(--navy);background:var(--navy);color:#fff;}
+  .seg button .sg-sub{display:block;font-size:9px;font-weight:600;opacity:.75;margin-top:1px;}
+
+  /* ── 결과 카드 ── */
+  .result{background:linear-gradient(160deg,#0f172a 0%,#16233f 65%,#1e3a8a 130%);
+    border-radius:18px;padding:18px 16px 16px;color:#fff;margin-bottom:12px;
+    box-shadow:0 10px 26px rgba(15,23,42,.22);border:1px solid #1e293b;}
+  .result-top{display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:10px;}
+  .result-top .r-lbl{font-size:11px;font-weight:800;color:#93c5fd;letter-spacing:.4px;}
+  .result-top .r-pill{font-size:9.5px;font-weight:700;color:#fbbf24;
+    background:rgba(217,119,6,.2);border:1px solid rgba(245,158,11,.45);
+    padding:2px 7px;border-radius:5px;letter-spacing:-.2px;}
+  .r-total{font-size:25px;font-weight:800;letter-spacing:-1.2px;line-height:1.15;
+    font-variant-numeric:tabular-nums;color:#fff;}
+  .r-total .tilde{color:#93c5fd;font-weight:600;margin:0 2px;font-size:20px;}
+  .r-sub{margin-top:6px;font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:-.2px;}
+  .r-sub b{color:#e2e8f0;font-weight:700;}
+
+  .r-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+  .r-box{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+    border-radius:11px;padding:9px 10px;}
+  .r-box .b-lbl{font-size:9.5px;font-weight:700;color:#93c5fd;letter-spacing:-.1px;}
+  .r-box .b-val{font-size:14px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-top:2px;}
+
+  .r-list{margin-top:14px;border-top:1px solid rgba(255,255,255,.12);padding-top:11px;}
+  .r-list-t{font-size:10.5px;font-weight:800;color:#93c5fd;margin-bottom:6px;letter-spacing:-.1px;}
+  .r-line{display:flex;justify-content:space-between;gap:8px;
+    font-size:11.5px;padding:3.5px 0;letter-spacing:-.3px;color:#cbd5e1;}
+  .r-line span:last-child{font-weight:700;color:#f1f5f9;font-variant-numeric:tabular-nums;flex:none;}
+  .r-line.sum{border-top:1px solid rgba(255,255,255,.14);margin-top:5px;padding-top:7px;
+    font-size:12.5px;font-weight:800;color:#fff;}
+
+  .r-actions{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:14px;}
+  .btn-copy{min-height:52px;border-radius:12px;border:none;cursor:pointer;
+    background:linear-gradient(135deg,#f59e0b,#d97706);color:#1a1205;
+    font-size:14.5px;font-weight:800;letter-spacing:-.4px;
+    box-shadow:0 4px 12px rgba(217,119,6,.35);}
+  .btn-copy:active{transform:scale(.985);}
+  .btn-reset{min-height:52px;width:58px;border-radius:12px;cursor:pointer;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);
+    color:#e2e8f0;font-size:11px;font-weight:700;letter-spacing:-.3px;}
+
+  .foot{padding:2px 4px 18px;text-align:center;}
+  .foot p{font-size:10px;font-weight:600;color:var(--ink-3);line-height:1.6;letter-spacing:-.2px;}
+  .foot .biz{margin-top:6px;font-size:9.5px;color:#b6c0cd;letter-spacing:-.1px;}
+
+  /* ── 하단 고정 바 ── */
+  .dock{position:fixed;bottom:0;left:0;right:0;z-index:60;
+    max-width:430px;margin:0 auto;
+    background:rgba(255,255,255,.98);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);
+    padding:9px 14px calc(9px + env(safe-area-inset-bottom));
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 -6px 20px rgba(15,23,42,.07);}
+  .dock-txt{flex:1;min-width:0;}
+  .dock-lbl{font-size:9.5px;font-weight:700;color:var(--ink-3);letter-spacing:-.1px;}
+  .dock-val{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.9px;
+    font-variant-numeric:tabular-nums;line-height:1.2;}
+  .dock-val .tilde{color:#94a3b8;font-weight:600;margin:0 1px;font-size:15px;}
+  .dock-btn{flex:none;min-height:46px;padding:0 18px;border-radius:11px;border:none;
+    background:var(--navy);color:#fff;font-size:13px;font-weight:800;
+    letter-spacing:-.4px;cursor:pointer;box-shadow:0 3px 10px rgba(30,58,138,.28);}
+
+  /* ── 토스트 ── */
+  .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));
+    transform:translate(-50%,14px);z-index:90;
+    background:rgba(15,23,42,.94);color:#fff;font-size:12.5px;font-weight:700;
+    padding:10px 18px;border-radius:24px;letter-spacing:-.3px;
+    opacity:0;pointer-events:none;transition:.22s;white-space:nowrap;
+    box-shadow:0 8px 20px rgba(0,0,0,.28);}
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+
+  .flash{animation:flash .55s ease;}
+  @keyframes flash{0%{color:#fbbf24;}100%{color:inherit;}}
+  @media (max-width:359px){
+    .preset .p-num{font-size:15px;} .r-total{font-size:22px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-logo">M</div>
+    <div>
+      <div class="brand-title">메종플러스</div>
+      <div class="brand-sub">30년 실내 인테리어 · 대전</div>
+    </div>
+  </div>
+  <div class="h-tag">상담용</div>
+</header>
+
+<section class="hero">
+  <div class="hero-badge">⏱ 1분 간편 견적</div>
+  <h1>평형과 등급만 눌러도<br><em>공사비 범위</em>가 바로 나옵니다</h1>
+  <p>현장 실측 전 상담용 참고 금액입니다. 부가세 별도·공급가액 기준.</p>
+</section>
+
+<main>
+  <!-- ① 평형 -->
+  <section class="card">
+    <div class="card-head">
+      <div class="step">1</div>
+      <h2>평형 선택</h2>
+      <span class="hint">전용면적 기준</span>
+    </div>
+    <div class="presets" id="presets">
+      <button class="preset" data-p="24" type="button">
+        <span class="p-num">24평</span><span class="p-lbl">20평형대</span>
+      </button>
+      <button class="preset on" data-p="32" type="button">
+        <span class="p-num">32평</span><span class="p-lbl">30평형대 · 기본</span>
+      </button>
+      <button class="preset" data-p="44" type="button">
+        <span class="p-num">44평</span><span class="p-lbl">40평형대</span>
+      </button>
+    </div>
+    <div class="slider-row">
+      <div class="slider-top">
+        <span class="s-lbl">직접 조절</span>
+        <span class="s-val" id="pyeongVal">32<small>평</small></span>
+      </div>
+      <input type="range" id="pyeong" min="20" max="50" step="1" value="32" aria-label="평형">
+      <div class="scale"><span>20평</span><span>35평</span><span>50평</span></div>
+    </div>
+  </section>
+
+  <!-- ② 등급 -->
+  <section class="card">
+    <div class="card-head">
+      <div class="step">2</div>
+      <h2>자재 등급</h2>
+      <span class="hint">전체 자재 기준</span>
+    </div>
+    <div class="grades" id="grades">
+      <button class="grade" data-g="value" type="button">
+        <div class="g-name">실속형</div>
+        <div class="g-desc">가성비<br>재건축 대비</div>
+      </button>
+      <button class="grade on" data-g="standard" type="button">
+        <span class="badge">추천</span>
+        <div class="g-name">표준형</div>
+        <div class="g-desc">국민 자재<br>실거주 최적</div>
+      </button>
+      <button class="grade" data-g="premium" type="button">
+        <div class="g-name">고급형</div>
+        <div class="g-desc">프리미엄<br>수입·명품</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ③ 공종 -->
+  <section class="card">
+    <div class="card-head">
+      <div class="step">3</div>
+      <h2>공종 선택</h2>
+      <span class="hint">필요한 것만 켜기</span>
+    </div>
+
+    <!-- 창호 -->
+    <div class="item">
+      <div class="item-row">
+        <div class="item-txt">
+          <div class="item-name">창호 교체</div>
+          <div class="item-sub">LX지인 뷰프레임 / 일반</div>
+        </div>
+        <div class="item-amt" id="amt-window">1,152만</div>
+      </div>
+      <div class="seg" id="seg-window">
+        <button data-v="none" type="button">미포함</button>
+        <button data-v="partial" type="button">부분<span class="sg-sub">거실·안방</span></button>
+        <button data-v="full" class="on" type="button">전체 교체</button>
+      </div>
+    </div>
+
+    <!-- 욕실 -->
+    <div class="item">
+      <div class="item-row">
+        <div class="item-txt">
+          <div class="item-name">공용(거실) 욕실</div>
+          <div class="item-sub">타일·도기·수전·방수</div>
+        </div>
+        <div class="item-amt" id="amt-bath1">420만</div>
+        <button class="switch on" id="sw-bath1" type="button" role="switch" aria-checked="true" aria-label="공용 욕실"></button>
+      </div>
+    </div>
+    <div class="item">
+      <div class="item-row">
+        <div class="item-txt">
+          <div class="item-name">안방 욕실</div>
+          <div class="item-sub">타일·도기·수전·방수</div>
+        </div>
+        <div class="item-amt" id="amt-bath2">420만</div>
+        <button class="switch on" id="sw-bath2" type="button" role="switch" aria-checked="true" aria-label="안방 욕실"></button>
+      </div>
+    </div>
+
+    <!-- 도배 -->
+    <div class="item">
+      <div class="item-row">
+        <div class="item-txt">
+          <div class="item-name">도배</div>
+          <div class="item-sub">실크벽지 · 서울벽지</div>
+        </div>
+        <div class="item-amt" id="amt-paper">304만</div>
+        <button class="switch on" id="sw-paper" type="button" role="switch" aria-checked="true" aria-label="도배"></button>
+      </div>
+    </div>
+
+    <!-- 바닥 -->
+    <div class="item">
+      <div class="item-row">
+        <div class="item-txt">
+          <div class="item-name">바닥재</div>
+          <div class="item-sub" id="floorSub">KCC 장판 2.7T</div>
+        </div>
+        <div class="item-amt" id="amt-floor">336만</div>
+        <button class="switch on" id="sw-floor" type="button" role="switch" aria-checked="true" aria-label="바닥재"></button>
+      </div>
+      <div class="seg" id="seg-floor">
+        <button data-v="sheet" class="on" type="button">장판 2.7T<span class="sg-sub">KCC 숲</span></button>
+        <button data-v="maru" type="button">강마루<span class="sg-sub">2.5T 이상</span></button>
+      </div>
+    </div>
+
+    <!-- 주방 -->
+    <div class="item">
+      <div class="item-row">
+        <div class="item-txt">
+          <div class="item-name">주방 싱크대</div>
+          <div class="item-sub">PET 무광 · 상·하부</div>
+        </div>
+        <div class="item-amt" id="amt-kitchen">585만</div>
+        <button class="switch on" id="sw-kitchen" type="button" role="switch" aria-checked="true" aria-label="주방"></button>
+      </div>
+    </div>
+
+    <!-- 수납 -->
+    <div class="item">
+      <div class="item-row">
+        <div class="item-txt">
+          <div class="item-name">신발장 · 붙박이장</div>
+          <div class="item-sub">현관·안방·드레스룸</div>
+        </div>
+        <div class="item-amt" id="amt-storage">496만</div>
+        <button class="switch on" id="sw-storage" type="button" role="switch" aria-checked="true" aria-label="수납"></button>
+      </div>
+    </div>
+
+    <!-- 도어 -->
+    <div class="item">
+      <div class="item-row">
+        <div class="item-txt">
+          <div class="item-name">도어 · 문틀</div>
+          <div class="item-sub">ABS / 필름 마감</div>
+        </div>
+        <div class="item-amt" id="amt-door">210만</div>
+        <button class="switch on" id="sw-door" type="button" role="switch" aria-checked="true" aria-label="도어"></button>
+      </div>
+    </div>
+
+    <!-- 조명 -->
+    <div class="item">
+      <div class="item-row">
+        <div class="item-txt">
+          <div class="item-name">조명 · 배선</div>
+          <div class="item-sub">매립등 · 스위치 교체</div>
+        </div>
+        <div class="item-amt" id="amt-light">454만</div>
+        <button class="switch on" id="sw-light" type="button" role="switch" aria-checked="true" aria-label="조명"></button>
+      </div>
+    </div>
+
+    <!-- 철거 -->
+    <div class="item">
+      <div class="item-row">
+        <div class="item-txt">
+          <div class="item-name">철거 · 폐기물 · 보양</div>
+          <div class="item-sub">기본 포함 (해제 불가)</div>
+        </div>
+        <div class="item-amt" id="amt-demol">320만</div>
+        <button class="switch on locked" type="button" role="switch" aria-checked="true" aria-label="철거 기본 포함" disabled></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 결과 -->
+  <section class="result" id="result">
+    <div class="result-top">
+      <span class="r-lbl">예상 공사비</span>
+      <span class="r-pill">부가세 별도</span>
+    </div>
+    <div class="r-total" id="rTotal">약 4,500만 ~ 5,000만 원</div>
+    <div class="r-sub" id="rSub">부가세 포함 시 약 <b>4,950만 ~ 5,500만 원</b> · 표준형 기준</div>
+
+    <div class="r-grid">
+      <div class="r-box">
+        <div class="b-lbl">예상 공사 기간</div>
+        <div class="b-val" id="rPeriod">약 5~6주</div>
+      </div>
+      <div class="r-box">
+        <div class="b-lbl">평당 단가</div>
+        <div class="b-val" id="rPerPyeong">평당 약 147만</div>
+      </div>
+    </div>
+
+    <div class="r-list">
+      <div class="r-list-t">공종별 내역 (공급가액)</div>
+      <div id="rLines"></div>
+      <div class="r-line sum" id="rSum">
+        <span>공급가액 합계</span><span id="rSumVal">4,699만</span>
+      </div>
+    </div>
+
+    <div class="r-actions">
+      <button class="btn-copy" id="btnCopyAll" type="button">📋 견적 요약 복사하기</button>
+      <button class="btn-reset" id="btnReset" type="button">초기화</button>
+    </div>
+  </section>
+
+  <div class="foot">
+    <p>본 견적은 상담용 참고 금액이며, 현장 실측·자재 확정 후<br>정식 견적서로 확정됩니다. (부가세 별도)</p>
+    <p class="biz">메종플러스 · 대표 김성수 · 대전 중구 유천로 95-1<br>사업자등록번호 305-17-39368</p>
+  </div>
+</main>
+
+<!-- 하단 고정 바 -->
+<div class="dock">
+  <div class="dock-txt">
+    <div class="dock-lbl">총 예상 공사비 (VAT 별도)</div>
+    <div class="dock-val" id="dockVal">4,500만<span class="tilde">~</span>5,000만</div>
+  </div>
+  <button class="dock-btn" id="btnCopyDock" type="button">요약 복사</button>
+</div>
+
+<div class="toast" id="toast">복사되었습니다</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── 단가표 (표준형 · 만원 단위) ──
+     평당 단가 + 고정 단가. 31평 표준 전공종 ≈ 4,600만 원대 중후반 감각. */
+  var P = {
+    windowFull: 36,      // 만원 / 평
+    windowPart: 20,      // 만원 / 평
+    bath: 420,           // 만원 / 개
+    paper: 9.5,          // 만원 / 평
+    floorSheet: 10.5,    // 만원 / 평 (장판 2.7T)
+    floorMaru: 19,       // 만원 / 평 (강마루)
+    kitchen: 580,        // 만원 (기준 31평)
+    storage: 15.5,       // 만원 / 평
+    door: 210,           // 만원 (기준 31평)
+    light: 14.2,         // 만원 / 평
+    demol: 10            // 만원 / 평 (등급 계수 미적용)
+  };
+  var GR = { value:{f:0.84, name:"실속형", day:-1.5},
+             standard:{f:1.00, name:"표준형", day:0},
+             premium:{f:1.30, name:"고급형", day:2} };
+  var DEF = { pyeong:32, grade:"standard",
+              window:"full", bath1:true, bath2:true, paper:true,
+              floor:true, floorType:"sheet", kitchen:true,
+              storage:true, door:true, light:true };
+
+  var st = JSON.parse(JSON.stringify(DEF));
+  var el = function(id){ return document.getElementById(id); };
+  var fmt = function(n){ return Math.round(n).toLocaleString("ko-KR"); };
+
+  function manLabel(v){
+    v = Math.round(v);
+    if (v >= 10000){
+      var eok = Math.floor(v/10000), rest = v%10000;
+      return eok + "억" + (rest ? " " + fmt(rest) + "만" : "");
+    }
+    return fmt(v) + "만";
+  }
+
+  /* ── 계산 ── */
+  function calc(){
+    var p = st.pyeong, g = GR[st.grade].f;
+    var sf = 0.9 + 0.1 * (p/31);     // 고정 단가 항목(주방·도어)의 평형 보정
+    var rows = [];
+
+    if (st.window === "full")
+      rows.push({ k:"창호", n:"창호 전체 교체 (LX지인 뷰프레임)", a:p*P.windowFull*g });
+    else if (st.window === "partial")
+      rows.push({ k:"창호", n:"창호 부분 교체 (거실·안방)", a:p*P.windowPart*g });
+
+    if (st.bath1) rows.push({ k:"욕실", n:"공용(거실) 욕실", a:P.bath*g });
+    if (st.bath2) rows.push({ k:"욕실", n:"안방 욕실", a:P.bath*g });
+    if (st.paper) rows.push({ k:"도배", n:"도배 (실크벽지)", a:p*P.paper*g });
+    if (st.floor) rows.push({
+      k:"바닥", n:(st.floorType === "maru" ? "바닥 강마루" : "바닥 장판 2.7T"),
+      a:p*(st.floorType === "maru" ? P.floorMaru : P.floorSheet)*g });
+    if (st.kitchen) rows.push({ k:"주방", n:"주방 싱크대 (PET 무광)", a:P.kitchen*sf*g });
+    if (st.storage) rows.push({ k:"수납", n:"신발장·붙박이장", a:p*P.storage*g });
+    if (st.door) rows.push({ k:"도어", n:"도어·문틀 (ABS/필름)", a:P.door*sf*g });
+    if (st.light) rows.push({ k:"조명", n:"조명·배선 (매립등)", a:p*P.light*g });
+    rows.push({ k:"철거", n:"철거·폐기물·보양", a:p*P.demol });
+
+    var sum = rows.reduce(function(s,r){ return s + r.a; }, 0);
+
+    // 공사 기간
+    var days = 8 + p*0.45;
+    if (st.window === "full") days += 4; else if (st.window === "partial") days += 2;
+    if (st.bath1) days += 1.5;
+    if (st.bath2) days += 1.5;
+    if (st.paper) days += 0.5;
+    if (st.floor) days += 1.5;
+    if (st.kitchen) days += 2;
+    if (st.storage) days += 1.5;
+    if (st.door) days += 0.5;
+    if (st.light) days += 0.5;
+    days += GR[st.grade].day;
+    var wLo = Math.max(2, Math.round(days/7 - 0.5));
+    var wHi = Math.max(wLo, Math.round(days/7 + 0.7));
+
+    return { rows:rows, sum:sum, wLo:wLo, wHi:wHi,
+             lo:Math.floor(sum*0.96/50)*50, hi:Math.ceil(sum*1.06/50)*50 };
+  }
+
+  /* ── 화면 반영 ── */
+  function render(){
+    var p = st.pyeong, g = GR[st.grade].f;
+    var sf = 0.9 + 0.1 * (p/31);
+    var r = calc();
+
+    // 평형
+    el("pyeongVal").innerHTML = p + "<small>평</small>";
+    el("pyeong").value = p;
+    el("pyeong").style.setProperty("--fill", ((p-20)/30*100).toFixed(1) + "%");
+    [].forEach.call(document.querySelectorAll("#presets .preset"), function(b){
+      b.classList.toggle("on", +b.dataset.p === p);
+    });
+
+    // 등급
+    [].forEach.call(document.querySelectorAll("#grades .grade"), function(b){
+      b.classList.toggle("on", b.dataset.g === st.grade);
+    });
+
+    // 공종 금액
+    var amt = {
+      "amt-window": st.window === "full" ? p*P.windowFull*g
+                   : st.window === "partial" ? p*P.windowPart*g : 0,
+      "amt-bath1": st.bath1 ? P.bath*g : 0,
+      "amt-bath2": st.bath2 ? P.bath*g : 0,
+      "amt-paper": st.paper ? p*P.paper*g : 0,
+      "amt-floor": st.floor ? p*(st.floorType === "maru" ? P.floorMaru : P.floorSheet)*g : 0,
+      "amt-kitchen": st.kitchen ? P.kitchen*sf*g : 0,
+      "amt-storage": st.storage ? p*P.storage*g : 0,
+      "amt-door": st.door ? P.door*sf*g : 0,
+      "amt-light": st.light ? p*P.light*g : 0,
+      "amt-demol": p*P.demol
+    };
+    Object.keys(amt).forEach(function(id){
+      var n = el(id); if (!n) return;
+      n.textContent = amt[id] ? manLabel(amt[id]) : "미포함";
+      n.classList.toggle("off", !amt[id]);
+    });
+
+    // 세그먼트 상태
+    [].forEach.call(document.querySelectorAll("#seg-window button"), function(b){
+      b.classList.toggle("on", b.dataset.v === st.window);
+    });
+    [].forEach.call(document.querySelectorAll("#seg-floor button"), function(b){
+      b.classList.toggle("on", b.dataset.v === st.floorType);
+    });
+    el("seg-floor").style.opacity = st.floor ? 1 : .45;
+    el("seg-floor").style.pointerEvents = st.floor ? "auto" : "none";
+    el("floorSub").textContent = st.floorType === "maru" ? "강마루 2.5T 이상" : "KCC 장판 2.7T";
+
+    // 스위치
+    [["sw-bath1","bath1"],["sw-bath2","bath2"],["sw-paper","paper"],
+     ["sw-floor","floor"],["sw-kitchen","kitchen"],["sw-storage","storage"],
+     ["sw-door","door"],["sw-light","light"]].forEach(function(pair){
+      var b = el(pair[0]);
+      b.classList.toggle("on", !!st[pair[1]]);
+      b.setAttribute("aria-checked", st[pair[1]] ? "true" : "false");
+    });
+
+    // 결과
+    el("rTotal").innerHTML = "약 " + manLabel(r.lo) + '<span class="tilde">~</span>' + manLabel(r.hi) + " 원";
+    el("rSub").innerHTML = "부가세 포함 시 약 <b>" + manLabel(r.lo*1.1) + " ~ " + manLabel(r.hi*1.1) +
+      "</b> · " + GR[st.grade].name + " · " + p + "평 기준";
+    el("rPeriod").textContent = "약 " + r.wLo + "~" + r.wHi + "주";
+    el("rPerPyeong").textContent = "평당 약 " + fmt(r.sum/p) + "만";
+
+    var html = "";
+    r.rows.forEach(function(row){
+      html += '<div class="r-line"><span>' + row.n + '</span><span>' +
+              manLabel(row.a) + '</span></div>';
+    });
+    el("rLines").innerHTML = html;
+    el("rSumVal").textContent = manLabel(r.sum);
+
+    el("dockVal").innerHTML = manLabel(r.lo) +
+      '<span class="tilde">~</span>' + manLabel(r.hi);
+
+    el("rTotal").classList.remove("flash");
+    void el("rTotal").offsetWidth;
+    el("rTotal").classList.add("flash");
+  }
+
+  /* ── 복사 텍스트 ── */
+  function summaryText(){
+    var r = calc(), p = st.pyeong;
+    var on = [];
+    if (st.window === "full") on.push("창호 전체 교체");
+    else if (st.window === "partial") on.push("창호 부분 교체(거실·안방)");
+    else on.push("창호 미포함");
+    if (st.bath1) on.push("공용욕실");
+    if (st.bath2) on.push("안방욕실");
+    if (st.paper) on.push("실크벽지");
+    if (st.floor) on.push(st.floorType === "maru" ? "강마루" : "장판 2.7T");
+    if (st.kitchen) on.push("주방(PET 무광)");
+    if (st.storage) on.push("신발장·붙박이장");
+    if (st.door) on.push("도어·문틀");
+    if (st.light) on.push("조명·배선");
+    on.push("철거·폐기물 포함");
+
+    var L = [];
+    L.push("[메종플러스 간편 견적]");
+    L.push("· 평형 : " + p + "평 (" + (p<=26?"20평형대":p<=36?"30평형대":"40평형대") + ")");
+    L.push("· 자재 : " + GR[st.grade].name);
+    L.push("· 공종 : " + on.join(" / "));
+    L.push("· 예상 금액 : 약 " + manLabel(r.lo) + " ~ " + manLabel(r.hi) + " 원");
+    L.push("  (부가세 별도 · 공급가액 기준 / 부가세 포함 약 " + manLabel(r.lo*1.1) + " ~ " + manLabel(r.hi*1.1) + " 원)");
+    L.push("· 예상 기간 : 약 " + r.wLo + "~" + r.wHi + "주 (철거~마감 순차 진행 기준)");
+    L.push("");
+    L.push("[공종별 내역 · 공급가액]");
+    r.rows.forEach(function(row){
+      L.push("· " + row.n + " : " + manLabel(row.a) + "원");
+    });
+    L.push("· 합계 : " + manLabel(r.sum) + "원 (부가세 별도)");
+    L.push("");
+    L.push("※ 현장 실측과 자재 확정 후 정식 견적서로 안내드립니다.");
+    L.push("메종플러스 김성수 · 대전 중구 유천로 95-1");
+    return L.join("\n");
+  }
+
+  var toastTimer = null;
+  function toast(msg){
+    var t = el("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 1900);
+  }
+
+  function copySummary(){
+    var text = summaryText();
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch(e) { ok = false; }
+      document.body.removeChild(ta);
+      toast(ok ? "✅ 견적 요약을 복사했습니다" : "복사가 막혔습니다. 길게 눌러 복사해 주세요");
+    }
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text)
+        .then(function(){ toast("✅ 견적 요약을 복사했습니다"); })
+        .catch(fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  /* ── 이벤트 ── */
+  el("presets").addEventListener("click", function(e){
+    var b = e.target.closest(".preset"); if (!b) return;
+    st.pyeong = +b.dataset.p; render();
+  });
+  el("pyeong").addEventListener("input", function(e){
+    st.pyeong = +e.target.value; render();
+  });
+  el("grades").addEventListener("click", function(e){
+    var b = e.target.closest(".grade"); if (!b) return;
+    st.grade = b.dataset.g; render();
+  });
+  el("seg-window").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if (!b) return;
+    st.window = b.dataset.v; render();
+  });
+  el("seg-floor").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if (!b) return;
+    st.floorType = b.dataset.v; render();
+  });
+  [["sw-bath1","bath1"],["sw-bath2","bath2"],["sw-paper","paper"],
+   ["sw-floor","floor"],["sw-kitchen","kitchen"],["sw-storage","storage"],
+   ["sw-door","door"],["sw-light","light"]].forEach(function(pair){
+    el(pair[0]).addEventListener("click", function(){
+      st[pair[1]] = !st[pair[1]]; render();
+    });
+  });
+  el("btnCopyAll").addEventListener("click", copySummary);
+  el("btnCopyDock").addEventListener("click", copySummary);
+  el("btnReset").addEventListener("click", function(){
+    st = JSON.parse(JSON.stringify(DEF));
+    render();
+    toast("기본 조건으로 초기화했습니다");
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
