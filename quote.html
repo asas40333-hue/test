@@ -543,8 +543,9 @@
     if (st.door) days += 0.5;
     if (st.light) days += 0.5;
     days += GR[st.grade].day;
-    var wLo = Math.max(2, Math.round(days/7 - 0.5));
-    var wHi = Math.max(wLo, Math.round(days/7 + 0.7));
+    var wk = days/7;
+    var wLo = Math.max(2, Math.floor(wk));
+    var wHi = (wk - Math.floor(wk) < 0.25) ? wLo : wLo + 1;
 
     return { rows:rows, sum:sum, wLo:wLo, wHi:wHi,
              lo:Math.floor(sum*0.96/50)*50, hi:Math.ceil(sum*1.06/50)*50 };
@@ -613,7 +614,7 @@
     el("rTotal").innerHTML = "약 " + manLabel(r.lo) + '<span class="tilde">~</span>' + manLabel(r.hi) + " 원";
     el("rSub").innerHTML = "부가세 포함 시 약 <b>" + manLabel(r.lo*1.1) + " ~ " + manLabel(r.hi*1.1) +
       "</b> · " + GR[st.grade].name + " · " + p + "평 기준";
-    el("rPeriod").textContent = "약 " + r.wLo + "~" + r.wHi + "주";
+    el("rPeriod").textContent = (r.wLo === r.wHi) ? "약 " + r.wLo + "주" : "약 " + r.wLo + "~" + r.wHi + "주";
     el("rPerPyeong").textContent = "평당 약 " + fmt(r.sum/p) + "만";
 
     var html = "";
@@ -656,7 +657,7 @@
     L.push("· 공종 : " + on.join(" / "));
     L.push("· 예상 금액 : 약 " + manLabel(r.lo) + " ~ " + manLabel(r.hi) + " 원");
     L.push("  (부가세 별도 · 공급가액 기준 / 부가세 포함 약 " + manLabel(r.lo*1.1) + " ~ " + manLabel(r.hi*1.1) + " 원)");
-    L.push("· 예상 기간 : 약 " + r.wLo + "~" + r.wHi + "주 (철거~마감 순차 진행 기준)");
+    L.push("· 예상 기간 : " + (r.wLo === r.wHi ? "약 " + r.wLo + "주" : "약 " + r.wLo + "~" + r.wHi + "주") + " (철거~마감 순차 진행 기준)");
     L.push("");
     L.push("[공종별 내역 · 공급가액]");
     r.rows.forEach(function(row){
