@@ -206,6 +206,9 @@
   .gen-note .dots i:nth-child(3){animation-delay:.4s}
   @keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
   .big-make{font-size:19px;min-height:64px}
+  .lock-row{display:flex;align-items:center;gap:8px;padding:12px 15px;color:#9AA8B8;font-size:14px;font-weight:700;letter-spacing:-.2px}
+  .lock-row .lock-ico{font-size:16px}
+  .step.locked{background:#FAF8F4;border-style:dashed}
   .step.done .step-title{color:var(--emerald-deep)}
   .tip{
     display:flex;gap:7px;margin-top:10px;padding:10px 12px;border-radius:12px;
@@ -1116,6 +1119,11 @@ function stepCardHTML(i,s,p){
     </button>`;
   if(done && !open){
     return `<div class="step done" data-i="${i}">${headHTML(true)}</div>`;
+  }
+  if(!done && !open){
+    return `<div class="step locked" data-i="${i}">
+      <div class="lock-row"><span class="lock-ico">🔒</span><span>${i+1}단계 · 위 단계를 끝내면 열려요</span></div>
+    </div>`;
   }
   let extra='';
   if(i===0 && !done){
