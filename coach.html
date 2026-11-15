@@ -1034,7 +1034,7 @@ function renderPractice(){
             <div class="cr-day"><b>${i+1}</b><span>일차</span></div>
             <div class="cr-tx">
               <div class="cr-title">${i===0?m.title:t}</div>
-              <div class="cr-meta">${isDone?'완료':'15분 · 3단계'}</div>
+              <div class="cr-meta">15분 · 3단계</div>
             </div>
             <span class="cr-tag">${isDone?'완료':'예정'}</span>
           </div>`;
@@ -1482,10 +1482,20 @@ document.addEventListener('click',e=>{
   if(t){ showTab(t.dataset.tab); }
 });
 
+function restoreToday(){
+  if(pr.completed || pr.output) return;
+  const r=S.records.find(x=>x.date===todayStr());
+  if(!r) return;
+  pr.stepDone=[true,true,true];
+  pr.output={ title:r.title, lines:r.lines||[] };
+  pr.name=r.name||'';
+  pr.completed=true;
+}
 function boot(){
   updateStreakChip();
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t.dataset.tab==='practice'));
   if(S.profile){
+    restoreToday();
     showView('practice'); renderPractice();
   }else{
     startOnboarding(false);
