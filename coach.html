@@ -186,7 +186,26 @@
   .step-kicker{font-size:13px;font-weight:800;color:var(--emerald-deep);letter-spacing:-.2px}
   .step-title{font-size:18px;font-weight:800;letter-spacing:-.55px;line-height:1.38;margin-top:1px}
   .step-body{padding:0 15px 16px}
-  .step-desc{font-size:16px;color:var(--ink-2);line-height:1.68;letter-spacing:-.3px}
+  .step-desc-lg{font-size:18px;font-weight:700;color:var(--ink);line-height:1.62;letter-spacing:-.35px}
+  .step-reopen{font-size:13px;font-weight:800;color:#9AA8B8;flex:none;align-self:center}
+  .step-close{min-height:44px;font-size:14.5px;border-radius:11px}
+  .feat-label{font-size:15px;font-weight:800;color:var(--ink-2);margin:13px 0 7px;letter-spacing:-.3px}
+  .feat-wrap{display:flex;flex-wrap:wrap;gap:7px}
+  .feat{
+    min-height:46px;padding:9px 13px;border-radius:12px;border:2px solid var(--line);
+    background:#fff;font-size:15.5px;font-weight:800;color:var(--ink-2);letter-spacing:-.3px;
+  }
+  .feat.sel{border-color:var(--emerald);background:var(--emerald-soft);color:var(--emerald-deep)}
+  .gen-note{
+    display:flex;align-items:center;justify-content:center;gap:10px;min-height:62px;
+    border-radius:16px;background:var(--emerald-soft);border:1.5px solid #BFE6D6;
+    color:var(--emerald-deep);font-size:17px;font-weight:800;letter-spacing:-.3px;
+  }
+  .gen-note .dots i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--emerald);margin:0 2px;animation:blink 1s infinite}
+  .gen-note .dots i:nth-child(2){animation-delay:.2s}
+  .gen-note .dots i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+  .big-make{font-size:19px;min-height:64px}
   .step.done .step-title{color:var(--emerald-deep)}
   .tip{
     display:flex;gap:7px;margin-top:10px;padding:10px 12px;border-radius:12px;
@@ -707,7 +726,7 @@ const HELP_TOPICS = [
    ══════════════════════════════════════════ */
 const KEY='ongi-coach-v1';
 let S = loadState();
-let pr = { stepDone:[false,false,false], output:null, name:'', completed:false };
+let pr = { stepDone:[false,false,false], output:null, name:'', completed:false, feature:'', openStep:0, generating:false };
 let onb = { q:0, field:null, level:null, goal:null, editing:false };
 let helpAns = null, helpQ = '';
 let activeTab = 'practice';
@@ -889,7 +908,7 @@ function bindSummary(){
     S.profile = { field:onb.field, level:onb.level, goal:onb.goal };
     if(!S.startedAt) S.startedAt = todayStr();
     saveState();
-    pr = { stepDone:[false,false,false], output:null, name:'', completed:false };
+    pr = { stepDone:[false,false,false], output:null, name:'', completed:false, feature:'', openStep:0, generating:false };
     restoreToday();
     showTab('practice');
     toast(wasSame?'코스를 다시 시작합니다':'나만의 코스가 만들어졌어요!');
@@ -934,37 +953,25 @@ function updateStreakChip(){
 /* ══════════════════════════════════════════
    실습 탭
    ══════════════════════════════════════════ */
+const FEATURES = {
+  interior:['20년 경력 실속 시공','정직하고 알기 쉬운 견적','마감까지 깔끔한 마무리'],
+  store:['매일 아침 끓이는 국물','정 많은 손맛','손님 챙기는 인심'],
+  retiree:['늦게 시작한 즐거운 취미','건강한 아침 루틴','새로운 인연'],
+  office:['꼼꼼한 준비','빠른 보고','따뜻한 존댓말']
+};
 function buildSteps(p){
   const f=FIELDS[p.field];
-  const lv=p.level;
-  const s1={
-    basic:{t:'휴대폰에서 챗GPT 열기',
-      d:'홈 화면을 위로 밀면 나오는 앱 목록에서 초록색 동그라미 로고의 ChatGPT를 찾아 눌러 주세요. 없으면 앱스토어(아이폰)나 플레이스토어(안드로이드)에서 "챗GPT"를 검색해 설치하시면 됩니다.',
-      tip:'이미 쓰시는 다른 AI가 있으면 그것을 열어도 괜찮습니다.'},
-    mid:{t:'챗GPT에 들어가 새 대화 열기',
-      d:'챗GPT 앱이나 chatgpt.com을 열고, 화면 위쪽의 [새 대화]를 눌러 빈 화면을 만드세요. 아래쪽에 "무엇이든 물어보세요"라는 입력창이 보이면 준비된 것입니다.',
-      tip:'로그인이 안 되면 가입할 때 쓴 이메일을 먼저 확인해 보세요.'},
-    ai:{t:'쓰시는 AI 도구에서 새 대화 시작',
-      d:'챗GPT·클로드 중 편한 도구를 열고 새 대화를 시작하세요. 오늘은 글쓰기라 어느 쪽이든 결과가 비슷합니다.',
-      tip:'답이 너무 길면 "짧게"라고 한 번 더 말하면 됩니다.'}
-  }[lv];
-  const s2={
-    basic:{t:'준비된 질문을 복사해 붙여넣기',
-      d:'아래 상자의 [질문 복사] 버튼을 누르세요. 그다음 챗GPT 입력창을 손가락으로 길게 누르면 [붙여넣기]가 나옵니다. 그것을 누르고, 오른쪽 아래 종이비행기 모양을 누르면 AI가 답을 씁니다.',
-      tip:'글자가 잘못 붙었으면 입력창 안의 X를 눌러 지우고 다시 해보세요.'},
-    mid:{t:'질문을 붙여넣고 답 받기',
-      d:'[질문 복사]를 누르고 입력창에 붙여넣은 뒤 전송하세요. 답이 다 나오면 아래로 내려 전체를 읽어 보세요. 마음에 안 드는 부분은 "이 부분을 더 쉽게"라고 다시 물으면 됩니다.',
-      tip:'같은 질문도 두 번 보내면 조금씩 다른 답이 나옵니다. 겁먹지 마세요.'},
-    ai:{t:'질문을 다듬어 내 것으로 만들기',
-      d:'[질문 복사]로 시작한 뒤, 따옴표 안 내용을 내 상황에 맞게 고쳐 보내세요. 답이 오면 좋은 문장 두세 개만 남기고 나머지는 지워도 됩니다.',
-      tip:'원하는 말투를 예시로 한 줄 붙여 주면 결과가 훨씬 정확해집니다.'}
-  }[lv];
-  const s3={
-    t:'내 이름 넣고 결과물 받기',
-    d:'아래 칸에 '+f.nameLabel+'을 넣고 [내 결과물 만들기]를 누르면, 오늘 바로 쓸 수 있는 문구가 여기에 나옵니다.',
-    tip:'나온 문구는 [복사하기]로 복사해 카톡이나 문자에 그대로 붙여넣으면 됩니다.'
-  };
-  return [s1,s2,s3];
+  return [
+    { t:'이 화면 안에서 끝내요',
+      d:'챗GPT를 따로 깔 필요 없어요. 이 화면 안에서 버튼만 누르면 글이 만들어져요.',
+      doneLine:'이 화면 안에서 끝내기로 했어요' },
+    { t:f.nameLabel+' 적기',
+      d:'아래 빈 칸에 하나만 적어요. 내 글에 이 이름이 그대로 들어갑니다.',
+      doneLine:(pr.name?pr.name+' · ':'')+'이름 넣기 완료' },
+    { t:'버튼 한 번이면 완성',
+      d:'아래 큰 버튼을 누르세요. 잠깐 뒤에 오늘 쓸 내 글이 나와요.',
+      doneLine:'내 첫 결과물 만들기 완료' }
+  ];
 }
 function renderPractice(){
   const wrap=document.getElementById('practiceBody');
@@ -988,6 +995,7 @@ function renderPractice(){
         <span class="chip em">⏱ 약 15분</span>
         <span class="chip">${LEVELS[p.level].label}</span>
         <span class="chip">결과물: ${GOALS[p.goal].deliverable}</span>
+        <span class="chip em">이 화면 안에서 바로 완성</span>
       </div>
       <div class="mh-bar">
         <div class="bar-track"><div class="bar-fill" id="barFill" style="width:${pct}%"></div></div>
@@ -996,37 +1004,7 @@ function renderPractice(){
     </div>
 
     <div id="stepsWrap">
-      ${steps.map((s,i)=>{
-        const done=pr.stepDone[i];
-        let extra='';
-        if(i===1){
-          extra=`<div class="prompt-box" id="promptBox">${esc(m.prompt)}</div>
-            <div class="prompt-actions">
-              <button class="btn btn-line-emerald" id="copyPrompt">📋 질문 복사</button>
-            </div>`;
-        }
-        if(i===2){
-          extra=`<div class="field-label">${f.nameLabel}</div>
-            <input class="input" id="nameInput" type="text" inputmode="text" autocomplete="off"
-              placeholder="${f.namePh}" value="${esc(pr.name)}">
-            <button class="btn btn-primary" id="makeBtn" style="margin-top:10px">✨ 내 결과물 만들기</button>`;
-        }
-        return `
-          <div class="step ${done?'done':''}" data-i="${i}">
-            <button class="step-head" data-toggle="${i}">
-              <span class="check">✓</span>
-              <span style="flex:1;min-width:0">
-                <span class="step-kicker">${i+1}단계 ${done?'· 완료':''}</span>
-                <span class="step-title" style="display:block">${s.t}</span>
-              </span>
-            </button>
-            <div class="step-body">
-              <p class="step-desc">${s.d}</p>
-              ${extra}
-              <div class="tip"><span>💡</span><span>${s.tip}</span></div>
-            </div>
-          </div>`;
-      }).join('')}
+      ${steps.map((s,i)=>stepCardHTML(i,s,p)).join('')}
     </div>
 
     ${pr.output?resultHTML(pr.output):''}
@@ -1057,12 +1035,23 @@ function renderPractice(){
   wrap.querySelectorAll('[data-toggle]').forEach(btn=>{
     btn.addEventListener('click',()=>toggleStep(+btn.dataset.toggle));
   });
-  const cp=document.getElementById('copyPrompt');
-  if(cp) cp.addEventListener('click',()=>copyText(m.prompt,'질문을 복사했어요. AI에 붙여넣어 보세요'));
+  const n1=document.getElementById('next1');
+  if(n1) n1.addEventListener('click',()=>{
+    pr.stepDone[0]=true; pr.openStep=1;
+    renderPractice(); scrollToStep(1);
+  });
+  const n2=document.getElementById('next2');
+  if(n2) n2.addEventListener('click',advanceTo3);
+  wrap.querySelectorAll('.feat').forEach(b=>{
+    b.addEventListener('click',()=>{
+      pr.feature = (pr.feature===b.dataset.feat) ? '' : b.dataset.feat;
+      renderPractice();
+    });
+  });
   const ni=document.getElementById('nameInput');
   if(ni){
     ni.addEventListener('input',e=>{ pr.name=e.target.value; });
-    ni.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); generate(); } });
+    ni.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); advanceTo3(); } });
   }
   const mk=document.getElementById('makeBtn');
   if(mk) mk.addEventListener('click',generate);
@@ -1073,7 +1062,7 @@ function renderPractice(){
   if(goWorks) goWorks.addEventListener('click',()=>showTab('works'));
   const again=document.getElementById('againBtn');
   if(again) again.addEventListener('click',()=>{
-    pr={stepDone:[false,false,false],output:null,name:pr.name,completed:false};
+    pr={stepDone:[false,false,false],output:null,name:pr.name,completed:false,feature:pr.feature,openStep:0,generating:false};
     renderPractice(); scrollTop(); toast('한 번 더 연습해 봐요');
   });
 }
@@ -1113,28 +1102,80 @@ function bindResultButtons(){
   const rd=document.getElementById('readResult');
   if(rd) rd.addEventListener('click',()=>{ if(pr.output) speak(pr.output.lines.join('. ')); });
 }
-function toggleStep(i){
-  if(i===2 && !pr.output){
-    toast('이름을 넣고 결과물을 먼저 만들어 보세요');
+function stepCardHTML(i,s,p){
+  const done=pr.stepDone[i];
+  const open=pr.openStep===i;
+  const headHTML=(reopen)=>`
+    <button class="step-head" data-toggle="${i}">
+      <span class="check">✓</span>
+      <span style="flex:1;min-width:0">
+        <span class="step-kicker">${i+1}단계 ${done?'· 완료':''}</span>
+        <span class="step-title" style="display:block">${esc(done?s.doneLine:s.t)}</span>
+      </span>
+      ${reopen?'<span class="step-reopen">눌러서 다시 보기</span>':''}
+    </button>`;
+  if(done && !open){
+    return `<div class="step done" data-i="${i}">${headHTML(true)}</div>`;
+  }
+  let extra='';
+  if(i===0 && !done){
+    extra=`<button class="btn btn-primary" id="next1" style="margin-top:12px">네, 이렇게 할게요 👉</button>`;
+  }
+  if(i===1){
+    extra=`<div class="field-label">${FIELDS[p.field].nameLabel}</div>
+      <input class="input" id="nameInput" type="text" inputmode="text" autocomplete="off"
+        placeholder="${FIELDS[p.field].namePh}" value="${esc(pr.name)}">
+      <div class="feat-label">한 줄 특징 골라 보기 <span style="color:var(--ink-3);font-weight:700">· 안 골라도 돼요</span></div>
+      <div class="feat-wrap">
+        ${FEATURES[p.field].map(ft=>`<button class="feat ${pr.feature===ft?'sel':''}" data-feat="${esc(ft)}">${esc(ft)}</button>`).join('')}
+      </div>`;
+    if(!done) extra+=`<button class="btn btn-primary" id="next2" style="margin-top:13px">다음으로 👉</button>`;
+  }
+  if(i===2 && !done){
+    extra= pr.generating
+      ? `<div class="gen-note" style="margin-top:12px">✨ AI가 내 글을 쓰고 있어요 <span class="dots"><i></i><i></i><i></i></span></div>`
+      : `<button class="btn btn-primary big-make" id="makeBtn" style="margin-top:12px">✨ AI로 내 글 바로 만들기</button>`;
+  }
+  const closeBtn = done
+    ? `<button class="btn btn-line step-close" data-toggle="${i}" style="margin-top:10px">접기</button>` : '';
+  return `<div class="step ${done?'done':''}" data-i="${i}">
+    ${headHTML(false)}
+    <div class="step-body">
+      <p class="step-desc-lg">${s.d}</p>
+      ${extra}
+      ${closeBtn}
+    </div>
+  </div>`;
+}
+function scrollToStep(i){
+  setTimeout(()=>{
+    const el=document.querySelector('.step[data-i="'+i+'"]');
+    if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+  },80);
+}
+function advanceTo3(){
+  const name=(pr.name||'').trim();
+  if(!name){
+    toast('이름을 먼저 넣어 주세요');
     const ni=document.getElementById('nameInput');
     if(ni){ ni.classList.add('shake'); setTimeout(()=>ni.classList.remove('shake'),340); ni.focus(); }
     return;
   }
-  pr.stepDone[i]=!pr.stepDone[i];
-  renderPractice();
-  const f=document.getElementById('barFill');
-  if(f) f.style.width=Math.round(pr.stepDone.filter(Boolean).length/3*100)+'%';
-  if(pr.stepDone.every(Boolean)) finishMission();
+  pr.stepDone[1]=true; pr.openStep=2;
+  renderPractice(); scrollToStep(2);
 }
-function finishMission(){
-  if(!pr.output) return;
-  pr.completed=true;
-  saveCompletion(pr.output, pr.name);
+function toggleStep(i){
+  if(!pr.stepDone[i]) return;
+  if(pr.openStep===i){
+    const next=pr.stepDone.indexOf(false);
+    pr.openStep = next===-1 ? i : next;
+  }else{
+    pr.openStep=i;
+  }
   renderPractice();
-  toast('오늘의 미션 완료! 결과물을 저장했어요');
 }
 function generate(){
-  if(!S.profile) return;
+  if(!S.profile || pr.generating) return;
   const name=(pr.name||'').trim();
   const ni=document.getElementById('nameInput');
   if(!name){
@@ -1142,18 +1183,30 @@ function generate(){
     if(ni){ ni.classList.add('shake'); setTimeout(()=>ni.classList.remove('shake'),340); ni.focus(); }
     return;
   }
-  const p=S.profile;
-  const o=OUT[p.field][p.goal](name);
-  pr.output=o;
-  pr.stepDone[2]=true;
-  pr.completed = pr.stepDone.every(Boolean);
-  if(pr.completed) saveCompletion(o,name);
+  pr.generating=true;
+  pr.openStep=2;
   renderPractice();
+  // 잠깐 생성하는 느낌(0.6초) 뒤에 이 화면 안에서 바로 결과가 나온다
   setTimeout(()=>{
-    const rc=document.getElementById('resultCard');
-    if(rc) rc.scrollIntoView({behavior:'smooth',block:'center'});
-  },80);
-  toast(pr.completed?'결과물이 완성됐어요!':'결과물이 나왔습니다');
+    const p=S.profile;
+    const o=OUT[p.field][p.goal](name);
+    if(pr.feature){
+      o.lines=o.lines.slice();
+      o.lines.splice(o.lines[0].trim()?1:0,0,'· '+pr.feature);
+    }
+    pr.output=o;
+    pr.generating=false;
+    pr.stepDone[2]=true;
+    pr.openStep=-1;
+    pr.completed=pr.stepDone.every(Boolean);
+    if(pr.completed) saveCompletion(o,name);
+    renderPractice();
+    setTimeout(()=>{
+      const rc=document.getElementById('resultCard');
+      if(rc) rc.scrollIntoView({behavior:'smooth',block:'center'});
+    },80);
+    toast(pr.completed?'결과물이 완성됐어요!':'결과물이 나왔습니다');
+  },600);
 }
 function saveCompletion(o,name){
   const t=todayStr();
@@ -1373,7 +1426,7 @@ function renderWorks(){
   if(rs) rs.addEventListener('click',()=>{
     if(confirm('이 휴대폰에 저장된 체험 기록(결과물·달력)을 지울까요?')){
       S={profile:null,records:[],startedAt:null};
-      pr={stepDone:[false,false,false],output:null,name:'',completed:false};
+      pr={stepDone:[false,false,false],output:null,name:'',completed:false,feature:'',openStep:0,generating:false};
       saveState(); updateStreakChip(); startOnboarding(false);
       toast('기록을 지웠습니다');
     }
