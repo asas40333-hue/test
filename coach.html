@@ -974,9 +974,10 @@ function renderPractice(){
   const steps=buildSteps(p);
   const total=pr.stepDone.filter(Boolean).length;
   const pct=Math.round(total/3*100);
-  const todayRec=S.records.find(r=>r.date===todayStr());
+  const todayRecs=S.records.filter(r=>r.date===todayStr());
+  const todayRec=todayRecs[0]||null;
   const dayNo=todayRec?todayRec.day:nextDayNo();
-  const sameToday=!!(todayRec && todayRec.field===p.field && todayRec.goal===p.goal);
+  const sameToday=todayRecs.some(r=>r.field===p.field && r.goal===p.goal);
   const heroChip = pr.completed||sameToday ? '오늘 완료' : (todayRec ? '오늘 1회 완주' : 'Day '+dayNo);
 
   wrap.innerHTML = `
@@ -1156,11 +1157,11 @@ function generate(){
 }
 function saveCompletion(o,name){
   const t=todayStr();
-  const ex=S.records.find(r=>r.date===t);
+  const sameDay=S.records.filter(r=>r.date===t);
   const base={ date:t, title:o.title, field:S.profile.field, goal:S.profile.goal,
     level:S.profile.level, name:name, lines:o.lines, at:Date.now() };
-  if(ex){ Object.assign(ex,base); }
-  else{ S.records.push(Object.assign({day:nextDayNo()},base)); }
+  // 같은 날 여러 번 완주해도 앞서 만든 결과물은 지우지 않고 함께 보관한다
+  S.records.push(Object.assign({ day: sameDay.length ? sameDay[0].day : nextDayNo() }, base));
   saveState();
   updateStreakChip();
 }
@@ -1491,10 +1492,10 @@ document.addEventListener('click',e=>{
 
 function restoreToday(){
   if(pr.completed || pr.output) return;
-  const r=S.records.find(x=>x.date===todayStr());
-  if(!r) return;
   const p=S.profile;
-  if(!p || r.field!==p.field || r.goal!==p.goal) return;
+  if(!p) return;
+  const r=[...S.records].reverse().find(x=>x.date===todayStr() && x.field===p.field && x.goal===p.goal);
+  if(!r) return;
   pr.stepDone=[true,true,true];
   pr.output={ title:r.title, lines:r.lines||[] };
   pr.name=r.name||'';
