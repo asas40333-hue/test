@@ -978,6 +978,7 @@ function renderPractice(){
   const todayRec=todayRecs[0]||null;
   const dayNo=todayRec?todayRec.day:nextDayNo();
   const sameToday=todayRecs.some(r=>r.field===p.field && r.goal===p.goal);
+  const doneDays=new Set(S.records.map(r=>r.day));
   const heroChip = pr.completed||sameToday ? '오늘 완료' : (todayRec ? '오늘 1회 완주' : 'Day '+dayNo);
 
   wrap.innerHTML = `
@@ -1037,7 +1038,7 @@ function renderPractice(){
       <p class="muted" style="margin-bottom:8px">하루 15분, 이렇게 이어집니다. (앞의 5일)</p>
       <div class="course-list">
         ${CURRICULUM[p.goal].map((t,i)=>{
-          const isDone = i===0 ? (sameToday||pr.completed) : (S.records.length>i);
+          const isDone = doneDays.has(i+1) || (i===0 && (sameToday||pr.completed));
           return `<div class="course-row ${i===0?'now':''} ${isDone?'done':''}">
             <div class="cr-day"><b>${i+1}</b><span>일차</span></div>
             <div class="cr-tx">
