@@ -115,7 +115,7 @@
   .cust-owner { font-size: 14.5px; font-weight: 600; color: #cbd5e1; margin-top: 7px; overflow-wrap: anywhere; }
   .cust-tagline { font-size: 14.5px; color: #e2e8f0; margin-top: 11px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,0.18); overflow-wrap: anywhere; }
 
-  .filter { background: #fff; border-bottom: 1px solid var(--border); padding: 11px 14px; position: sticky; top: 110px; z-index: 40; }
+  .filter { background: #fff; border-bottom: 1px solid var(--border); padding: 11px 14px; position: sticky; top: var(--header-h, 128px); z-index: 40; }
   .pills { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
   .pills::-webkit-scrollbar { display: none; }
   .pill {
@@ -655,6 +655,16 @@ function toast(msg) {
 /* ---------- 시작 ---------- */
 state = loadState();
 renderAll();
+
+/* 상단 헤더 높이를 재서 고객 화면 카테고리 바가 그 아래에 정확히 붙게 합니다 */
+function syncHeaderHeight() {
+  const h = document.querySelector('header').offsetHeight;
+  document.documentElement.style.setProperty('--header-h', h + 'px');
+}
+syncHeaderHeight();
+window.addEventListener('resize', syncHeaderHeight);
+window.addEventListener('load', syncHeaderHeight);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncHeaderHeight);
 </script>
 </body>
 </html>
