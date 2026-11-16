@@ -256,9 +256,9 @@
         <div class="access-title">1층 로비 출입</div>
         <div class="access-val" style="font-size: 15px; color: #38bdf8;">비번 없음 (자유출입)</div>
       </div>
-      <div class="access-item full" onclick="copyText('301626')" style="cursor:pointer;">
+      <div class="access-item full" onclick="copyText('361026')" style="cursor:pointer;">
         <div class="access-title">세대 현관 비밀번호 (탭하여 복사)</div>
-        <div class="access-val">301626</div>
+        <div class="access-val">361026</div>
       </div>
       <div class="access-item full" style="display:flex; justify-content:space-between; align-items:center;">
         <div>
@@ -467,7 +467,7 @@
     }
 
     function copyAccessInfo() {
-      const info = `[메종플러스 협력업체 현장 안내]\n- 현장: 어은동 한빛아파트 129동 1406호 (31평형)\n- 주소: 대전광역시 유성구 어은로 57, 129동 1406호\n- 1층 로비: 비밀번호 없음 (자유 출입)\n- 세대 현관 비밀번호: 301626\n- 김성수 대표: 010-4420-3007\n- 소음시간: 평일 09:00~18:00 준수 (주말/공휴일 금지)`;
+      const info = `[메종플러스 협력업체 현장 안내]\n- 현장: 어은동 한빛아파트 129동 1406호 (31평형)\n- 주소: 대전광역시 유성구 어은로 57, 129동 1406호\n- 1층 로비: 비밀번호 없음 (자유 출입)\n- 세대 현관 비밀번호: 361026\n- 김성수 대표: 010-4420-3007\n- 소음시간: 평일 09:00~18:00 준수 (주말/공휴일 금지)`;
       navigator.clipboard.writeText(info).then(() => {
         showToast('📋 현장 주소와 비밀번호가 복사되었습니다!');
       }).catch(() => {
