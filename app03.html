@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#2b1d14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>메종플러스 30초 현장점검 · 하자 리포트</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  :root{
+    --brown:#2b1d14; --brown-2:#3d2a1c; --brown-3:#5a4230;
+    --navy:#16243a; --navy-2:#22344f;
+    --gold:#c9a227; --gold-lt:#e6bf4f;
+    --emerald:#0f766e; --emerald-lt:#14b8a6;
+    --amber:#b45309; --amber-lt:#f59e0b;
+    --blue:#1d4ed8;
+    --bg:#f6f3ee; --card:#ffffff; --line:#e7e0d4;
+    --ink:#221a13; --ink-2:#5a4b3d; --ink-3:#9a8b7b;
+    --r:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;
+    font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--bg);color:var(--ink);line-height:1.5;font-size:16px;
+    max-width:430px;margin:0 auto;padding-bottom:128px;overflow-x:hidden;}
+  .hide{display:none !important;}
+
+  /* header */
+  header{position:sticky;top:0;z-index:60;background:var(--brown);
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:11px 16px;border-bottom:1px solid rgba(201,162,39,.28);}
+  .brand{display:flex;align-items:center;gap:9px;min-width:0;}
+  .brand-logo{width:34px;height:34px;flex:none;border-radius:9px;
+    background:linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 100%);
+    color:#2b1d14;display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:15px;letter-spacing:-.5px;}
+  .brand-title{font-size:15px;font-weight:800;letter-spacing:-.4px;line-height:1.2;color:#fdf9f2;}
+  .brand-sub{font-size:10.5px;font-weight:600;color:#c9b79f;letter-spacing:-.1px;}
+  .h-tag{flex:none;font-size:10.5px;font-weight:800;color:var(--gold-lt);
+    border:1px solid rgba(201,162,39,.6);background:rgba(201,162,39,.12);
+    padding:4px 8px;border-radius:20px;letter-spacing:-.2px;}
+
+  /* hero */
+  .hero{background:linear-gradient(140deg,#2b1d14 0%,#16243a 100%);color:#fff;padding:17px 18px 16px;}
+  .hero-badge{display:inline-flex;align-items:center;gap:5px;
+    background:rgba(20,184,166,.16);border:1px solid rgba(20,184,166,.55);
+    color:#5eead4;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:-.2px;margin-bottom:9px;}
+  .hero h1{font-size:21px;font-weight:800;letter-spacing:-.9px;line-height:1.3;}
+  .hero h1 em{font-style:normal;color:var(--gold-lt);}
+  .hero p{margin-top:7px;font-size:13px;color:#cdbfae;letter-spacing:-.3px;line-height:1.55;}
+
+  main{padding:14px 14px 0;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    box-shadow:0 1px 3px rgba(43,29,20,.06);padding:15px 14px;margin-bottom:12px;}
+  .card-head{display:flex;align-items:center;gap:8px;margin-bottom:13px;}
+  .step{width:22px;height:22px;flex:none;border-radius:7px;background:var(--brown);
+    color:var(--gold-lt);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .card-head h2{font-size:15.5px;font-weight:800;letter-spacing:-.5px;}
+  .card-head .hint{margin-left:auto;font-size:11px;color:var(--ink-3);font-weight:700;letter-spacing:-.2px;}
+
+  .field{margin-bottom:11px;}
+  .field:last-child{margin-bottom:0;}
+  .flabel{display:block;font-size:14px;font-weight:700;color:var(--ink-2);
+    letter-spacing:-.4px;margin-bottom:6px;}
+  .flabel .u{font-size:12px;color:var(--ink-3);font-weight:600;margin-left:3px;}
+  .frow{display:grid;grid-template-columns:84px minmax(0,1fr);align-items:center;gap:10px;margin-bottom:10px;}
+  .frow:last-child{margin-bottom:0;}
+  .frow > label{font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:-.5px;}
+  input[type=text], input[type=date]{width:100%;font-size:16px;font-weight:600;color:var(--ink);
+    padding:11px 12px;border:1.5px solid var(--line);border-radius:11px;background:#fdfbf8;
+    letter-spacing:-.3px;-webkit-appearance:none;appearance:none;}
+  input[type=date]{text-align:left;font-weight:700;}
+  input:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(201,162,39,.13);}
+  input::placeholder{color:#b6a898;font-weight:600;}
+
+  .seg{display:flex;gap:6px;background:#f3eee6;padding:4px;border-radius:12px;}
+  .seg-btn{flex:1;min-width:0;border:0;background:transparent;padding:10px 3px;border-radius:9px;
+    font-size:13.5px;font-weight:700;color:var(--ink-2);letter-spacing:-.5px;cursor:pointer;
+    line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .seg-btn.on{background:#fff;color:var(--brown);box-shadow:0 1px 4px rgba(43,29,20,.14);font-weight:800;}
+  .seg.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+  #segStatus .seg-btn{padding:11px 2px;font-size:13px;letter-spacing:-.6px;}
+  #segStatus .seg-btn.on[data-val=fix]{color:var(--amber);}
+  #segStatus .seg-btn.on[data-val=note]{color:var(--blue);}
+  #segStatus .seg-btn.on[data-val=ok]{color:var(--emerald);}
+
+  /* chips */
+  .chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{border:1.5px solid var(--line);background:#fdfbf8;color:var(--ink-2);
+    font-size:13.5px;font-weight:700;padding:9px 13px;border-radius:20px;
+    letter-spacing:-.4px;cursor:pointer;line-height:1.2;}
+  .chip.on{background:var(--brown);border-color:var(--brown);color:#fff;font-weight:800;}
+  .chip.sm{font-size:12.5px;padding:8px 11px;border-radius:9px;background:#fff;color:var(--ink-2);}
+  .chip.sm.on{background:rgba(201,162,39,.16);border-color:var(--gold);color:#8a5b1f;font-weight:800;}
+
+  /* photo */
+  .photo-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:relative;}
+  .sfile{position:absolute;left:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;}
+  .photo-btn{display:inline-flex;align-items:center;gap:6px;border:1.5px dashed #d6c9b4;
+    background:#fdfbf8;color:var(--ink-2);font-size:14px;font-weight:800;letter-spacing:-.4px;
+    padding:11px 14px;border-radius:11px;cursor:pointer;}
+  .photo-note{font-size:11.5px;color:var(--ink-3);font-weight:600;letter-spacing:-.2px;}
+  .photo-prev{position:relative;width:56px;height:56px;flex:none;}
+  .photo-prev img{width:56px;height:56px;object-fit:cover;border-radius:9px;border:1px solid var(--line);}
+  .photo-prev button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;
+    border:0;background:#3d2a1c;color:#fff;font-size:11px;line-height:1;cursor:pointer;}
+
+  .add-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;
+    border:0;border-radius:14px;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 100%);
+    color:#2b1d14;font-size:17px;font-weight:800;letter-spacing:-.5px;cursor:pointer;
+    box-shadow:0 4px 14px rgba(201,162,39,.3);margin-top:14px;}
+  .add-btn:active{transform:scale(.985);}
+  .btn-line{height:46px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink-2);
+    font-size:14px;font-weight:800;letter-spacing:-.4px;cursor:pointer;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .btn-primary{height:54px;border:0;border-radius:14px;background:var(--brown);color:#fff;
+    font-size:16.5px;font-weight:800;letter-spacing:-.5px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:7px;width:100%;}
+  .btn-primary:active{transform:scale(.985);}
+  .btn-print{height:50px;border:1.5px solid var(--brown);border-radius:13px;background:#fff;color:var(--brown);
+    font-size:15px;font-weight:800;letter-spacing:-.4px;cursor:pointer;width:100%;
+    display:flex;align-items:center;justify-content:center;gap:7px;margin-top:8px;}
+  .editbar{display:flex;align-items:center;gap:9px;background:#fdf6e3;border:1px solid #ecdcae;
+    border-radius:11px;padding:9px 12px;margin-bottom:12px;font-size:12.5px;font-weight:700;color:#8a5b1f;
+    letter-spacing:-.3px;}
+  .editbar span{flex:1;min-width:0;}
+  .editbar button{border:0;background:#fff;border:1px solid #e0cfa4;color:#8a5b1f;font-size:12px;
+    font-weight:800;padding:6px 10px;border-radius:8px;cursor:pointer;flex:none;}
+
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px;}
+  .stat{border:1px solid var(--line);border-radius:12px;padding:9px 4px;text-align:center;background:#fdfbf8;}
+  .stat b{display:block;font-size:22px;font-weight:800;letter-spacing:-1px;line-height:1.1;}
+  .stat span{font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:-.3px;}
+  .stat.fix b{color:var(--amber);} .stat.note b{color:var(--blue);} .stat.ok b{color:var(--emerald);}
+  .stat.fix{background:rgba(245,158,11,.07);border-color:#f0dcb4;}
+  .stat.note{background:rgba(37,99,235,.05);border-color:#d6dff5;}
+  .stat.ok{background:rgba(20,184,166,.07);border-color:#c9e8e2;}
+
+  /* groups */
+  .grp{margin-bottom:4px;}
+  .grp-h{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:800;
+    letter-spacing:-.4px;padding:10px 0 8px;border-top:1px solid #f1ebe2;}
+  .grp-h .gd{width:8px;height:8px;border-radius:50%;flex:none;background:#ccc;}
+  .grp-h b{margin-left:auto;font-size:12px;font-weight:800;color:#fff;background:var(--ink-3);
+    padding:1px 7px;border-radius:20px;letter-spacing:-.2px;}
+  .grp-h.fix{color:var(--amber);} .grp-h.fix .gd{background:var(--amber-lt);} .grp-h.fix b{background:var(--amber);}
+  .grp-h.note{color:var(--blue);} .grp-h.note .gd{background:#3b82f6;} .grp-h.note b{background:var(--blue);}
+  .grp-h.ok{color:var(--emerald);} .grp-h.ok .gd{background:var(--emerald-lt);} .grp-h.ok b{background:var(--emerald);}
+
+  .item{border:1px solid var(--line);border-radius:12px;padding:10px 11px;margin-bottom:8px;
+    background:#fff;border-left:4px solid #ddd;}
+  .item.fix{border-left-color:var(--amber-lt);}
+  .item.note{border-left-color:#3b82f6;}
+  .item.ok{border-left-color:var(--emerald-lt);}
+  .it-top{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;}
+  .it-space{flex:none;font-size:10.5px;font-weight:800;color:#8a5b1f;background:rgba(201,162,39,.15);
+    border-radius:5px;padding:2px 6px;letter-spacing:-.2px;margin-top:1px;}
+  .it-name{flex:1;min-width:0;font-size:14.5px;font-weight:800;letter-spacing:-.4px;line-height:1.35;word-break:keep-all;}
+  .it-memo{margin-top:4px;font-size:12.5px;color:var(--ink-2);letter-spacing:-.3px;line-height:1.45;word-break:keep-all;}
+  .it-foot{display:flex;align-items:center;gap:8px;margin-top:7px;}
+  .it-ph{width:54px;height:54px;object-fit:cover;border-radius:8px;border:1px solid var(--line);flex:none;cursor:zoom-in;}
+  .it-btns{margin-left:auto;display:flex;gap:6px;flex:none;}
+  .it-btns button{border:1px solid var(--line);background:#fdfbf8;color:var(--ink-2);
+    font-size:12px;font-weight:800;padding:7px 11px;border-radius:8px;cursor:pointer;letter-spacing:-.3px;}
+  .it-btns button.del{color:#a8410f;border-color:#f0d6c6;background:#fdf6f2;}
+  .empty{padding:26px 10px;text-align:center;color:var(--ink-3);font-size:13.5px;letter-spacing:-.3px;line-height:1.7;}
+  .empty b{display:block;font-size:14.5px;color:var(--ink-2);margin-bottom:4px;}
+
+  .pv{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;}
+  .pv summary{font-size:12.5px;font-weight:800;color:var(--ink-2);letter-spacing:-.3px;cursor:pointer;
+    list-style:none;display:flex;align-items:center;gap:5px;}
+  .pv summary::-webkit-details-marker{display:none;}
+  .pv summary:before{content:"▸";color:var(--gold);font-size:11px;}
+  .pv[open] summary:before{content:"▾";}
+  .pv pre{margin-top:9px;background:#fbf8f3;border:1px solid var(--line);border-radius:10px;
+    padding:11px 12px;font-size:11.5px;line-height:1.65;color:var(--ink-2);white-space:pre-wrap;
+    word-break:break-word;font-family:"Pretendard",-apple-system,sans-serif;letter-spacing:-.2px;max-height:260px;overflow:auto;}
+
+  .share{margin-bottom:12px;}
+  .tip{font-size:11.5px;color:var(--ink-3);letter-spacing:-.2px;line-height:1.6;margin-top:9px;}
+  .tip b{color:var(--ink-2);}
+  .brandline{margin:16px 0 10px;text-align:center;font-size:11.5px;color:#b7a794;letter-spacing:-.2px;}
+
+  /* action bar */
+  .actionbar{position:fixed;left:0;right:0;bottom:0;z-index:70;max-width:430px;margin:0 auto;
+    background:var(--brown);border-top:1px solid rgba(201,162,39,.3);
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    display:flex;align-items:center;gap:9px;transform:translateY(130%);transition:.22s;}
+  .actionbar.show{transform:none;}
+  .ab-info{min-width:0;flex:1;}
+  .ab-count{font-size:12px;font-weight:800;color:var(--gold-lt);letter-spacing:-.2px;}
+  .ab-sub{font-size:11px;font-weight:600;color:#c9b79f;letter-spacing:-.2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ab-btn{flex:none;border:0;border-radius:11px;background:linear-gradient(135deg,var(--gold),var(--gold-lt));
+    color:#2b1d14;font-size:13.5px;font-weight:800;padding:12px 12px;letter-spacing:-.4px;cursor:pointer;}
+  .ab-btn.line{background:transparent;border:1.5px solid rgba(201,162,39,.65);color:var(--gold-lt);}
+
+  /* toast */
+  .toast{position:fixed;left:50%;bottom:calc(112px + env(safe-area-inset-bottom));transform:translate(-50%,12px);
+    background:#1c140e;color:#fff;font-size:14px;font-weight:700;letter-spacing:-.3px;padding:12px 18px;
+    border-radius:12px;z-index:120;opacity:0;transition:.2s;pointer-events:none;max-width:86vw;text-align:center;
+    box-shadow:0 8px 24px rgba(0,0,0,.28);}
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+  .toast.ok{background:#0f766e;}
+  .toast.warn{background:#a8410f;}
+
+  /* photo viewer */
+  .viewer{position:fixed;inset:0;z-index:200;background:rgba(12,8,4,.94);display:none;
+    align-items:center;justify-content:center;padding:18px;}
+  .viewer.show{display:flex;}
+  .viewer img{max-width:100%;max-height:88vh;border-radius:8px;}
+  .viewer button{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;
+    border:0;background:rgba(255,255,255,.16);color:#fff;font-size:18px;cursor:pointer;}
+
+  @keyframes flash{0%{box-shadow:0 0 0 0 rgba(201,162,39,.55);}100%{box-shadow:0 0 0 12px rgba(201,162,39,0);}}
+  .flash{animation:flash .7s ease;}
+
+  /* ── print ── */
+  #printDoc{display:none;}
+  @media print{
+    @page{size:A4;margin:14mm 12mm 12mm;}
+    html,body{background:#fff !important;max-width:none !important;padding:0 !important;margin:0 !important;}
+    body{font-size:10.5pt;color:#111;}
+    header,.hero,main,.actionbar,.toast,.viewer{display:none !important;}
+    #printDoc{display:block !important;}
+    .pd{color:#111;}
+    .pd-brand{font-size:8pt;letter-spacing:2.4px;color:#8a6a2a;font-weight:700;}
+    .pd-title{font-size:18pt;font-weight:800;letter-spacing:-1px;margin:2mm 0 3mm;}
+    .pd-meta{width:100%;border-collapse:collapse;margin-bottom:3mm;font-size:9.5pt;}
+    .pd-meta th{text-align:left;background:#f4f0e8;font-size:8.5pt;color:#5a4b3d;width:20mm;
+      padding:1.6mm 2mm;border:0.3mm solid #ddd4c6;font-weight:700;}
+    .pd-meta td{padding:1.6mm 2mm;border:0.3mm solid #ddd4c6;font-weight:600;}
+    .pd-sum{font-size:9.5pt;color:#333;margin-bottom:5mm;font-weight:600;}
+    .pd-sum b{font-weight:800;}
+    .pd-grp{margin-bottom:5mm;}
+    .pd-grp-h{font-size:11pt;font-weight:800;padding:1.5mm 0;border-bottom:0.45mm solid #333;}
+    .pd-grp-h.fix{color:#b45309;border-bottom-color:#d97706;}
+    .pd-grp-h.note{color:#1d4ed8;border-bottom-color:#3b82f6;}
+    .pd-grp-h.ok{color:#0f766e;border-bottom-color:#14b8a6;}
+    .pd-grp-h span{float:right;font-size:9pt;font-weight:700;}
+    table.pd-tbl{width:100%;border-collapse:collapse;font-size:9.5pt;margin-top:1mm;}
+    .pd-tbl th{background:#f7f3ec;font-size:8.5pt;color:#5a4b3d;text-align:left;
+      padding:1.4mm 2mm;border:0.3mm solid #e0d7c8;font-weight:700;}
+    .pd-tbl td{padding:1.8mm 2mm;border:0.3mm solid #e0d7c8;vertical-align:top;}
+    .pd-tbl tr{page-break-inside:avoid;}
+    .pd-sp{width:19mm;font-weight:700;}
+    .pd-ph{width:34mm;}
+    .pd-ph img{width:32mm;border-radius:1mm;display:block;}
+    .pd-empty{font-size:9.5pt;color:#777;padding:3mm 0;}
+    .pd-foot{margin-top:6mm;border-top:0.3mm solid #ccc;padding-top:2.5mm;font-size:8pt;color:#777;line-height:1.6;}
+    .pd-sign{display:flex;gap:12mm;margin-top:7mm;font-size:8.5pt;color:#444;}
+    .pd-sign div{flex:1;border-bottom:0.3mm solid #999;padding-bottom:9mm;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-logo">M+</div>
+    <div>
+      <div class="brand-title">메종플러스 현장점검 리포트</div>
+      <div class="brand-sub">MAISON PLUS · 현장 점검 · 하자 기록</div>
+    </div>
+  </div>
+  <div class="h-tag">03호</div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">🔍 착공 전 · 시공 중 · 준공 인수인계</div>
+  <h1>말 대신 <em>사진과 기록</em>으로 남기세요</h1>
+  <p>공간·항목·상태만 눌러도 점검표가 만들어집니다. 카톡으로 보내고, A4로 인쇄해 서명까지.</p>
+</div>
+
+<main>
+
+  <!-- ① 기본 정보 -->
+  <div class="card">
+    <div class="card-head"><span class="step">1</span><h2>현장 기본 정보</h2><span class="hint">한 번만 입력</span></div>
+
+    <div class="field">
+      <label class="flabel" for="siteName">현장명</label>
+      <input id="siteName" type="text" placeholder="예: 어은동 한빛아파트 129동 1406호" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label class="flabel">점검 단계</label>
+      <div class="seg cols3" id="segStage">
+        <button class="seg-btn on" data-val="착공 전 점검">착공 전 점검</button>
+        <button class="seg-btn" data-val="시공 중 중간점검">시공 중 중간</button>
+        <button class="seg-btn" data-val="준공·인수인계 점검">준공·인수</button>
+      </div>
+    </div>
+
+    <div class="frow"><label for="insDate">점검일</label><input id="insDate" type="date"></div>
+    <div class="frow"><label for="inspector">담당자</label><input id="inspector" type="text" placeholder="예: 김성수" autocomplete="off"></div>
+  </div>
+
+  <!-- ② 점검 항목 기록 -->
+  <div class="card" id="entryCard">
+    <div class="card-head"><span class="step">2</span><h2>점검 항목 기록</h2><span class="hint" id="entryHint">공간 선택</span></div>
+
+    <div class="editbar hide" id="editbar">
+      <span id="editbarText">수정 중</span>
+      <button id="cancelEdit2">취소</button>
+    </div>
+
+    <div class="field">
+      <label class="flabel">공간</label>
+      <div class="chips" id="spaceChips">
+        <button class="chip on" data-space="거실" type="button">거실</button>
+        <button class="chip" data-space="주방" type="button">주방</button>
+        <button class="chip" data-space="안방" type="button">안방</button>
+        <button class="chip" data-space="작은방" type="button">작은방</button>
+        <button class="chip" data-space="욕실" type="button">욕실</button>
+        <button class="chip" data-space="발코니" type="button">발코니</button>
+        <button class="chip" data-space="현관" type="button">현관</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="flabel">자주 쓰는 점검 항목 <span class="u">눌러서 채우기</span></label>
+      <div class="chips" id="itemChips">
+        <button class="chip sm" data-item="벽지·도장 오염·들뜸" type="button">벽지·도장 오염·들뜸</button>
+        <button class="chip sm" data-item="타일 균열·줄눈" type="button">타일 균열·줄눈</button>
+        <button class="chip sm" data-item="누수·결로·백화" type="button">누수·결로·백화</button>
+        <button class="chip sm" data-item="창호·문틀 개폐" type="button">창호·문틀 개폐</button>
+        <button class="chip sm" data-item="전기·스위치 작동" type="button">전기·스위치 작동</button>
+        <button class="chip sm" data-item="배수·수전 정상" type="button">배수·수전 정상</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="flabel" for="itemName">점검 항목 <span class="u">직접 입력 가능</span></label>
+      <input id="itemName" type="text" placeholder="예: 벽지·도장 오염·들뜸" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label class="flabel">상태</label>
+      <div class="seg cols3" id="segStatus">
+        <button class="seg-btn on" data-val="ok" type="button">✅ 정상</button>
+        <button class="seg-btn" data-val="fix" type="button">⚠️ 보수 필요</button>
+        <button class="seg-btn" data-val="note" type="button">📌 특이사항</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="flabel" for="itemMemo">한 줄 메모 <span class="u">선택</span></label>
+      <input id="itemMemo" type="text" placeholder="예: 상단 30cm 들뜸, 재시공 요청" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label class="flabel">사진 <span class="u">선택 · 1장</span></label>
+      <div class="photo-row">
+        <label class="photo-btn" for="photoInput">📷 사진 첨부</label>
+        <input id="photoInput" type="file" accept="image/*" class="sfile" tabindex="-1">
+        <div class="photo-prev hide" id="photoPrev">
+          <img id="photoImg" alt="첨부 사진">
+          <button id="photoDel" type="button" aria-label="사진 삭제">✕</button>
+        </div>
+        <span class="photo-note" id="photoNote">사진 없이도 기록됩니다</span>
+      </div>
+    </div>
+
+    <button class="add-btn" id="addBtn" type="button">+ 점검 항목 추가</button>
+  </div>
+
+  <!-- ③ 리포트 요약 -->
+  <div class="card" id="reportCard">
+    <div class="card-head"><span class="step">3</span><h2>리포트 요약</h2><span class="hint" id="totalHint">0건</span></div>
+
+    <div class="stats">
+      <div class="stat fix"><b id="cntFix">0</b><span>보수 필요</span></div>
+      <div class="stat note"><b id="cntNote">0</b><span>특이사항</span></div>
+      <div class="stat ok"><b id="cntOk">0</b><span>정상</span></div>
+    </div>
+
+    <div id="groups"></div>
+
+    <details class="pv" id="pvBox">
+      <summary>복사될 문구 미리보기</summary>
+      <pre id="pvText"></pre>
+    </details>
+  </div>
+
+  <!-- ④ 공유 -->
+  <div class="share">
+    <button class="btn-primary" id="copyBtn" type="button">📋 카톡/문자용 리포트 복사</button>
+    <button class="btn-print" id="printBtn" type="button">🖨️ A4 리포트 인쇄 / PDF</button>
+    <div class="row2" style="margin-top:8px">
+      <button class="btn-line" id="sampleBtn" type="button">샘플 불러오기</button>
+      <button class="btn-line" id="resetBtn" type="button">전체 초기화</button>
+    </div>
+    <div class="tip">입력한 내용은 이 휴대폰에 <b>자동 저장</b>됩니다. 인쇄 화면에서 “PDF로 저장”을 고르면 파일로도 남길 수 있습니다.</div>
+  </div>
+
+  <div class="brandline">MAISON PLUS · 현장 점검·하자 리포트 · 03호</div>
+</main>
+
+<!-- 하단 실행 바 -->
+<div class="actionbar" id="actionbar">
+  <div class="ab-info">
+    <div class="ab-count" id="abCount">점검 0건</div>
+    <div class="ab-sub" id="abSub">보수 필요 0 · 정상 0</div>
+  </div>
+  <button class="ab-btn line" id="abPrint" type="button">🖨️ 인쇄</button>
+  <button class="ab-btn" id="abCopy" type="button">📋 복사</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="viewer" id="viewer">
+  <button type="button" id="viewerClose" aria-label="닫기">✕</button>
+  <img id="viewerImg" alt="현장 사진">
+</div>
+
+<!-- 인쇄 전용 문서 -->
+<div id="printDoc"></div>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var LS = "mp_app03_state_v1";
+  var DATE_KEY = "mp_app03_date_v1";
+
+  var SPACES = ["거실","주방","안방","작은방","욕실","발코니","현관"];
+  var ORDER = ["fix","note","ok"];
+  var STATUS = {
+    fix:  {label:"보수 필요",        full:"보수 필요",            icon:"⚠️"},
+    note: {label:"특이사항 · 기존 하자", full:"특이사항(기존 하자)", icon:"📌"},
+    ok:   {label:"정상",             full:"정상",                 icon:"✅"}
+  };
+
+  var state = {
+    site:"", stage:"착공 전 점검", date:"", inspector:"",
+    space:"거실", status:"ok",
+    items: [], editing: null, photo: null
+  };
+
+  /* ── helpers ── */
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];
+    });
+  }
+  function todayISO(){
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  }
+  function dateKo(v){
+    if (!v) return "―";
+    var p = String(v).split("-");
+    if (p.length !== 3) return v;
+    return p[0] + ". " + parseInt(p[1],10) + ". " + parseInt(p[2],10) + ".";
+  }
+  function uid(){ return "it" + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+  var toastTimer = null;
+  function toast(msg, kind){
+    var t = $("toast");
+    t.textContent = msg;
+    t.className = "toast show" + (kind ? " " + kind : "");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.className = "toast" + (kind ? " " + kind : ""); }, 2300);
+  }
+
+  /* ── 저장 ── */
+  function save(){
+    var data = {
+      site: $("siteName").value, stage: state.stage, date: $("insDate").value,
+      inspector: $("inspector").value, items: state.items
+    };
+    try {
+      localStorage.setItem(LS, JSON.stringify(data));
+    } catch(e){
+      try {
+        var noPhoto = JSON.parse(JSON.stringify(data));
+        noPhoto.items.forEach(function(it){ delete it.photo; });
+        localStorage.setItem(LS, JSON.stringify(noPhoto));
+      } catch(e2){}
+      toast("저장 공간이 부족해 사진은 저장하지 못했습니다", "warn");
+    }
+  }
+  function load(){
+    var d = null;
+    try {
+      var raw = localStorage.getItem(LS);
+      if (raw) d = JSON.parse(raw);
+    } catch(e){ d = null; }
+    if (d && typeof d === "object"){
+      state.site = d.site || "";
+      state.stage = d.stage || "착공 전 점검";
+      state.date = d.date || "";
+      state.inspector = d.inspector || "";
+      state.items = Array.isArray(d.items) ? d.items.filter(function(it){
+        return it && it.name;
+      }) : [];
+      state.items.forEach(function(it){
+        if (!it.id) it.id = uid();
+        if (SPACES.indexOf(it.space) < 0) it.space = "거실";
+        if (!STATUS[it.status]) it.status = "ok";
+      });
+      $("siteName").value = state.site;
+      $("inspector").value = state.inspector;
+      $("insDate").value = state.date || todayISO();
+    } else {
+      $("insDate").value = todayISO();
+    }
+    // 단계 세그먼트 반영
+    Array.prototype.forEach.call($("segStage").querySelectorAll(".seg-btn"), function(b){
+      b.classList.toggle("on", b.dataset.val === state.stage);
+    });
+  }
+
+  /* ── 세그먼트 ── */
+  $("segStage").addEventListener("click", function(e){
+    var b = e.target.closest(".seg-btn");
+    if (!b) return;
+    Array.prototype.forEach.call($("segStage").querySelectorAll(".seg-btn"), function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    state.stage = b.dataset.val;
+    save(); renderPreview(); buildPrint();
+  });
+  $("segStatus").addEventListener("click", function(e){
+    var b = e.target.closest(".seg-btn");
+    if (!b) return;
+    Array.prototype.forEach.call($("segStatus").querySelectorAll(".seg-btn"), function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    state.status = b.dataset.val;
+  });
+
+  /* 공간 칩 */
+  $("spaceChips").addEventListener("click", function(e){
+    var b = e.target.closest(".chip");
+    if (!b) return;
+    Array.prototype.forEach.call($("spaceChips").querySelectorAll(".chip"), function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    state.space = b.dataset.space;
+    $("entryHint").textContent = state.space + " 점검 중";
+  });
+
+  /* 빠른 항목 칩 */
+  $("itemChips").addEventListener("click", function(e){
+    var b = e.target.closest(".chip");
+    if (!b) return;
+    var v = b.dataset.item;
+    var on = b.classList.contains("on");
+    Array.prototype.forEach.call($("itemChips").querySelectorAll(".chip"), function(x){ x.classList.remove("on"); });
+    if (on && $("itemName").value === v){
+      $("itemName").value = "";
+    } else {
+      b.classList.add("on");
+      $("itemName").value = v;
+      $("itemName").focus();
+    }
+  });
+  $("itemName").addEventListener("input", function(){
+    var v = $("itemName").value.trim();
+    Array.prototype.forEach.call($("itemChips").querySelectorAll(".chip"), function(x){
+      x.classList.toggle("on", x.dataset.item === v);
+    });
+  });
+
+  /* ── 사진 ── */
+  $("photoInput").addEventListener("change", function(e){
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!/^image\//.test(file.type)){ toast("이미지 파일만 첨부할 수 있습니다", "warn"); return; }
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        var max = 900;
+        var scale = Math.min(1, max / Math.max(img.width, img.height));
+        var w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+        var cv = document.createElement("canvas");
+        cv.width = w; cv.height = h;
+        cv.getContext("2d").drawImage(img, 0, 0, w, h);
+        state.photo = cv.toDataURL("image/jpeg", 0.7);
+        $("photoImg").src = state.photo;
+        $("photoPrev").classList.remove("hide");
+        $("photoNote").textContent = "사진 1장 첨부됨";
+      };
+      img.onerror = function(){ toast("사진을 읽지 못했습니다", "warn"); };
+      img.src = ev.target.result;
+    };
+    reader.onerror = function(){ toast("사진을 읽지 못했습니다", "warn"); };
+    reader.readAsDataURL(file);
+  });
+  $("photoDel").addEventListener("click", function(){
+    state.photo = null;
+    $("photoInput").value = "";
+    $("photoPrev").classList.add("hide");
+    $("photoImg").removeAttribute("src");
+    $("photoNote").textContent = "사진 없이도 기록됩니다";
+  });
+
+  /* ── 항목 추가 / 수정 ── */
+  function setEditing(id){
+    state.editing = id || null;
+    var bar = $("editbar");
+    if (state.editing){
+      var it = state.items.filter(function(x){ return x.id === state.editing; })[0];
+      if (!it){ state.editing = null; bar.classList.add("hide"); return; }
+      $("itemName").value = it.name;
+      $("itemMemo").value = it.memo || "";
+      state.space = it.space;
+      state.status = it.status;
+      state.photo = it.photo || null;
+      Array.prototype.forEach.call($("spaceChips").querySelectorAll(".chip"), function(x){
+        x.classList.toggle("on", x.dataset.space === it.space);
+      });
+      Array.prototype.forEach.call($("segStatus").querySelectorAll(".seg-btn"), function(x){
+        x.classList.toggle("on", x.dataset.val === it.status);
+      });
+      Array.prototype.forEach.call($("itemChips").querySelectorAll(".chip"), function(x){
+        x.classList.toggle("on", x.dataset.item === it.name);
+      });
+      if (state.photo){
+        $("photoImg").src = state.photo;
+        $("photoPrev").classList.remove("hide");
+        $("photoNote").textContent = "사진 1장 첨부됨";
+      } else {
+        $("photoPrev").classList.add("hide");
+        $("photoNote").textContent = "사진 없이도 기록됩니다";
+      }
+      bar.classList.remove("hide");
+      $("editbarText").textContent = "수정 중 · [" + it.space + "] " + it.name;
+      $("addBtn").textContent = "✔ 수정 저장";
+      $("entryHint").textContent = "항목 수정";
+      $("entryCard").scrollIntoView({block:"start", behavior:"smooth"});
+      setTimeout(function(){ $("itemName").focus(); }, 250);
+    } else {
+      bar.classList.add("hide");
+      $("addBtn").textContent = "+ 점검 항목 추가";
+      $("entryHint").textContent = state.space + " 점검 중";
+      $("itemName").value = "";
+      $("itemMemo").value = "";
+      state.photo = null;
+      $("photoInput").value = "";
+      $("photoPrev").classList.add("hide");
+      $("photoNote").textContent = "사진 없이도 기록됩니다";
+      Array.prototype.forEach.call($("itemChips").querySelectorAll(".chip"), function(x){ x.classList.remove("on"); });
+    }
+  }
+  $("cancelEdit2").addEventListener("click", function(){ setEditing(null); });
+
+  $("addBtn").addEventListener("click", function(){
+    var name = $("itemName").value.trim();
+    if (!name){ toast("점검 항목을 입력하거나 위 칩을 눌러 주세요", "warn"); $("itemName").focus(); return; }
+    var memo = $("itemMemo").value.trim();
+    if (state.editing){
+      state.items.forEach(function(it){
+        if (it.id === state.editing){
+          it.space = state.space; it.name = name; it.status = state.status;
+          it.memo = memo; it.photo = state.photo || null;
+        }
+      });
+      toast("✅ 항목을 수정했습니다", "ok");
+      setEditing(null);
+    } else {
+      state.items.push({
+        id: uid(), space: state.space, name: name,
+        status: state.status, memo: memo, photo: state.photo || null
+      });
+      toast("✅ " + state.space + " 항목을 추가했습니다", "ok");
+      $("itemName").value = "";
+      $("itemMemo").value = "";
+      state.photo = null;
+      $("photoInput").value = "";
+      $("photoPrev").classList.add("hide");
+      $("photoNote").textContent = "사진 없이도 기록됩니다";
+      Array.prototype.forEach.call($("itemChips").querySelectorAll(".chip"), function(x){ x.classList.remove("on"); });
+      $("itemName").focus();
+    }
+    save(); renderAll();
+    var rc = $("reportCard");
+    rc.classList.remove("flash");
+    void rc.offsetWidth;
+    rc.classList.add("flash");
+  });
+
+  /* ── 요약 렌더 ── */
+  function countBy(st){ return state.items.filter(function(it){ return it.status === st; }).length; }
+
+  function itemHTML(it){
+    var ph = it.photo
+      ? '<img class="it-ph" src="' + it.photo + '" data-view="' + esc(it.id) + '" alt="점검 사진">'
+      : "";
+    return '<div class="item ' + it.status + '">' +
+        '<div class="it-top"><span class="it-space">' + esc(it.space) + '</span>' +
+        '<span class="it-name">' + esc(it.name) + '</span></div>' +
+        (it.memo ? '<div class="it-memo">' + esc(it.memo) + '</div>' : "") +
+        '<div class="it-foot">' + ph +
+          '<div class="it-btns"><button type="button" data-edit="' + esc(it.id) + '">수정</button>' +
+          '<button type="button" class="del" data-del="' + esc(it.id) + '">삭제</button></div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderSummary(){
+    var cf = countBy("fix"), cn = countBy("note"), co = countBy("ok"), n = state.items.length;
+    $("cntFix").textContent = cf;
+    $("cntNote").textContent = cn;
+    $("cntOk").textContent = co;
+    $("totalHint").textContent = n + "건";
+
+    var box = $("groups");
+    if (!n){
+      box.innerHTML = '<div class="empty"><b>아직 기록한 항목이 없습니다</b>' +
+        '위에서 공간·항목·상태를 고른 뒤<br>“+ 점검 항목 추가”를 눌러 주세요.</div>';
+    } else {
+      var html = "";
+      ORDER.forEach(function(st){
+        var list = state.items.filter(function(it){ return it.status === st; });
+        if (!list.length) return;
+        html += '<div class="grp"><div class="grp-h ' + st + '"><span class="gd"></span>' +
+          STATUS[st].label + '<b>' + list.length + '</b></div>' +
+          list.map(itemHTML).join("") + '</div>';
+      });
+      box.innerHTML = html;
+    }
+
+    var bar = $("actionbar");
+    bar.classList.toggle("show", n > 0);
+    $("abCount").textContent = "점검 " + n + "건 · 보수 필요 " + cf;
+    $("abSub").textContent = n
+      ? (($("siteName").value || "").trim() || "현장명 미입력")
+      : "보수 필요 0 · 정상 0";
+  }
+
+  document.addEventListener("click", function(e){
+    var ed = e.target.closest("[data-edit]");
+    if (ed){ setEditing(ed.dataset.edit); return; }
+    var del = e.target.closest("[data-del]");
+    if (del){
+      var it = state.items.filter(function(x){ return x.id === del.dataset.del; })[0];
+      if (!it) return;
+      if (!window.confirm("[" + it.space + "] " + it.name + "\n이 항목을 삭제할까요?")) return;
+      state.items = state.items.filter(function(x){ return x.id !== it.id; });
+      if (state.editing === it.id) setEditing(null);
+      save(); renderAll();
+      toast("항목을 삭제했습니다");
+      return;
+    }
+    var vw = e.target.closest("[data-view]");
+    if (vw){
+      var vit = state.items.filter(function(x){ return x.id === vw.dataset.view; })[0];
+      if (vit && vit.photo){
+        $("viewerImg").src = vit.photo;
+        $("viewer").classList.add("show");
+      }
+    }
+  });
+  $("viewerClose").addEventListener("click", function(){ $("viewer").classList.remove("show"); });
+  $("viewer").addEventListener("click", function(e){
+    if (e.target.id === "viewer") $("viewer").classList.remove("show");
+  });
+
+  /* ── 문자 리포트 ── */
+  function buildText(){
+    var site = ($("siteName").value || "").trim();
+    var who = ($("inspector").value || "").trim();
+    var d = $("insDate").value;
+    var out = ["[메종플러스 현장점검 리포트]"];
+    if (site) out.push("현장: " + site);
+    out.push("구분: " + state.stage);
+    out.push("점검일: " + dateKo(d) + (who ? "  ·  담당: " + who : ""));
+
+    if (!state.items.length){
+      out.push("");
+      out.push("아직 기록된 점검 항목이 없습니다.");
+      out.push("— 메종플러스");
+      return out.join("\n");
+    }
+
+    ORDER.forEach(function(st){
+      var list = state.items.filter(function(it){ return it.status === st; });
+      if (!list.length) return;
+      out.push("");
+      out.push("▶ " + STATUS[st].full + " (" + list.length + ")");
+      list.forEach(function(it){
+        var line = " · [" + it.space + "] " + it.name;
+        if (it.memo) line += " — " + it.memo;
+        if (it.photo) line += " 📷";
+        out.push(line);
+      });
+    });
+
+    var cf = countBy("fix"), cn = countBy("note"), co = countBy("ok");
+    var ph = state.items.filter(function(it){ return !!it.photo; }).length;
+    out.push("");
+    out.push("─────────────────");
+    out.push("총 " + state.items.length + "건 | 보수 필요 " + cf + " · 특이사항 " + cn + " · 정상 " + co +
+      (ph ? " | 사진 " + ph + "장" : ""));
+    if (cf) out.push("보수 필요 항목은 확인 후 일정을 다시 안내드리겠습니다.");
+    out.push("— 메종플러스");
+    return out.join("\n");
+  }
+
+  function renderPreview(){
+    var t = buildText();
+    $("pvText").textContent = t;
+  }
+
+  function copyText(){
+    var text = buildText();
+    var done = function(ok){
+      toast(ok ? "✅ 리포트 문구를 복사했습니다" : "복사가 막혔습니다. 미리보기를 길게 눌러 복사해 주세요", ok ? "ok" : "warn");
+    };
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ fallback(); });
+    } else { fallback(); }
+    function fallback(){
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly","");
+        ta.style.position = "fixed"; ta.style.top = "-1000px"; ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select(); ta.setSelectionRange(0, ta.value.length);
+        var ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        done(ok);
+      } catch(e){ done(false); }
+    }
+  }
+  $("copyBtn").addEventListener("click", copyText);
+  $("abCopy").addEventListener("click", copyText);
+
+  /* ── 인쇄 문서 ── */
+  function buildPrint(){
+    var site = ($("siteName").value || "").trim();
+    var who = ($("inspector").value || "").trim();
+    var d = $("insDate").value;
+    var cf = countBy("fix"), cn = countBy("note"), co = countBy("ok");
+    var hasPhoto = state.items.some(function(it){ return !!it.photo; });
+    var h = [];
+    h.push('<div class="pd">');
+    h.push('<div class="pd-brand">MAISON PLUS · FIELD INSPECTION REPORT</div>');
+    h.push('<h1 class="pd-title">현장 점검 결과 리포트</h1>');
+    h.push('<table class="pd-meta">');
+    h.push('<tr><th>현장명</th><td colspan="3">' + esc(site || "―") + '</td></tr>');
+    h.push('<tr><th>점검 단계</th><td>' + esc(state.stage) + '</td><th>점검일</th><td>' + esc(dateKo(d)) + '</td></tr>');
+    h.push('<tr><th>담당자</th><td>' + esc(who || "―") + '</td><th>작성</th><td>메종플러스</td></tr>');
+    h.push('</table>');
+    h.push('<div class="pd-sum">점검 항목 <b>' + state.items.length + '건</b> · 보수 필요 <b>' + cf +
+      '</b> · 특이사항(기존 하자) <b>' + cn + '</b> · 정상 <b>' + co + '</b></div>');
+
+    if (!state.items.length){
+      h.push('<div class="pd-empty">기록된 점검 항목이 없습니다.</div>');
+    } else {
+      ORDER.forEach(function(st){
+        var list = state.items.filter(function(it){ return it.status === st; });
+        if (!list.length) return;
+        h.push('<div class="pd-grp">');
+        h.push('<div class="pd-grp-h ' + st + '">' + STATUS[st].full + '<span>' + list.length + '건</span></div>');
+        h.push('<table class="pd-tbl"><thead><tr><th class="pd-sp">공간</th><th>점검 항목</th><th>확인 내용</th>' +
+          (hasPhoto ? '<th class="pd-ph">사진</th>' : '') + '</tr></thead><tbody>');
+        list.forEach(function(it){
+          h.push('<tr><td class="pd-sp">' + esc(it.space) + '</td><td><b>' + esc(it.name) + '</b></td>' +
+            '<td>' + (it.memo ? esc(it.memo) : '―') + '</td>' +
+            (hasPhoto ? '<td class="pd-ph">' + (it.photo ? '<img src="' + it.photo + '" alt="">' : '') + '</td>' : '') +
+            '</tr>');
+        });
+        h.push('</tbody></table></div>');
+      });
+    }
+
+    h.push('<div class="pd-sign"><div>고객 확인 (서명)</div><div>시공 담당 (서명)</div></div>');
+    h.push('<div class="pd-foot">※ 본 리포트는 현장 점검 결과 기록이며, 보수 필요 항목은 협의 후 일정을 다시 안내드립니다. ' +
+      (cf ? '※ 상호 확인 후 서명본을 보관해 주세요.' : '') + '</div>');
+    h.push('</div>');
+    $("printDoc").innerHTML = h.join("");
+  }
+
+  function doPrint(){
+    buildPrint();
+    setTimeout(function(){ window.print(); }, 60);
+  }
+  $("printBtn").addEventListener("click", doPrint);
+  $("abPrint").addEventListener("click", doPrint);
+  window.addEventListener("beforeprint", buildPrint);
+
+  /* ── 샘플 / 초기화 ── */
+  $("sampleBtn").addEventListener("click", function(){
+    if (state.items.length && !window.confirm("지금까지 기록한 " + state.items.length + "건을 샘플로 바꿀까요?")) return;
+    $("siteName").value = "어은동 한빛아파트 129동 1406호";
+    $("inspector").value = $("inspector").value || "김성수";
+    state.stage = "시공 중 중간점검";
+    Array.prototype.forEach.call($("segStage").querySelectorAll(".seg-btn"), function(x){
+      x.classList.toggle("on", x.dataset.val === state.stage);
+    });
+    state.items = [
+      {id:uid(), space:"거실", name:"벽지·도장 오염·들뜸", status:"fix",  memo:"천장 몰딩 접합부 들뜸 2곳, 재시공 요청", photo:null},
+      {id:uid(), space:"욕실", name:"타일 균열·줄눈",      status:"fix",  memo:"샤워기 벽면 하단 줄눈 벌어짐", photo:null},
+      {id:uid(), space:"욕실", name:"누수·결로·백화",      status:"note", memo:"기존 누수 흔적, 착공 전 확인된 하자", photo:null},
+      {id:uid(), space:"주방", name:"배수·수전 정상",      status:"ok",   memo:"싱크대 배수·수전 이상 없음", photo:null},
+      {id:uid(), space:"안방", name:"창호·문틀 개폐",      status:"ok",   memo:"중문 개폐 원활", photo:null},
+      {id:uid(), space:"현관", name:"전기·스위치 작동",    status:"ok",   memo:"전등·콘센트 정상 작동", photo:null}
+    ];
+    save(); renderAll(); buildPrint();
+    toast("✅ 샘플 점검표 6건을 불러왔습니다", "ok");
+    $("reportCard").scrollIntoView({block:"start", behavior:"smooth"});
+  });
+
+  $("resetBtn").addEventListener("click", function(){
+    if (!state.items.length && !($("siteName").value || "").trim()){
+      toast("이미 비어 있습니다");
+      return;
+    }
+    if (!window.confirm("현장 정보와 점검 " + state.items.length + "건을 모두 지웁니다. 계속할까요?")) return;
+    state.items = [];
+    state.photo = null;
+    state.editing = null;
+    $("siteName").value = "";
+    $("inspector").value = "";
+    $("insDate").value = todayISO();
+    $("itemName").value = "";
+    $("itemMemo").value = "";
+    $("photoInput").value = "";
+    $("photoPrev").classList.add("hide");
+    $("photoNote").textContent = "사진 없이도 기록됩니다";
+    $("editbar").classList.add("hide");
+    $("addBtn").textContent = "+ 점검 항목 추가";
+    Array.prototype.forEach.call($("itemChips").querySelectorAll(".chip"), function(x){ x.classList.remove("on"); });
+    save(); renderAll(); buildPrint();
+    toast("모두 지웠습니다");
+  });
+
+  /* ── 입력 반영 ── */
+  ["siteName","inspector","insDate"].forEach(function(id){
+    $(id).addEventListener("input", function(){
+      save(); renderSummary(); renderPreview(); buildPrint();
+    });
+    $(id).addEventListener("change", function(){
+      save(); renderSummary(); renderPreview(); buildPrint();
+    });
+  });
+
+  function renderAll(){
+    renderSummary();
+    renderPreview();
+    buildPrint();
+  }
+
+  load();
+  renderAll();
+  $("entryHint").textContent = state.space + " 점검 중";
+  if (state.items.length) $("abSub").textContent = ($("siteName").value || "").trim() || "현장명 미입력";
+})();
+</script>
+</body>
+</html>
