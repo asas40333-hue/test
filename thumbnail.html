@@ -807,6 +807,21 @@
     return s + "…";
   }
 
+  function normalizeLines(ctx, lines, maxWidth){
+    for (var i = 0; i < lines.length - 1; i++){
+      var toks = lines[i].split(" ");
+      if (toks.length >= 2 && toks[toks.length - 1].length === 1){
+        var cand = toks[toks.length - 1] + " " + lines[i + 1];
+        if (ctx.measureText(cand).width <= maxWidth){
+          toks.pop();
+          lines[i] = toks.join(" ");
+          lines[i + 1] = cand;
+        }
+      }
+    }
+    return lines;
+  }
+
   function balanceLines(ctx, lines, maxWidth){
     var guard = 0;
     while (lines.length >= 2 && guard++ < 4){
@@ -898,6 +913,7 @@
     size = used;
     ctx.font = font(size);
     setSpacing(ctx, size);
+    lines = normalizeLines(ctx, lines, maxWidth);
     lines = balanceLines(ctx, lines, maxWidth);
     if (lines.length > maxLines){
       lines = lines.slice(0, maxLines);
@@ -1102,7 +1118,10 @@
     ctx.beginPath(); ctx.moveTo(820, 0); ctx.lineTo(760, H); ctx.stroke();
     ctx.restore();
 
-    if (o.arrow) drawArrow(ctx, 700, 530, 930, 335);
+    if (o.arrow){
+      if (o.photo) drawArrow(ctx, 690, 545, 975, 462);
+      else drawArrow(ctx, 700, 530, 930, 335);
+    }
 
     drawBadge(ctx, o.badge, 66, 112, "left", pal);
     var t = drawTitle(ctx, {
@@ -1127,18 +1146,19 @@
       ctx.save();
       drawCover(ctx, o.photo, 0, 0, W, H);
       var shade = ctx.createLinearGradient(0, 0, W, 0);
-      shade.addColorStop(0, "rgba(5,5,11,0.95)");
-      shade.addColorStop(0.34, "rgba(5,5,11,0.82)");
-      shade.addColorStop(0.62, "rgba(5,5,11,0.30)");
-      shade.addColorStop(0.88, "rgba(5,5,11,0.06)");
-      shade.addColorStop(1, "rgba(5,5,11,0.22)");
+      shade.addColorStop(0, "rgba(5,5,11,0.97)");
+      shade.addColorStop(0.30, "rgba(5,5,11,0.92)");
+      shade.addColorStop(0.52, "rgba(5,5,11,0.70)");
+      shade.addColorStop(0.72, "rgba(5,5,11,0.26)");
+      shade.addColorStop(0.90, "rgba(5,5,11,0.04)");
+      shade.addColorStop(1, "rgba(5,5,11,0.18)");
       ctx.fillStyle = shade; ctx.fillRect(0, 0, W, H);
       var bg2 = ctx.createLinearGradient(0, 430, 0, H);
       bg2.addColorStop(0, "rgba(0,0,0,0)");
       bg2.addColorStop(1, "rgba(0,0,0,0.62)");
       ctx.fillStyle = bg2; ctx.fillRect(0, 430, W, 290);
       ctx.globalCompositeOperation = "overlay";
-      ctx.globalAlpha = 0.5;
+      ctx.globalAlpha = 0.3;
       ctx.fillStyle = pal.accent;
       ctx.fillRect(0, 0, W, H);
       ctx.globalAlpha = 1;
@@ -1150,7 +1170,10 @@
       rings(ctx, pal.accent, 0.2, 930, 340, 120, 380, 4);
     }
 
-    if (o.arrow) drawArrow(ctx, 620, 520, 950, 335);
+    if (o.arrow){
+      if (o.photo) drawArrow(ctx, 620, 542, 960, 468);
+      else drawArrow(ctx, 620, 520, 950, 335);
+    }
     drawBadge(ctx, o.badge, 64, 96, "left", pal);
     var t = drawTitle(ctx, {
       text: o.title, x: 64, y: 236, maxWidth: 780, maxSize: 100, maxLines: 3,
