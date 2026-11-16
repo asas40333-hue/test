@@ -98,7 +98,8 @@
 
   /* photo */
   .photo-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:relative;}
-  .sfile{position:absolute;left:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;}
+  .photo-btn-wrap{position:relative;display:inline-flex;}
+  .sfile{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;}
   .photo-btn{display:inline-flex;align-items:center;gap:6px;border:1.5px dashed #d6c9b4;
     background:#fdfbf8;color:var(--ink-2);font-size:14px;font-weight:800;letter-spacing:-.4px;
     padding:11px 14px;border-radius:11px;cursor:pointer;}
@@ -356,8 +357,10 @@
     <div class="field">
       <label class="flabel">사진 <span class="u">선택 · 1장</span></label>
       <div class="photo-row">
-        <label class="photo-btn" for="photoInput">📷 사진 첨부</label>
-        <input id="photoInput" type="file" accept="image/*" class="sfile" tabindex="-1">
+        <span class="photo-btn-wrap">
+          <label class="photo-btn" for="photoInput">📷 사진 첨부</label>
+          <input id="photoInput" type="file" accept="image/*" class="sfile" aria-label="사진 첨부">
+        </span>
         <div class="photo-prev hide" id="photoPrev">
           <img id="photoImg" alt="첨부 사진">
           <button id="photoDel" type="button" aria-label="사진 삭제">✕</button>
@@ -663,15 +666,24 @@
       });
       toast("✅ 항목을 수정했습니다", "ok");
       setEditing(null);
+      state.status = "ok";
+      Array.prototype.forEach.call($("segStatus").querySelectorAll(".seg-btn"), function(x){
+        x.classList.toggle("on", x.dataset.val === "ok");
+      });
     } else {
       state.items.push({
         id: uid(), space: state.space, name: name,
         status: state.status, memo: memo, photo: state.photo || null
       });
-      toast("✅ " + state.space + " 항목을 추가했습니다", "ok");
+      toast("✅ " + state.space + " · " + STATUS[state.status].full + "로 추가했습니다", "ok");
       $("itemName").value = "";
       $("itemMemo").value = "";
       state.photo = null;
+      // 다음 항목은 실수로 ‘보수 필요’가 찍히지 않도록 정상으로 되돌립니다
+      state.status = "ok";
+      Array.prototype.forEach.call($("segStatus").querySelectorAll(".seg-btn"), function(x){
+        x.classList.toggle("on", x.dataset.val === "ok");
+      });
       $("photoInput").value = "";
       $("photoPrev").classList.add("hide");
       $("photoNote").textContent = "사진 없이도 기록됩니다";
