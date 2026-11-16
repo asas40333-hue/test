@@ -807,6 +807,22 @@
     return s + "…";
   }
 
+  function balanceLines(ctx, lines, maxWidth){
+    var guard = 0;
+    while (lines.length >= 2 && guard++ < 4){
+      var last = lines[lines.length - 1];
+      if (ctx.measureText(last).width > maxWidth * 0.45) break;
+      var prevWords = lines[lines.length - 2].split(" ");
+      if (prevWords.length < 2) break;
+      var moved = prevWords.pop();
+      var candidate = moved + " " + last;
+      if (ctx.measureText(candidate).width > maxWidth) break;
+      lines[lines.length - 2] = prevWords.join(" ");
+      lines[lines.length - 1] = candidate;
+    }
+    return lines;
+  }
+
   var EMPH_RE = /(\d[\d,.]*\s?(?:%|퍼센트|만|억|천|원|배|개|년|개월|일|시간|분|초)?)/;
   function pickEmphasis(text){
     var m = String(text || "").match(EMPH_RE);
@@ -818,14 +834,14 @@
   }
 
   function drawHl(ctx, px, baseline, pw, size, pal){
-    var h = size * 1.0;
-    var w = pw + size * 0.26;
+    var h = size * 0.94;
+    var w = pw + size * 0.22;
     ctx.save();
     ctx.translate(px + pw/2, baseline);
     ctx.rotate(-0.014);
-    ctx.shadowColor = hexA(pal.accent2, 0.5);
-    ctx.shadowBlur = 26;
-    roundRect(ctx, -w/2, -size*0.86, w, h, Math.max(7, size*0.12));
+    ctx.shadowColor = hexA(pal.accent2, 0.45);
+    ctx.shadowBlur = 24;
+    roundRect(ctx, -w/2, -size*0.81, w, h, Math.max(7, size*0.12));
     ctx.fillStyle = pal.accent2;
     ctx.fill();
     ctx.restore();
@@ -850,9 +866,11 @@
     for (var s = 0; s < segs.length; s++){
       var seg = segs[s];
       if (!seg.t){ continue; }
-      ctx.lineWidth = Math.max(4, size * 0.07);
-      ctx.strokeStyle = "rgba(0,0,0,0.52)";
-      ctx.strokeText(seg.t, x, baseline);
+      if (seg.c === pal.ink){
+        ctx.lineWidth = Math.max(4, size * 0.07);
+        ctx.strokeStyle = "rgba(0,0,0,0.52)";
+        ctx.strokeText(seg.t, x, baseline);
+      }
       ctx.shadowColor = "rgba(0,0,0,0.55)";
       ctx.shadowBlur = 18;
       ctx.shadowOffsetY = 6;
@@ -880,6 +898,7 @@
     size = used;
     ctx.font = font(size);
     setSpacing(ctx, size);
+    lines = balanceLines(ctx, lines, maxWidth);
     if (lines.length > maxLines){
       lines = lines.slice(0, maxLines);
       lines[maxLines - 1] = ellipsize(ctx, lines[maxLines - 1], maxWidth);
@@ -941,9 +960,10 @@
     return w;
   }
 
-  function drawArrow(ctx, x1, y1, x2, y2){
+  function drawArrow(ctx, x1, y1, x2, y2, curve){
+    var lift = (curve === undefined) ? -70 : curve;
     var mx = (x1 + x2)/2 + 30;
-    var my = (y1 + y2)/2 - 70;
+    var my = (y1 + y2)/2 + lift;
     ctx.save();
     ctx.lineCap = "round";
     ctx.shadowColor = "rgba(0,0,0,0.5)";
@@ -1167,7 +1187,7 @@
       bg.addColorStop(0.55, hexA(pal.glow, 0.16));
       bg.addColorStop(1, "rgba(0,0,0,0.55)");
       ctx.fillStyle = bg; ctx.fillRect(0, bandY, W, H - bandY);
-      diagStripes(ctx, pal.accent2, 0.1, 0, bandY, W, H - bandY, 42, 10, -0.28);
+      diagStripes(ctx, pal.accent2, 0.06, 0, bandY, W, H - bandY, 44, 9, -0.28);
       glow(ctx, 640, bandY + 120, 320, pal.glow, 0.35);
       rings(ctx, pal.accent2, 0.22, 640, bandY + 150, 40, 180, 3);
       playGlyph(ctx, pal.ink, 0.2, 640, bandY + 150, 110);
@@ -1181,7 +1201,7 @@
     ctx.fillRect(0, bandY - 3, W, 6);
     ctx.restore();
 
-    if (o.arrow) drawArrow(ctx, 980, 300, 1105, 432);
+    if (o.arrow) drawArrow(ctx, 1182, 292, 1052, 414, 0);
 
     drawBadge(ctx, o.badge, W/2, 84, "center", pal);
     var t = drawTitle(ctx, {
