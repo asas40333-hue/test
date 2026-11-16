@@ -246,15 +246,16 @@
     table.pd-tbl{width:100%;border-collapse:collapse;font-size:9.5pt;margin-top:1mm;}
     .pd-tbl th{background:#f7f3ec;font-size:8.5pt;color:#5a4b3d;text-align:left;
       padding:1.4mm 2mm;border:0.3mm solid #e0d7c8;font-weight:700;}
-    .pd-tbl td{padding:1.8mm 2mm;border:0.3mm solid #e0d7c8;vertical-align:top;}
+    .pd-tbl td{padding:1.5mm 2mm;border:0.3mm solid #e0d7c8;vertical-align:top;}
     .pd-tbl tr{page-break-inside:avoid;}
     .pd-sp{width:19mm;font-weight:700;}
     .pd-ph{width:32mm;}
     .pd-ph img{width:32mm;max-height:34mm;object-fit:cover;border-radius:1mm;display:block;}
     .pd-empty{font-size:9.5pt;color:#777;padding:3mm 0;}
-    .pd-foot{margin-top:6mm;border-top:0.3mm solid #ccc;padding-top:2.5mm;font-size:8pt;color:#777;line-height:1.6;}
-    .pd-sign{display:flex;gap:12mm;margin-top:7mm;font-size:8.5pt;color:#444;}
-    .pd-sign div{flex:1;border-bottom:0.3mm solid #999;padding-bottom:9mm;}
+    .pd-foot{margin-top:4mm;border-top:0.3mm solid #ccc;padding-top:2.5mm;font-size:8pt;color:#777;line-height:1.6;}
+    .pd-sign{display:flex;gap:12mm;margin-top:5mm;font-size:8.5pt;color:#444;}
+    .pd-sign div{flex:1;border-bottom:0.3mm solid #999;padding-bottom:7mm;}
+    .pd-end{page-break-inside:avoid;}
   }
 </style>
 </head>
@@ -884,9 +885,9 @@
       });
     }
 
-    h.push('<div class="pd-sign"><div>고객 확인 (서명)</div><div>시공 담당 (서명)</div></div>');
+    h.push('<div class="pd-end"><div class="pd-sign"><div>고객 확인 (서명)</div><div>시공 담당 (서명)</div></div>');
     h.push('<div class="pd-foot">※ 본 리포트는 현장 점검 결과 기록이며, 보수 필요 항목은 협의 후 일정을 다시 안내드립니다. ' +
-      (cf ? '※ 상호 확인 후 서명본을 보관해 주세요.' : '') + '</div>');
+      (cf ? '※ 상호 확인 후 서명본을 보관해 주세요.' : '') + '</div></div>');
     h.push('</div>');
     $("printDoc").innerHTML = h.join("");
   }
