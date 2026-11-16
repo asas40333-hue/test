@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한울 인테리어 · 사장님 자재 관리 체험판</title>
+<meta name="theme-color" content="#1e3a8a">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  :root {
+    --primary: #1e3a8a;
+    --primary-light: #2563eb;
+    --accent: #d97706;
+    --bg: #f1f5f9;
+    --border: #e2e8f0;
+    --ink: #0f172a;
+    --muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Pretendard", -apple-system, "Malgun Gothic", sans-serif; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { background: var(--bg); color: var(--ink); font-size: 17px; line-height: 1.55; overflow-x: hidden; padding-bottom: 28px; }
+  button, input, textarea { font-family: inherit; }
+
+  /* ---------- Header / Tabs ---------- */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: #fff; border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 10px rgba(15,23,42,0.06);
+    padding: 10px 14px 12px;
+  }
+  .brand-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .brand-logo {
+    width: 38px; height: 38px; flex-shrink: 0;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 18px;
+  }
+  .brand-title { font-size: 17px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; }
+  .brand-sub { font-size: 12px; font-weight: 600; color: var(--muted); }
+
+  .tabs { display: flex; gap: 6px; background: #e2e8f0; padding: 4px; border-radius: 14px; }
+  .tab {
+    flex: 1 1 0; min-width: 0; min-height: 48px;
+    border: none; background: transparent; border-radius: 11px;
+    font-size: 14px; font-weight: 800; color: #475569;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+    padding: 6px 4px; line-height: 1.25; cursor: pointer;
+  }
+  .tab.active { background: #fff; color: var(--primary); border: 1px solid #cbd5e1; box-shadow: 0 2px 6px rgba(15,23,42,0.10); }
+
+  /* ---------- Common ---------- */
+  .container { max-width: 600px; margin: 0 auto; padding: 16px 14px 8px; }
+  .card { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(15,23,42,0.05); }
+  .card-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.4px; }
+  .card-desc { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .field { display: block; margin-bottom: 12px; }
+  .label { display: block; font-size: 14px; font-weight: 800; color: #334155; margin-bottom: 6px; }
+  .input, textarea.input {
+    width: 100%; font-size: 17px; font-weight: 600; color: var(--ink);
+    padding: 13px 14px; border: 1.5px solid #cbd5e1; border-radius: 12px;
+    background: #fff; outline: none;
+  }
+  .input:focus, textarea.input:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+  .input::placeholder, textarea.input::placeholder { color: #94a3b8; font-weight: 500; }
+  textarea.input { resize: vertical; min-height: 84px; line-height: 1.5; }
+
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: 100%; min-height: 52px; padding: 12px 16px;
+    border-radius: 13px; border: none; font-size: 17px; font-weight: 800;
+    cursor: pointer; letter-spacing: -0.3px;
+  }
+  .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 3px 10px rgba(30,58,138,0.25); }
+  .btn-primary:active { background: #172c66; }
+  .btn-add { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.3); font-size: 18px; min-height: 58px; }
+  .btn-ghost { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+  .btn-photo { background: #eff6ff; color: var(--primary); border: 2px dashed #93c5fd; font-size: 16px; min-height: 54px; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 8px; text-align: center; }
+
+  /* ---------- Admin hero ---------- */
+  .hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; padding: 20px 18px 22px; }
+  .hero-tag { display: inline-block; background: rgba(217,119,6,0.25); border: 1px solid var(--accent); color: #fbbf24; padding: 3px 10px; border-radius: 7px; font-size: 12px; font-weight: 800; margin-bottom: 9px; }
+  .hero h1 { font-size: 21px; font-weight: 800; line-height: 1.35; letter-spacing: -0.6px; }
+  .hero p { font-size: 13.5px; color: #cbd5e1; margin-top: 7px; }
+
+  /* ---------- Admin material list ---------- */
+  .list-head { display: flex; align-items: baseline; justify-content: space-between; margin: 22px 2px 10px; }
+  .list-title { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; }
+  .count { color: var(--primary-light); font-size: 16px; }
+  .admin-list { margin-top: 14px; }
+  .mat-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: #fff; border: 1px solid var(--border); border-radius: 16px;
+    padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(15,23,42,0.05);
+  }
+  .thumb { width: 86px; height: 86px; flex-shrink: 0; border-radius: 12px; background: #f8fafc; object-fit: contain; border: 1px solid #f1f5f9; }
+  .row-body { flex: 1 1 auto; min-width: 0; }
+  .chip { display: inline-block; font-size: 11.5px; font-weight: 800; color: var(--primary); background: #eff6ff; border: 1px solid #dbeafe; padding: 2px 8px; border-radius: 6px; margin-bottom: 4px; }
+  .row-name { font-size: 15.5px; font-weight: 800; line-height: 1.35; letter-spacing: -0.3px; overflow-wrap: anywhere; }
+  .row-comment { font-size: 12.5px; color: var(--muted); line-height: 1.45; margin-top: 3px; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .row-actions { display: flex; flex-direction: column; gap: 7px; flex-shrink: 0; width: 62px; }
+  .btn-sm { min-height: 44px; border-radius: 10px; font-size: 15px; font-weight: 800; border: 1.5px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; padding: 4px; }
+  .btn-sm.edit { border-color: var(--primary-light); color: var(--primary); }
+  .btn-sm.del { border-color: #fca5a5; color: #dc2626; background: #fef2f2; }
+
+  .empty { background: #fff; border: 2px dashed #cbd5e1; border-radius: 16px; padding: 28px 16px; text-align: center; color: var(--muted); font-size: 15px; font-weight: 600; }
+  .empty strong { display: block; font-size: 17px; color: #334155; margin-bottom: 4px; }
+
+  .notice { font-size: 12px; color: #94a3b8; line-height: 1.55; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 11px 12px; margin: 18px 2px 6px; }
+
+  /* ---------- Customer view ---------- */
+  .cust-hero { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: #fff; padding: 24px 18px 22px; }
+  .cust-tag { display: inline-block; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.45); color: #e0e7ff; padding: 3px 10px; border-radius: 7px; font-size: 12px; font-weight: 800; margin-bottom: 10px; }
+  .cust-hero h1 { font-size: 25px; font-weight: 800; letter-spacing: -0.8px; line-height: 1.25; overflow-wrap: anywhere; }
+  .cust-owner { font-size: 14.5px; font-weight: 600; color: #cbd5e1; margin-top: 7px; overflow-wrap: anywhere; }
+  .cust-tagline { font-size: 14.5px; color: #e2e8f0; margin-top: 11px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,0.18); overflow-wrap: anywhere; }
+
+  .filter { background: #fff; border-bottom: 1px solid var(--border); padding: 11px 14px; position: sticky; top: 110px; z-index: 40; }
+  .pills { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .pills::-webkit-scrollbar { display: none; }
+  .pill {
+    flex-shrink: 0; padding: 9px 14px; border-radius: 20px;
+    font-size: 14px; font-weight: 800; background: #f1f5f9;
+    color: #64748b; border: 1.5px solid #e2e8f0; cursor: pointer;
+  }
+  .pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  .cust-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 4px 2px 12px; }
+  .cust-count { font-size: 14px; font-weight: 800; color: #475569; }
+  .cust-count span { color: var(--primary-light); }
+  .btn-reset { flex-shrink: 0; min-height: 42px; padding: 8px 13px; border-radius: 10px; border: 1.5px solid #cbd5e1; background: #fff; color: #475569; font-size: 13.5px; font-weight: 800; cursor: pointer; }
+
+  .cust-card { background: #fff; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(15,23,42,0.06); }
+  .cust-photo { width: 100%; height: 230px; background: #fff; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: center; }
+  .cust-photo img { max-width: 92%; max-height: 92%; object-fit: contain; }
+  .cust-body { padding: 13px 15px 15px; }
+  .cust-name { font-size: 18px; font-weight: 800; line-height: 1.35; letter-spacing: -0.4px; margin-top: 3px; overflow-wrap: anywhere; }
+  .cust-comment { margin-top: 10px; background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid var(--accent); border-radius: 10px; padding: 10px 12px; }
+  .cust-comment .ct { font-size: 12px; font-weight: 800; color: #b45309; margin-bottom: 3px; }
+  .cust-comment .cc { font-size: 14.5px; color: #3f3f46; line-height: 1.5; overflow-wrap: anywhere; }
+
+  /* ---------- Sheet (modal) ---------- */
+  .backdrop { position: fixed; inset: 0; z-index: 200; background: rgba(15,23,42,0.55); display: none; align-items: flex-end; justify-content: center; }
+  .backdrop.open { display: flex; }
+  .sheet {
+    width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto;
+    background: #fff; border-radius: 22px 22px 0 0;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    animation: up 0.22s ease-out;
+  }
+  @keyframes up { from { transform: translateY(24px); opacity: 0.7; } to { transform: translateY(0); opacity: 1; } }
+  .sheet-head { position: sticky; top: 0; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-bottom: 1px solid #f1f5f9; z-index: 2; }
+  .sheet-title { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+  .sheet-close { width: 44px; height: 44px; border-radius: 50%; border: none; background: #f1f5f9; color: #334155; font-size: 19px; font-weight: 800; cursor: pointer; }
+  .sheet-body { padding: 14px 16px 4px; }
+  .sheet-foot { display: flex; gap: 10px; padding: 12px 16px 4px; position: sticky; bottom: 0; background: #fff; border-top: 1px solid #f1f5f9; }
+  .sheet-foot .btn-ghost { flex: 0 0 34%; }
+  .sheet-foot .btn-primary { flex: 1 1 auto; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .cat-chip {
+    min-height: 48px; padding: 10px 14px; border-radius: 12px;
+    font-size: 15.5px; font-weight: 800; background: #f8fafc; color: #475569;
+    border: 1.5px solid #cbd5e1; cursor: pointer;
+  }
+  .cat-chip.on { background: #eff6ff; color: var(--primary); border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.10); }
+  .sample-label { font-size: 13px; font-weight: 700; color: var(--muted); margin: 12px 0 8px; }
+  .samples { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+  .sample {
+    border: 2px solid #e2e8f0; background: #fff; border-radius: 11px; padding: 3px;
+    cursor: pointer; overflow: hidden;
+  }
+  .sample.on { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+  .sample img { width: 100%; height: 58px; object-fit: contain; display: block; border-radius: 8px; background: #f8fafc; }
+  .sample span { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-align: center; margin-top: 3px; padding-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .preview { width: 100%; height: 150px; border: 2px dashed #cbd5e1; border-radius: 14px; background: #f8fafc; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; overflow: hidden; }
+  .preview img { max-width: 96%; max-height: 96%; object-fit: contain; }
+  .preview-empty { font-size: 14px; font-weight: 700; color: #94a3b8; text-align: center; padding: 0 14px; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 20px);
+    background: #0f172a; color: #fff; padding: 13px 18px; border-radius: 12px;
+    font-size: 15px; font-weight: 700; max-width: calc(100% - 32px); width: max-content;
+    text-align: center; opacity: 0; pointer-events: none; transition: all 0.25s; z-index: 300;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.3); line-height: 1.4;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-row">
+    <div class="brand-logo">한</div>
+    <div>
+      <div class="brand-title" id="brandTitle">한울 인테리어</div>
+      <div class="brand-sub">사장님 자재 관리 · 체험판</div>
+    </div>
+  </div>
+  <div class="tabs" role="tablist">
+    <button class="tab active" id="tabAdmin" role="tab" onclick="switchTab('admin')">👔 사장님 관리 화면</button>
+    <button class="tab" id="tabCustomer" role="tab" onclick="switchTab('customer')">📱 고객이 보는 화면</button>
+  </div>
+</header>
+
+<!-- ============ 사장님 관리 화면 ============ -->
+<section id="viewAdmin">
+  <div class="hero">
+    <span class="hero-tag">👔 사장님 화면</span>
+    <h1>우리 회사 자재를<br>직접 올리고 고칩니다</h1>
+    <p>여기서 저장하면 옆의 <strong>'고객이 보는 화면'</strong> 탭에 바로 반영됩니다.</p>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-title">🏢 내 회사 정보</div>
+      <div class="card-desc">고객 화면 맨 위에 이대로 표시됩니다.</div>
+
+      <label class="field">
+        <span class="label">상호명</span>
+        <input class="input" id="inpName" type="text" value="한울 인테리어" placeholder="예) 한울 인테리어">
+      </label>
+      <label class="field">
+        <span class="label">대표자</span>
+        <input class="input" id="inpOwner" type="text" value="김한울" placeholder="예) 김한울">
+      </label>
+      <label class="field">
+        <span class="label">연락처</span>
+        <input class="input" id="inpPhone" type="tel" value="010-2345-6789" placeholder="예) 010-0000-0000">
+      </label>
+      <label class="field" style="margin-bottom:16px;">
+        <span class="label">한 줄 소개</span>
+        <textarea class="input" id="inpTagline" rows="2" placeholder="예) 30년 손끝으로 검증한 자재만 씁니다.">30년 손끝으로 검증한 자재만 씁니다. 상담부터 마감까지 대표가 직접 챙깁니다.</textarea>
+      </label>
+      <button class="btn btn-primary" onclick="saveCompany()">회사 정보 저장</button>
+    </div>
+
+    <div class="list-head">
+      <div class="list-title">📦 등록된 자재 <span class="count" id="adminCount">4</span></div>
+    </div>
+    <button class="btn btn-add" onclick="openSheet()">＋ 새 자재 올리기</button>
+
+    <div class="admin-list" id="adminList"></div>
+
+    <p class="notice">※ 체험용 시제품입니다. 실제 사업화 시에는 업체별 로그인과 서버 DB를 연결해 각 사장님이 영구 보관·공유합니다.</p>
+  </div>
+</section>
+
+<!-- ============ 고객이 보는 화면 ============ -->
+<section id="viewCustomer" hidden>
+  <div class="cust-hero">
+    <span class="cust-tag">📱 고객이 보는 화면</span>
+    <h1 id="custName">한울 인테리어</h1>
+    <div class="cust-owner" id="custOwner">대표 김한울 · 010-2345-6789</div>
+    <div class="cust-tagline" id="custTagline">30년 손끝으로 검증한 자재만 씁니다.</div>
+  </div>
+
+  <div class="filter">
+    <div class="pills" id="custPills"></div>
+  </div>
+
+  <div class="container">
+    <div class="cust-bar">
+      <div class="cust-count">총 <span id="custCount">4</span>개 자재</div>
+      <button class="btn-reset" onclick="resetDemo()">🔄 예시 초기화</button>
+    </div>
+    <div id="custList"></div>
+    <p class="notice">※ 체험용 시제품입니다. 실제 사업화 시에는 업체별 로그인과 서버 DB를 연결해 각 사장님이 영구 보관·공유합니다.</p>
+  </div>
+</section>
+
+<!-- ============ 자재 등록/수정 시트 ============ -->
+<div class="backdrop" id="backdrop" onclick="if(event.target===this) closeSheet()">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-head">
+      <div class="sheet-title" id="sheetTitle">새 자재 올리기</div>
+      <button class="sheet-close" onclick="closeSheet()" aria-label="닫기">✕</button>
+    </div>
+    <div class="sheet-body">
+      <span class="label">① 카테고리</span>
+      <div class="chips" id="catChips"></div>
+
+      <span class="label">② 사진</span>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+      <button class="btn btn-photo" onclick="document.getElementById('fileInput').click()">📷 폰 사진 첨부하기</button>
+      <div class="sample-label">또는 아래 샘플 사진을 눌러 바로 고르세요</div>
+      <div class="samples" id="samples"></div>
+      <div class="preview" id="preview">
+        <div class="preview-empty" id="previewEmpty">사진을 고르면 여기에 보입니다</div>
+        <img id="previewImg" alt="선택한 사진 미리보기" style="display:none">
+      </div>
+
+      <label class="field">
+        <span class="label">③ 자재명</span>
+        <input class="input" id="inpMatName" type="text" placeholder="예) 대림바스 CC-603 치마형 양변기">
+      </label>
+      <label class="field" style="margin-bottom:14px;">
+        <span class="label">④ 사장님 한 줄 추천 코멘트</span>
+        <textarea class="input" id="inpComment" rows="3" placeholder="예) 물때가 안 끼어서 10년 써도 청소가 편합니다."></textarea>
+      </label>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn btn-ghost" onclick="closeSheet()">취소</button>
+      <button class="btn btn-primary" onclick="saveMaterial()">저장</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   한울 인테리어 · 사장님 자재 관리 체험판
+   - 상태는 localStorage 에 저장 (새로고침해도 유지)
+   ========================================================= */
+const STORAGE_KEY = 'hanul_admin_demo_v1';
+const CATS = ['욕실', '주방', '바닥재', '조명', '벽지/필름'];
+
+const DEFAULT_STATE = {
+  company: {
+    name: '한울 인테리어',
+    owner: '김한울',
+    phone: '010-2345-6789',
+    tagline: '30년 손끝으로 검증한 자재만 씁니다. 상담부터 마감까지 대표가 직접 챙깁니다.'
+  },
+  materials: [
+    {
+      id: 'm1', cat: '욕실', name: '대림바스 CC-603 치마형 투피스 양변기',
+      img: 'images/mat_toilet.jpg',
+      comment: '물때가 안 끼는 밀결 치마형이라 10년 써도 청소가 편합니다. 부속 수급도 쉬워 하자가 없습니다.'
+    },
+    {
+      id: 'm2', cat: '주방', name: '무광 스테인리스 원홀 주방 수전',
+      img: 'images/mat_faucet_kitchen.jpg',
+      comment: '손때가 안 타는 무광 마감입니다. 고장 나도 부속이 흔해 당일 교체가 됩니다.'
+    },
+    {
+      id: 'm3', cat: '조명', name: '거실용 사각 LED 면조명',
+      img: 'images/light_living_01.jpg',
+      comment: '천장에 납작하게 붙어 답답하지 않고 거실 전체가 고르게 밝습니다.'
+    },
+    {
+      id: 'm4', cat: '바닥재', name: 'KCC 프라임오크 화이트 강마루',
+      img: 'images/kcc_prime_oak_white.jpg',
+      comment: '밝은 톤이라 집이 넓어 보이고, 스크래치에 강해 반려동물 있는 집에도 좋습니다.'
+    }
+  ]
+};
+
+/* 샘플 사진 4개 (원클릭 선택) */
+const SAMPLES = [
+  { label: '세면기', src: 'images/mat_basin.jpg' },
+  { label: '주방 후드', src: 'images/mat_hugent.jpg' },
+  { label: '식탁등', src: 'images/light_dining_01.jpg' },
+  { label: '강마루', src: 'images/kcc_daisy_oak.jpg' }
+];
+
+let state = null;
+let custFilter = '전체';
+let sheetDraft = { id: null, cat: '욕실', img: '', name: '', comment: '' };
+
+/* ---------- 저장 / 불러오기 ---------- */
+function clone(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return clone(DEFAULT_STATE);
+    const parsed = JSON.parse(raw);
+    if (!parsed || !parsed.company || !Array.isArray(parsed.materials)) return clone(DEFAULT_STATE);
+    return parsed;
+  } catch (e) {
+    return clone(DEFAULT_STATE);
+  }
+}
+
+function persist() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    return true;
+  } catch (e) {
+    toast('사진 용량이 커서 저장하지 못했습니다. 사진을 줄이거나 다른 사진으로 바꿔 주세요.');
+    return false;
+  }
+}
+
+/* ---------- 화면 그리기 ---------- */
+function renderAll() {
+  document.getElementById('brandTitle').textContent = state.company.name || '내 회사';
+  renderAdminList();
+  renderCustomer();
+  fillCompanyForm();
+}
+
+function fillCompanyForm() {
+  document.getElementById('inpName').value = state.company.name || '';
+  document.getElementById('inpOwner').value = state.company.owner || '';
+  document.getElementById('inpPhone').value = state.company.phone || '';
+  document.getElementById('inpTagline').value = state.company.tagline || '';
+}
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function renderAdminList() {
+  const list = document.getElementById('adminList');
+  document.getElementById('adminCount').textContent = state.materials.length;
+  if (!state.materials.length) {
+    list.innerHTML = '<div class="empty"><strong>아직 올린 자재가 없습니다</strong>위의 [+ 새 자재 올리기]를 눌러 첫 자재를 올려 보세요.</div>';
+    return;
+  }
+  list.innerHTML = state.materials.map(function (m) {
+    return '' +
+      '<div class="mat-row">' +
+        '<img class="thumb" src="' + esc(m.img) + '" alt="' + esc(m.name) + '">' +
+        '<div class="row-body">' +
+          '<span class="chip">' + esc(m.cat) + '</span>' +
+          '<div class="row-name">' + esc(m.name) + '</div>' +
+          (m.comment ? '<div class="row-comment">“' + esc(m.comment) + '”</div>' : '') +
+        '</div>' +
+        '<div class="row-actions">' +
+          '<button class="btn-sm edit" onclick="editMaterial(\'' + m.id + '\')">수정</button>' +
+          '<button class="btn-sm del" onclick="deleteMaterial(\'' + m.id + '\')">삭제</button>' +
+        '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function renderCustomer() {
+  const c = state.company;
+  document.getElementById('custName').textContent = c.name || '내 회사';
+  const ownerLine = [c.owner ? (c.owner.indexOf('대표') === 0 ? c.owner : '대표 ' + c.owner) : '', c.phone].filter(Boolean).join(' · ');
+  document.getElementById('custOwner').textContent = ownerLine || '연락처를 입력해 주세요';
+  document.getElementById('custTagline').textContent = c.tagline || '';
+
+  // 카테고리 필터 (자재가 있는 카테고리만)
+  const pills = document.getElementById('custPills');
+  const counts = {};
+  state.materials.forEach(function (m) { counts[m.cat] = (counts[m.cat] || 0) + 1; });
+  const cats = CATS.filter(function (cat) { return counts[cat]; });
+  if (custFilter !== '전체' && cats.indexOf(custFilter) === -1) custFilter = '전체';
+
+  let pillHtml = '<button class="pill ' + (custFilter === '전체' ? 'active' : '') + '" onclick="setFilter(\'전체\')">전체 (' + state.materials.length + ')</button>';
+  cats.forEach(function (cat) {
+    pillHtml += '<button class="pill ' + (custFilter === cat ? 'active' : '') + '" onclick="setFilter(\'' + cat.replace(/'/g, "\\'") + '\')">' + esc(cat) + ' (' + counts[cat] + ')</button>';
+  });
+  pills.innerHTML = pillHtml;
+
+  const shown = state.materials.filter(function (m) { return custFilter === '전체' || m.cat === custFilter; });
+  document.getElementById('custCount').textContent = shown.length;
+
+  const list = document.getElementById('custList');
+  if (!shown.length) {
+    list.innerHTML = '<div class="empty"><strong>표시할 자재가 없습니다</strong>' +
+      (state.materials.length ? '다른 카테고리를 눌러 보세요.' : '사장님 화면에서 자재를 올리면 여기에 보입니다.') + '</div>';
+    return;
+  }
+  list.innerHTML = shown.map(function (m) {
+    return '' +
+      '<article class="cust-card">' +
+        '<div class="cust-photo"><img src="' + esc(m.img) + '" alt="' + esc(m.name) + '" loading="lazy"></div>' +
+        '<div class="cust-body">' +
+          '<span class="chip">' + esc(m.cat) + '</span>' +
+          '<div class="cust-name">' + esc(m.name) + '</div>' +
+          (m.comment ? '<div class="cust-comment"><div class="ct">💬 사장님 한마디</div><div class="cc">' + esc(m.comment) + '</div></div>' : '') +
+        '</div>' +
+      '</article>';
+  }).join('');
+}
+
+/* ---------- 탭 ---------- */
+function switchTab(which) {
+  const isAdmin = which === 'admin';
+  document.getElementById('viewAdmin').hidden = !isAdmin;
+  document.getElementById('viewCustomer').hidden = isAdmin;
+  document.getElementById('tabAdmin').classList.toggle('active', isAdmin);
+  document.getElementById('tabCustomer').classList.toggle('active', !isAdmin);
+  if (!isAdmin) renderCustomer();
+  window.scrollTo(0, 0);
+}
+
+function setFilter(cat) {
+  custFilter = cat;
+  renderCustomer();
+}
+
+/* ---------- 회사 정보 ---------- */
+function saveCompany() {
+  state.company = {
+    name: document.getElementById('inpName').value.trim() || '내 인테리어',
+    owner: document.getElementById('inpOwner').value.trim(),
+    phone: document.getElementById('inpPhone').value.trim(),
+    tagline: document.getElementById('inpTagline').value.trim()
+  };
+  persist();
+  document.getElementById('brandTitle').textContent = state.company.name;
+  renderCustomer();
+  toast('회사 정보를 저장했습니다. 고객 화면에 바로 반영됐어요.');
+}
+
+/* ---------- 자재 시트 ---------- */
+function renderCatChips() {
+  document.getElementById('catChips').innerHTML = CATS.map(function (cat) {
+    return '<button class="cat-chip ' + (sheetDraft.cat === cat ? 'on' : '') + '" onclick="pickCat(\'' + cat.replace(/'/g, "\\'") + '\')">' + esc(cat) + '</button>';
+  }).join('');
+}
+
+function renderSamples() {
+  document.getElementById('samples').innerHTML = SAMPLES.map(function (s) {
+    return '<button class="sample ' + (sheetDraft.img === s.src ? 'on' : '') + '" onclick="pickSample(\'' + s.src + '\')">' +
+      '<img src="' + s.src + '" alt="' + s.label + '"><span>' + s.label + '</span></button>';
+  }).join('');
+}
+
+function renderPreview() {
+  const img = document.getElementById('previewImg');
+  const empty = document.getElementById('previewEmpty');
+  if (sheetDraft.img) {
+    img.src = sheetDraft.img;
+    img.style.display = 'block';
+    empty.style.display = 'none';
+  } else {
+    img.removeAttribute('src');
+    img.style.display = 'none';
+    empty.style.display = 'block';
+  }
+}
+
+function pickCat(cat) {
+  sheetDraft.cat = cat;
+  renderCatChips();
+}
+
+function pickSample(src) {
+  sheetDraft.img = src;
+  renderSamples();
+  renderPreview();
+}
+
+function openSheet(id) {
+  const editing = id ? state.materials.find(function (m) { return m.id === id; }) : null;
+  if (editing) {
+    sheetDraft = { id: editing.id, cat: editing.cat, img: editing.img, name: editing.name, comment: editing.comment || '' };
+    document.getElementById('sheetTitle').textContent = '자재 수정하기';
+  } else {
+    sheetDraft = { id: null, cat: '욕실', img: '', name: '', comment: '' };
+    document.getElementById('sheetTitle').textContent = '새 자재 올리기';
+  }
+  document.getElementById('inpMatName').value = sheetDraft.name;
+  document.getElementById('inpComment').value = sheetDraft.comment;
+  document.getElementById('fileInput').value = '';
+  renderCatChips();
+  renderSamples();
+  renderPreview();
+  document.getElementById('backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function editMaterial(id) { openSheet(id); }
+
+function closeSheet() {
+  document.getElementById('backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function saveMaterial() {
+  const name = document.getElementById('inpMatName').value.trim();
+  const comment = document.getElementById('inpComment').value.trim();
+  if (!sheetDraft.img) { toast('사진을 먼저 골라 주세요. (폰 사진 첨부 또는 샘플 선택)'); return; }
+  if (!name) { toast('자재명을 적어 주세요.'); document.getElementById('inpMatName').focus(); return; }
+
+  if (sheetDraft.id) {
+    const idx = state.materials.findIndex(function (m) { return m.id === sheetDraft.id; });
+    if (idx > -1) state.materials[idx] = { id: sheetDraft.id, cat: sheetDraft.cat, name: name, comment: comment, img: sheetDraft.img };
+  } else {
+    state.materials.unshift({
+      id: 'm' + Date.now(), cat: sheetDraft.cat, name: name, comment: comment, img: sheetDraft.img
+    });
+  }
+  if (!persist()) return;
+  closeSheet();
+  renderAll();
+  toast(sheetDraft.id ? '자재를 수정했습니다. 고객 화면에 바로 반영됐어요.' : '새 자재를 올렸습니다. 고객 화면에 바로 반영됐어요.');
+}
+
+function deleteMaterial(id) {
+  const m = state.materials.find(function (x) { return x.id === id; });
+  if (!m) return;
+  if (!confirm('“' + m.name + '” 자재를 삭제할까요?')) return;
+  state.materials = state.materials.filter(function (x) { return x.id !== id; });
+  persist();
+  renderAll();
+  toast('자재를 삭제했습니다.');
+}
+
+/* ---------- 예시 초기화 ---------- */
+function resetDemo() {
+  if (!confirm('예시 처음 상태로 되돌릴까요?\n직접 올린 자재와 회사 정보가 모두 지워집니다.')) return;
+  state = clone(DEFAULT_STATE);
+  custFilter = '전체';
+  localStorage.removeItem(STORAGE_KEY);
+  persist();
+  renderAll();
+  toast('처음 예시 상태로 되돌렸습니다.');
+}
+
+/* ---------- 폰 사진 첨부 (자동 축소) ---------- */
+document.getElementById('fileInput').addEventListener('change', function (e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  if (!/^image\//.test(file.type)) { toast('사진 파일(jpg, png)만 올릴 수 있습니다.'); return; }
+  const reader = new FileReader();
+  reader.onload = function () {
+    const img = new Image();
+    img.onload = function () {
+      try {
+        const MAX = 1000;
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.width * scale));
+        canvas.height = Math.max(1, Math.round(img.height * scale));
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        sheetDraft.img = canvas.toDataURL('image/jpeg', 0.82);
+        renderSamples();
+        renderPreview();
+      } catch (err) {
+        sheetDraft.img = reader.result;
+        renderSamples();
+        renderPreview();
+      }
+    };
+    img.onerror = function () { toast('이 사진은 읽을 수 없습니다. 다른 사진으로 해 주세요.'); };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+/* ---------- 토스트 ---------- */
+let toastTimer = null;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2600);
+}
+
+/* ---------- 시작 ---------- */
+state = loadState();
+renderAll();
+</script>
+</body>
+</html>
