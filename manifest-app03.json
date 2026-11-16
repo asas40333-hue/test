@@ -1,0 +1,33 @@
+{
+  "name": "메종플러스 현장점검",
+  "short_name": "현장점검",
+  "description": "메종플러스 30초 현장점검·하자 리포트 — 공간별 체크·상태·사진·카톡 복사·A4 인쇄",
+  "lang": "ko-KR",
+  "dir": "ltr",
+  "start_url": "./app03.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f3ee",
+  "theme_color": "#2b1d14",
+  "icons": [
+    {
+      "src": "icon-app03-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-app03-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-app03-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
