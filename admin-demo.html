@@ -143,17 +143,18 @@
   .backdrop { position: fixed; inset: 0; z-index: 200; background: rgba(15,23,42,0.55); display: none; align-items: flex-end; justify-content: center; }
   .backdrop.open { display: flex; }
   .sheet {
-    width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto;
+    width: 100%; max-width: 600px; max-height: 92vh;
+    display: flex; flex-direction: column; overflow: hidden;
     background: #fff; border-radius: 22px 22px 0 0;
-    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
     animation: up 0.22s ease-out;
   }
   @keyframes up { from { transform: translateY(24px); opacity: 0.7; } to { transform: translateY(0); opacity: 1; } }
-  .sheet-head { position: sticky; top: 0; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-bottom: 1px solid #f1f5f9; z-index: 2; }
+  .sheet-head { flex: 0 0 auto; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-bottom: 1px solid #f1f5f9; }
   .sheet-title { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
   .sheet-close { width: 44px; height: 44px; border-radius: 50%; border: none; background: #f1f5f9; color: #334155; font-size: 19px; font-weight: 800; cursor: pointer; }
-  .sheet-body { padding: 14px 16px 82px; }
-  .sheet-foot { display: flex; gap: 10px; padding: 12px 16px 4px; position: sticky; bottom: 0; background: #fff; border-top: 1px solid #f1f5f9; }
+  .sheet-body { flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 16px 20px; overscroll-behavior: contain; }
+  .sheet-foot { flex: 0 0 auto; display: flex; gap: 10px; padding: 12px 16px calc(8px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid #f1f5f9; box-shadow: 0 -4px 12px rgba(15,23,42,0.05); }
   .sheet-foot .btn-ghost { flex: 0 0 34%; }
   .sheet-foot .btn-primary { flex: 1 1 auto; }
 
@@ -559,6 +560,7 @@ function openSheet(id) {
   renderPreview();
   document.getElementById('backdrop').classList.add('open');
   document.body.style.overflow = 'hidden';
+  document.querySelector('.sheet-body').scrollTop = 0;
 }
 
 function editMaterial(id) { openSheet(id); }
