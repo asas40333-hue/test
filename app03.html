@@ -675,7 +675,7 @@
         id: uid(), space: state.space, name: name,
         status: state.status, memo: memo, photo: state.photo || null
       });
-      toast("✅ " + state.space + " · " + STATUS[state.status].full + "로 추가했습니다", "ok");
+      toast("✅ [" + state.space + "] " + name + " (" + STATUS[state.status].full + ")", "ok");
       $("itemName").value = "";
       $("itemMemo").value = "";
       state.photo = null;
