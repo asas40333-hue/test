@@ -161,6 +161,7 @@
 
   /* ---------------- results ---------------- */
   .results{min-width:0;scroll-margin-top:70px}
+  .pricing{scroll-margin-top:66px}
   .results-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:2px 2px 10px}
   .results-head[hidden]{display:none}
   .results-title{font-size:16px;font-weight:900;letter-spacing:-.4px}
@@ -1387,7 +1388,7 @@
       $("#skGrid").hidden = true;
       grid.hidden = false;
       $("#resultsTitle").textContent = "생성 완료 · 시안 3종";
-      $("#resultsMeta").textContent = "1크레딧 사용 · 남은 " + state.credits + "크레딧 · AI 영상 분석 미연동(입력한 문구·사진 기준)";
+      $("#resultsMeta").textContent = "1크레딧 사용 · AI 영상 분석 미연동(입력한 문구·사진 기준)";
       setBusy(false);
       toast("썸네일 3종을 만들었어요 · 1크레딧 사용");
       if (window.innerWidth < 900){
@@ -1502,7 +1503,7 @@
     var until = new Date(Date.now() + 7 * 86400000).toISOString();
     state.trial = { until: until };
     lsSet(LS_TRIAL, JSON.stringify(state.trial));
-    if (creditsToAdd) addCredits(creditsToAdd, "무료 체험 크레딧 +" + creditsToAdd);
+    if (creditsToAdd) addCredits(creditsToAdd, "");
     renderCredits(true);
   }
 
@@ -1595,8 +1596,7 @@
     $("#trialGo").addEventListener("click", function(){
       startTrial(10);
       closeModal();
-      toast("무료 체험 시작 · 크레딧 +10");
-    });
+      toast("무료 체험 시작 · 크레딧 +10");    });
   }
 
   /* ================= wiring ================= */
