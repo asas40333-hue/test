@@ -83,6 +83,35 @@
   .hero h1 { font-size: 21px; font-weight: 800; line-height: 1.35; letter-spacing: -0.6px; }
   .hero p { font-size: 13.5px; color: #cbd5e1; margin-top: 7px; }
 
+  /* ---------- Category management ---------- */
+  .cat-manage { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+  .cat-tag {
+    display: inline-flex; align-items: center; gap: 4px; max-width: 100%; min-height: 44px;
+    background: #eff6ff; border: 1.5px solid #bfdbfe; color: var(--primary);
+    border-radius: 11px; padding: 4px 5px 4px 12px; font-size: 15px; font-weight: 800;
+  }
+  .cat-tag .nm { overflow-wrap: anywhere; padding-right: 2px; }
+  .cat-x {
+    flex-shrink: 0; width: 34px; height: 34px; border-radius: 8px; border: none;
+    background: #fff; color: #b91c1c; font-size: 15px; font-weight: 900; line-height: 1;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .cat-x:active { background: #fee2e2; }
+  .add-row { display: flex; gap: 8px; align-items: stretch; }
+  .add-row .input { flex: 1 1 auto; min-width: 0; }
+  .add-row .btn-add-cat {
+    flex: 0 0 auto; width: auto; min-height: 52px; padding: 0 18px;
+    font-size: 16px; white-space: nowrap;
+  }
+  .quick-cats { display: flex; flex-wrap: wrap; gap: 8px; }
+  .quick-cat {
+    border: 1.5px dashed #93c5fd; background: #f8fbff; color: var(--primary);
+    border-radius: 20px; padding: 8px 13px; min-height: 40px;
+    font-size: 14px; font-weight: 800; cursor: pointer;
+  }
+  .quick-cat:active { background: #e0edff; }
+  .quick-cat:disabled { border-color: #e2e8f0; color: #94a3b8; background: #f8fafc; cursor: default; }
+
   /* ---------- Admin material list ---------- */
   .list-head { display: flex; align-items: baseline; justify-content: space-between; margin: 22px 2px 10px; }
   .list-title { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; }
@@ -238,6 +267,25 @@
       <button class="btn btn-primary" onclick="saveCompany()">회사 정보 저장</button>
     </div>
 
+    <div class="card">
+      <div class="card-title">🏷️ 카테고리 관리</div>
+      <div class="card-desc">여기서 만든 카테고리가 자재 등록 칸과 고객 화면 탭에 그대로 나옵니다. <strong>×</strong> 를 누르면 지워집니다.</div>
+
+      <div class="cat-manage" id="catManage"></div>
+
+      <label class="field" style="margin:16px 0 0;">
+        <span class="label">새 카테고리 이름</span>
+        <div class="add-row">
+          <input class="input" id="inpNewCat" type="text" maxlength="12" placeholder="예) 타일, 창호/샷시" autocomplete="off"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();addCategory();}">
+          <button class="btn btn-primary btn-add-cat" onclick="addCategory()">추가</button>
+        </div>
+      </label>
+
+      <div class="sample-label" style="margin-bottom:8px;">빠른 예시 (누르면 바로 추가)</div>
+      <div class="quick-cats" id="quickCats"></div>
+    </div>
+
     <div class="list-head">
       <div class="list-title">📦 등록된 자재 <span class="count" id="adminCount">4</span></div>
     </div>
@@ -317,9 +365,12 @@
    - 상태는 localStorage 에 저장 (새로고침해도 유지)
    ========================================================= */
 const STORAGE_KEY = 'hanul_admin_demo_v1';
-const CATS = ['욕실', '주방', '바닥재', '조명', '벽지/필름'];
+const DEFAULT_CATS = ['욕실', '주방', '바닥재', '조명', '벽지/필름'];
+const QUICK_CATS = ['타일', '창호/샷시', '중문', '붙박이장', '도어락', '몰딩/걸레받이'];
+const CAT_NAME_MAX = 12;
 
 const DEFAULT_STATE = {
+  categories: DEFAULT_CATS.slice(),
   company: {
     name: '한울 인테리어',
     owner: '김한울',
@@ -371,6 +422,13 @@ function loadState() {
     if (!raw) return clone(DEFAULT_STATE);
     const parsed = JSON.parse(raw);
     if (!parsed || !parsed.company || !Array.isArray(parsed.materials)) return clone(DEFAULT_STATE);
+    // 예전 저장본에는 categories 가 없다 → 기본 5개로 채우고, 자재에만 있는 카테고리도 살려 둔다
+    if (!Array.isArray(parsed.categories)) parsed.categories = [];
+    parsed.categories = parsed.categories.filter(function (c) { return typeof c === 'string' && c.trim(); });
+    if (!parsed.categories.length) parsed.categories = DEFAULT_CATS.slice();
+    parsed.materials.forEach(function (m) {
+      if (m && m.cat && parsed.categories.indexOf(m.cat) === -1) parsed.categories.push(m.cat);
+    });
     return parsed;
   } catch (e) {
     return clone(DEFAULT_STATE);
@@ -390,9 +448,75 @@ function persist() {
 /* ---------- 화면 그리기 ---------- */
 function renderAll() {
   document.getElementById('brandTitle').textContent = state.company.name || '내 회사';
+  renderCatManage();
   renderAdminList();
   renderCustomer();
   fillCompanyForm();
+}
+
+/* ---------- 카테고리 관리 ---------- */
+function catCount(cat) {
+  return state.materials.filter(function (m) { return m.cat === cat; }).length;
+}
+
+function renderCatManage() {
+  const box = document.getElementById('catManage');
+  if (!box) return;
+  box.innerHTML = state.categories.map(function (raw, i) {
+    const cat = esc(raw);
+    return '<span class="cat-tag">' +
+      '<span class="nm">' + cat + '</span>' +
+      '<button class="cat-x" title="' + cat + ' 카테고리 삭제" aria-label="' + cat + ' 카테고리 삭제" onclick="removeCategory(' + i + ')">✕</button>' +
+    '</span>';
+  }).join('');
+
+  const quick = document.getElementById('quickCats');
+  if (quick) {
+    quick.innerHTML = QUICK_CATS.map(function (cat) {
+      const has = state.categories.indexOf(cat) > -1;
+      return '<button class="quick-cat" data-cat="' + esc(cat) + '"' + (has ? ' disabled' : '') +
+        ' onclick="addCategory(this.dataset.cat)">' + (has ? '✓ ' : '+ ') + esc(cat) + '</button>';
+    }).join('');
+  }
+}
+
+function addCategory(rawName) {
+  const input = document.getElementById('inpNewCat');
+  const name = String(rawName == null ? input.value : rawName).replace(/\s+/g, ' ').trim();
+  if (!name) { toast('추가할 카테고리 이름을 적어 주세요.'); if (!rawName) input.focus(); return; }
+  if (name.length > CAT_NAME_MAX) { toast('카테고리 이름은 ' + CAT_NAME_MAX + '자까지 됩니다.'); return; }
+  const dup = state.categories.some(function (c) { return c.replace(/\s+/g, '').toLowerCase() === name.replace(/\s+/g, '').toLowerCase(); });
+  if (dup) { toast('“' + name + '” 카테고리는 이미 있습니다.'); if (!rawName) input.select(); return; }
+
+  state.categories.push(name);
+  if (!persist()) { state.categories.pop(); return; }
+  if (rawName == null) input.value = '';
+  renderCatManage();
+  renderCatChips();
+  renderCustomer();
+  toast('“' + name + '” 카테고리를 추가했습니다. 자재 등록 칸과 고객 화면 탭에 바로 나옵니다.');
+}
+
+function removeCategory(index) {
+  const cat = state.categories[index];
+  if (!cat) return;
+  if (state.categories.length <= 1) { toast('카테고리는 최소 1개는 있어야 합니다.'); return; }
+  const n = catCount(cat);
+  if (n > 0) {
+    toast('“' + cat + '”에는 자재가 ' + n + '개 있습니다. 그 자재를 다른 카테고리로 옮기거나 삭제한 뒤 지울 수 있습니다.');
+    return;
+  }
+  if (!confirm('“' + cat + '” 카테고리를 지울까요?')) return;
+
+  state.categories.splice(index, 1);
+  if (!persist()) { state.categories.splice(index, 0, cat); return; }
+  if (sheetDraft.cat === cat) sheetDraft.cat = state.categories[0];
+  if (custFilter === cat) custFilter = '전체';
+  const box = document.getElementById('backdrop');
+  renderCatManage();
+  if (box && box.classList.contains('open')) renderCatChips();
+  renderCustomer();
+  toast('“' + cat + '” 카테고리를 지웠습니다.');
 }
 
 function fillCompanyForm() {
@@ -439,16 +563,18 @@ function renderCustomer() {
   document.getElementById('custOwner').textContent = ownerLine || '연락처를 입력해 주세요';
   document.getElementById('custTagline').textContent = c.tagline || '';
 
-  // 카테고리 필터 (자재가 있는 카테고리만)
+  // 카테고리 필터 (자재가 있는 카테고리만, 사장님이 정한 순서대로)
   const pills = document.getElementById('custPills');
   const counts = {};
   state.materials.forEach(function (m) { counts[m.cat] = (counts[m.cat] || 0) + 1; });
-  const cats = CATS.filter(function (cat) { return counts[cat]; });
+  const ordered = state.categories.slice();
+  Object.keys(counts).forEach(function (cat) { if (ordered.indexOf(cat) === -1) ordered.push(cat); });
+  const cats = ordered.filter(function (cat) { return counts[cat]; });
   if (custFilter !== '전체' && cats.indexOf(custFilter) === -1) custFilter = '전체';
 
   let pillHtml = '<button class="pill ' + (custFilter === '전체' ? 'active' : '') + '" onclick="setFilter(\'전체\')">전체 (' + state.materials.length + ')</button>';
   cats.forEach(function (cat) {
-    pillHtml += '<button class="pill ' + (custFilter === cat ? 'active' : '') + '" onclick="setFilter(\'' + cat.replace(/'/g, "\\'") + '\')">' + esc(cat) + ' (' + counts[cat] + ')</button>';
+    pillHtml += '<button class="pill ' + (custFilter === cat ? 'active' : '') + '" data-cat="' + esc(cat) + '" onclick="setFilter(this.dataset.cat)">' + esc(cat) + ' (' + counts[cat] + ')</button>';
   });
   pills.innerHTML = pillHtml;
 
@@ -506,8 +632,12 @@ function saveCompany() {
 
 /* ---------- 자재 시트 ---------- */
 function renderCatChips() {
-  document.getElementById('catChips').innerHTML = CATS.map(function (cat) {
-    return '<button class="cat-chip ' + (sheetDraft.cat === cat ? 'on' : '') + '" onclick="pickCat(\'' + cat.replace(/'/g, "\\'") + '\')">' + esc(cat) + '</button>';
+  const list = state.categories.slice();
+  if (!list.length) list.push('미분류');
+  if (sheetDraft.cat && list.indexOf(sheetDraft.cat) === -1) list.push(sheetDraft.cat);
+  document.getElementById('catChips').innerHTML = list.map(function (cat) {
+    const val = esc(cat).replace(/'/g, '&#39;');
+    return '<button class="cat-chip ' + (sheetDraft.cat === cat ? 'on' : '') + '" data-cat="' + val + '" onclick="pickCat(this.dataset.cat)">' + esc(cat) + '</button>';
   }).join('');
 }
 
@@ -549,7 +679,7 @@ function openSheet(id) {
     sheetDraft = { id: editing.id, cat: editing.cat, img: editing.img, name: editing.name, comment: editing.comment || '' };
     document.getElementById('sheetTitle').textContent = '자재 수정하기';
   } else {
-    sheetDraft = { id: null, cat: '욕실', img: '', name: '', comment: '' };
+    sheetDraft = { id: null, cat: state.categories[0] || '', img: '', name: '', comment: '' };
     document.getElementById('sheetTitle').textContent = '새 자재 올리기';
   }
   document.getElementById('inpMatName').value = sheetDraft.name;
