@@ -900,12 +900,13 @@
       out.push("기간 " + (state.start && state.end ? dateShort(state.start) + "~" + dateShort(state.end) : "조정 중") +
         " · 소음작업 평일 " + workTime() + (state.holiday ? " (주말·공휴일 없음)" : ""));
       var fl = focusRanges();
-      if (fl.length) out.push("집중 " + fl.map(function(r){ return rangeShort(r.from, r.to); }).join(", "));
-      if (state.procs.length){
-        out.push("공정 " + sortedProcs().map(function(p){
-          var def = procDef(p.key);
-          return (def ? def.name : "") + " " + rangeShort(p.from, p.to);
-        }).join(", "));
+      if (fl.length){
+        var names = sortedProcs().filter(function(p){
+          var d = procDef(p.key);
+          return d && d.noise === "high";
+        }).map(function(p){ return procDef(p.key).name; });
+        out.push("집중 " + fl.map(function(r){ return rangeShort(r.from, r.to); }).join(", ") +
+          (names.length ? " (" + names.join("·") + ")" : ""));
       }
       out.push("양해 부탁드립니다. 문의 " + (who ? who + " " : "") + tel + " / " + comp);
       return out.join("\n");
