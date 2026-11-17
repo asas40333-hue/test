@@ -1,0 +1,33 @@
+{
+  "name": "유정의 하루 · Pilates Studio",
+  "short_name": "유정의 하루",
+  "description": "기구 필라테스 원장님의 레슨 기록과 스튜디오 이야기 — 부드럽게 엮어가는 하루 한 페이지",
+  "lang": "ko-KR",
+  "dir": "ltr",
+  "start_url": "./yujeong-pilates.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F7F4EC",
+  "theme_color": "#F7F4EC",
+  "icons": [
+    {
+      "src": "icon-yujeong-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-yujeong-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-yujeong-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
