@@ -906,7 +906,7 @@ function wire(){
     ['lesson','program','card'].forEach(k=>{
       $('view-'+k).classList.toggle('hidden', k!==v);
     });
-    $('.fab-wrap').style.display = (v==='lesson') ? '' : 'none';
+    document.querySelector('.fab-wrap').style.display = (v==='lesson') ? '' : 'none';
     window.scrollTo({top:0, behavior:'smooth'});
   });
   // 태그
