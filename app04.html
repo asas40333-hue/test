@@ -162,7 +162,7 @@
 
   /* paper preview */
   .paper{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 13px;
-    box-shadow:0 2px 10px rgba(43,29,20,.07);font-size:10.6px;}
+    box-shadow:0 2px 10px rgba(43,29,20,.07);font-size:11.2px;}
   .pv-cap{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--ink-3);
     letter-spacing:-.2px;margin-bottom:8px;}
   .pv-cap b{color:var(--ink-2);}
@@ -187,10 +187,11 @@
     padding:.34em .45em;border:1px solid #e0d7c8;font-weight:700;white-space:nowrap;}
   .doc .d-tbl td{padding:.36em .45em;border:1px solid #e0d7c8;font-weight:600;
     word-break:keep-all;vertical-align:top;}
-  .doc .d-tbl .c-proc{width:26%;}
-  .doc .d-tbl .c-date{width:37%;}
-  .doc .d-tbl .c-time{width:20%;}
-  .doc .d-tbl .c-noise{width:17%;}
+  .doc .d-tbl .c-proc{width:33%;}
+  .doc .d-tbl .c-date{width:45%;}
+  .doc .d-tbl .c-noise{width:22%;}
+  .doc .d-note{font-size:.86em;color:#5a4b3d;font-weight:700;margin:-.1em 0 .4em;}
+  .doc .d-nowrap{white-space:nowrap;}
   .doc .d-focus{background:#fdf6e3;border:1px solid #ecdcae;border-radius:4px;padding:.5em .6em;
     font-size:.9em;color:#8a5b1f;font-weight:700;margin-top:.5em;word-break:keep-all;}
   .doc ul.d-list{margin:.15em 0 0 1.05em;font-size:.93em;}
@@ -838,26 +839,27 @@
 
     h.push('<table class="d-meta">');
     h.push('<tr><th>현 장</th><td colspan="3">' + esc(site || "―") + '</td></tr>');
-    h.push('<tr><th>공사기간</th><td>' + (state.start && state.end
+    h.push('<tr><th>공사기간</th><td colspan="3">' + (state.start && state.end
       ? esc(dateKo(state.start)) + ' ~ ' + esc(dateKo(state.end)) + (days > 0 ? ' <span style="color:#8a5b1f">(' + days + '일)</span>' : '')
-      : '―') + '</td><th style="width:3.6em">시 공</th><td>' + esc(companyName()) + '</td></tr>');
-    h.push('<tr><th>담 당</th><td>' + esc(who || "―") + '</td><th>연락처</th><td>' + esc(tel || "―") + '</td></tr>');
+      : '―') + '</td></tr>');
+    h.push('<tr><th>시 공</th><td>' + esc(companyName()) + '</td><th style="width:2.6em">담 당</th><td>' + esc(who || "―") + '</td></tr>');
+    h.push('<tr><th>연락처</th><td colspan="3" class="d-nowrap">' + esc(tel || "―") + '</td></tr>');
     h.push('</table>');
 
     h.push('<div class="d-h">소음 · 분진 주요 공정 일정</div>');
+    h.push('<div class="d-note">작업시간 평일 ' + esc(workTime()) + (state.holiday ? ' · 토·일·공휴일 소음작업 없음' : '') + '</div>');
     var list = sortedProcs();
     if (!list.length){
       h.push('<div style="font-size:.92em;color:#777;padding:.3em 0">공정 일정은 착공 후 별도로 안내드리겠습니다.</div>');
     } else {
       h.push('<table class="d-tbl"><thead><tr>' +
-        '<th class="c-proc">공정</th><th class="c-date">기간</th><th class="c-time">작업시간</th><th class="c-noise">정도</th>' +
+        '<th class="c-proc">공정</th><th class="c-date">기간</th><th class="c-noise">소음 정도</th>' +
         '</tr></thead><tbody>');
       list.forEach(function(p){
         var def = procDef(p.key);
         if (!def) return;
         h.push('<tr><td class="c-proc"><b>' + esc(def.name) + '</b></td>' +
-          '<td class="c-date">' + esc(rangeKo(p.from, p.to)) + '</td>' +
-          '<td class="c-time">' + esc(workTime()) + '</td>' +
+          '<td class="c-date">' + esc(rangeShort(p.from, p.to)) + '</td>' +
           '<td class="c-noise">' + NOISE[def.noise].label + '</td></tr>');
       });
       h.push('</tbody></table>');
