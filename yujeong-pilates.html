@@ -940,7 +940,7 @@ function applyCard(){
   $('bizMono').textContent = studio.charAt(0);
   $('bizStudio').textContent = studio;
   $('bizName').innerHTML = '<b>원장</b> · ' + esc(name);
-  $('bizPhone').innerHTML = '<b>전화</b> · <a href="tel:' + esc(phone.replace(/[^0-9+]/g,'')) + '">' + esc(phone) + '</a>';
+  $('bizPhone').innerHTML = '<b>전화</b> · <a href="tel:' + esc(phone.replace(/\s/g,'')) + '">' + esc(phone) + '</a>';
   $('bizAddr').innerHTML  = '<b>오시는 길</b> · ' + esc(addr) + '<br>' + esc(CARD_ADDR2);
   $('bizHours').innerHTML = '<b>운영시간</b> · ' + esc(hours) + '<br>' + esc(CARD_HOURS2);
   $('headSub').innerHTML = esc(name) + ' 원장의 레슨 일지<br>체형교정 전문 · 1:1 · 듀엣 · 소그룹';
