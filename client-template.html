@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>[업체명] 고객 현장 공유 시스템 (빈 양식)</title>
+
+  <!-- 카카오톡 및 SNS 링크 미리보기 카드 (오픈그래프) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="[업체명] [OO아파트 OO동 OOO호] 실시간 현장 리포트">
+  <meta property="og:description" content="입주자 고객님을 위한 실시간 공정 진행률, 현장 사진 일지 및 공정 일정 안내">
+  <meta property="og:url" content="https://asas40333-hue.github.io/test/client-template.html">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="고객 현장 공유">
+  <meta name="theme-color" content="#1e3a8a">
+<style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #3b82f6;
+      --accent: #10b981;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 14px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 24px; }
+
+    /* 헤더 */
+    .app-header {
+      background: var(--card-bg);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title { font-size: 13px; font-weight: 700; color: var(--primary); letter-spacing: -0.3px; }
+    .project-name { font-size: 17px; font-weight: 800; color: var(--text); margin-top: 2px; }
+    /* 상단 프로그레스 카드 */
+    .status-card {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #fff;
+      margin: 16px;
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+    }
+    .status-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .status-stage { font-size: 13.5px; font-weight: 600; opacity: 0.9; word-break: keep-all; }
+    .status-dday { background: rgba(255, 255, 255, 0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .status-percent { font-size: 26px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.6px; line-height: 1.25; word-break: keep-all; }
+    .progress-bar-bg { background: rgba(255, 255, 255, 0.25); height: 8px; border-radius: 4px; overflow: hidden; }
+    .progress-bar-fill { background: #34d399; height: 100%; width: 45%; border-radius: 4px; transition: width 0.3s ease; }
+    .status-sub { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; opacity: 0.85; }
+
+    /* 탭 메뉴 */
+    .nav-tabs {
+      display: flex;
+      background: var(--card-bg);
+      padding: 4px;
+      margin: 0 16px 16px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .nav-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-tab.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(30, 58, 138, 0.25);
+    }
+
+    /* 공통 컨테이너 */
+    .tab-content { display: none; padding: 0 16px; }
+    .tab-content.active { display: block; }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .section-desc { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+
+    /* 카드 */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    /* 1. 현장 일지 탭 */
+    .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .photo-item {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      background: #e2e8f0;
+    }
+    .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-badge {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+    /* 착공 1일차 갤러리 */
+    .photo-item.tap { cursor: pointer; }
+    .day1-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .day1-hero .photo-item { aspect-ratio: 4 / 3; }
+    .day1-gallery { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 8px; }
+    .day1-gallery[hidden] { display: none; }
+    .day1-gallery .photo-item { aspect-ratio: 1; }
+    .day1-gallery .photo-badge { font-size: 9.5px; padding: 2px 4px; left: 3px; bottom: 3px; letter-spacing: -0.2px; }
+    .gallery-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      margin-top: 10px;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f1f5f9;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .gallery-toggle:active { background: #e2e8f0; }
+    .check-item { display: flex; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+    .check-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .check-num {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fef2f2;
+      color: #dc2626;
+      font-size: 11.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .check-title { font-size: 13px; font-weight: 800; color: var(--text-main); word-break: keep-all; }
+    .check-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-top: 3px; word-break: keep-all; }
+
+    .log-item {
+      border-left: 3px solid var(--primary-light);
+      padding-left: 12px;
+      margin-bottom: 14px;
+    }
+    .log-date { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .log-work { font-size: 14px; font-weight: 700; margin-top: 2px; }
+
+    /* 2. 자재 스펙북 탭 */
+    .spec-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .spec-item:last-child { border-bottom: none; }
+    .spec-thumb {
+      width: 54px;
+      height: 54px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    .spec-info { flex: 1; }
+    .spec-cat { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .spec-name { font-size: 14px; font-weight: 700; margin-top: 1px; }
+    .spec-model { font-size: 12px; color: var(--text-muted); }
+    .spec-status {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .spec-status.confirmed { background: #ecfdf5; color: #059669; }
+    .spec-status.changed { background: #fef3c7; color: #d97706; }
+    .spec-status.recommended { background: #fef3c7; color: #b45309; }
+
+    /* 자재 스펙 — 실속형 풀세트 카드 */
+    .spec-notice {
+      display: flex;
+      gap: 9px;
+      word-break: keep-all;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: #92400e;
+      letter-spacing: -0.2px;
+    }
+    .spec-notice b { color: #78350f; }
+    .spec-notice-icon { font-size: 15px; line-height: 1.2; }
+    .spec-legend {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 13px;
+      margin-bottom: 16px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .spec-legend-item { display: flex; align-items: center; gap: 5px; }
+    .spec-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+    .spec-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .spec-card-head .spec-status { flex-shrink: 0; white-space: nowrap; }
+    .spec-cat-en {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary-light);
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+    .spec-card-title { font-size: 16px; font-weight: 800; color: var(--text); margin-top: 2px; letter-spacing: -0.4px; }
+    .spec-list { display: flex; flex-direction: column; gap: 8px; }
+    .spec-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+    .spec-thumb {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+    }
+    .spec-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .spec-thumb.photo { cursor: zoom-in; }
+    .spec-thumb.icon { display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .spec-body { flex: 1; min-width: 0; }
+    .spec-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.35; letter-spacing: -0.3px; }
+    .spec-desc { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+    .spec-desc b { color: #334155; font-weight: 700; }
+    .spec-subhead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .spec-card-note {
+      margin-top: 12px;
+      word-break: keep-all;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .spec-footnote {
+      background: #f8fafc;
+      word-break: keep-all;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 2px 0 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+    .spec-footnote b { color: #334155; }
+    .photo-modal-box { padding: 0; background: #0f172a; border-radius: 16px 16px 0 0; overflow: hidden; }
+    .photo-modal-box img { width: 100%; max-height: 62vh; object-fit: contain; display: block; background: #0f172a; }
+    .photo-modal-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      padding: 12px 14px;
+    }
+    .photo-modal-caption { font-size: 12.5px; font-weight: 700; color: var(--text); line-height: 1.4; }
+
+    /* 3. 일정표 탭 */
+    .timeline { position: relative; padding-left: 20px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-step { position: relative; margin-bottom: 18px; }
+    .timeline-dot {
+      position: absolute;
+      left: -20px;
+      top: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      border: 3px solid #fff;
+    }
+    .timeline-step.done .timeline-dot { background: var(--accent); }
+    .timeline-step.current .timeline-dot { background: var(--primary-light); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+    .timeline-date { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .timeline-title { font-size: 14px; font-weight: 700; margin-top: 2px; }
+    .timeline-notice { font-size: 12px; color: #dc2626; margin-top: 3px; font-weight: 500; }
+
+    /* 4. 공사 대금 정산 탭 */
+    .amount-box {
+      background: #f8fafc;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      border: 1px dashed var(--border);
+    }
+    .amount-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+    .amount-row.total {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--primary);
+    }
+    .payment-step {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f8fafc;
+      margin-bottom: 8px;
+    }
+    .payment-step.paid { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .payment-step.pending { background: #fffbeb; border: 1px solid #fde68a; }
+    .pay-tag { font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+    .pay-tag.paid { background: #dcfce7; color: #15803d; }
+    .pay-tag.pending { background: #fef3c7; color: #b45309; }
+
+    /* 모달 팝업 스타일 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 30px;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slideUp 0.25s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-size: 17px; font-weight: 800; color: var(--text-main); }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+    }
+  </style>
+  <style>
+    /* 빈 양식용 — 사진 없는 자리(빈 슬롯) 표시 */
+    .empty-block {
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 22px 16px;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .empty-slot {
+      border-radius: 10px;
+      aspect-ratio: 1 / 1;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #94a3b8;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-align: center;
+      padding: 6px;
+      word-break: keep-all;
+    }
+    .empty-slot-icon { font-size: 19px; line-height: 1; }
+    .empty-slot .day1-badge { font-size: 9.5px; }
+    .day1-hero .empty-slot { aspect-ratio: 4 / 3; }
+    .photo-grid .empty-slot { aspect-ratio: 1; }
+    .form-field {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      word-break: keep-all;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 -->
+  <header class="app-header">
+    <div>
+      <div class="brand-title">[업체명] 고객 현장 공유</div>
+      <div class="project-name">[OO아파트 OO동 OOO호 (OO평형)]</div>
+    </div>
+  </header>
+
+  <!-- 상단 프로그레스 요약 카드 -->
+  <div class="status-card">
+    <div class="status-top">
+      <span class="status-stage" id="status-stage">현재 상태: <strong>공정 준비</strong></span>
+      <span class="status-dday" id="status-dday">D-00</span>
+    </div>
+    <div class="status-percent" id="status-percent">공정률 0%</div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+    </div>
+    <div class="status-sub">
+      <span>착공일: 2026.00.00 (요일)</span>
+      <span>완공 인도: 2026.00.00 (요일)</span>
+    </div>
+  </div>
+
+  <!-- 탭 내비게이션 -->
+  <nav class="nav-tabs">
+    <div class="nav-tab active" onclick="switchTab('log', this)">📸 현장일지</div>
+    <div class="nav-tab" onclick="switchTab('spec', this)">🧱 자재스펙</div>
+    <div class="nav-tab" onclick="switchTab('schedule', this)">📅 공정일정</div>
+    <div class="nav-tab" onclick="switchTab('payment', this)">📄 계약·정산</div>
+  </nav>
+
+  <!-- 1. 현장 일지 탭 -->
+  <div id="tab-log" class="tab-content active">
+    <div class="section-title">
+      현장 일지
+      <span class="section-desc">[업체명] 대표가 직접 기록합니다</span>
+    </div>
+
+    <!-- 빈 양식 안내 -->
+    <div class="spec-notice">
+      <div class="spec-notice-icon">📝</div>
+      <div>
+        <b>빈 양식</b>입니다. <b>[업체명]</b> · <b>[OO아파트 OO동 OOO호 (OO평형)]</b> · 공정 일정 · 자재 스펙을 실제 내용으로 바꿔 쓰시면 그대로 고객용 화면이 됩니다.
+      </div>
+    </div>
+
+    <!-- 착공 1일차 일지 (양식) -->
+    <div class="card" style="border-left: 4px solid var(--accent);">
+      <div class="log-item" style="border-left-color: var(--accent);">
+        <div class="log-date">2026.00.00 (요일) · 착공 1일차</div>
+        <div class="log-work">[공정명] 착수 · 작업 내용 한 줄 요약</div>
+      </div>
+      <p class="form-field" style="margin-top: 6px;">
+        여기에 그날의 작업 내용을 적습니다. 철거·샷시·타일·도배 등 어떤 공정을 했는지, 고객님께 미리 알려 드릴 사항이 있으면 함께 적어 주세요.
+      </p>
+
+      <div class="empty-block">
+        <div style="font-size: 24px; margin-bottom: 6px;">📷</div>
+        <div style="font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 4px;">등록된 현장 사진이 없습니다.</div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">시공 단계별 사진이 이곳에 추가됩니다.</div>
+      </div>
+
+      <div class="day1-hero">
+        <div class="empty-slot"><div class="empty-slot-icon">🖼</div>사진 01</div>
+        <div class="empty-slot"><div class="empty-slot-icon">🖼</div>사진 02</div>
+        <div class="empty-slot"><div class="empty-slot-icon">🖼</div>사진 03</div>
+        <div class="empty-slot"><div class="empty-slot-icon">🖼</div>사진 04</div>
+      </div>
+
+      <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 8px; text-align: right;">📷 사진 터치 시 확대</div>
+    </div>
+
+    <!-- 현장 점검 메모 (양식) -->
+    <div class="card">
+      <div class="log-item">
+        <div class="log-date">2026.00.00 (요일) · 현장 점검 메모</div>
+        <div class="log-work">확인 필요 사항</div>
+      </div>
+      <p class="form-field" style="margin-top: 4px;">
+        철거·해체 과정에서 확인된 부분을 적어 두는 자리입니다. 원인 확인과 보수 방법이 정해지는 대로 사진과 함께 안내드리겠습니다.
+      </p>
+      <div style="margin-top: 4px;">
+        <div class="check-item">
+          <div class="check-num">1</div>
+          <div>
+            <div class="check-title">확인 사항 1 — [위치] · [증상]</div>
+            <div class="check-desc">현상과 보수 범위, 방법을 적어 주세요. (예: 보수 필요 여부, 반영 공정)</div>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-num">2</div>
+          <div>
+            <div class="check-title">확인 사항 2 — [위치] · [증상]</div>
+            <div class="check-desc">현상과 보수 범위, 방법을 적어 주세요.</div>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-num">3</div>
+          <div>
+            <div class="check-title">확인 사항 3 — [위치] · [증상]</div>
+            <div class="check-desc">현상과 보수 범위, 방법을 적어 주세요.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 이전 일지 (양식) -->
+    <div class="card">
+      <div class="log-item">
+        <div class="log-date">2026.00.00 (요일)</div>
+        <div class="log-work">[공정명] · 작업 내용</div>
+      </div>
+      <p class="form-field" style="margin-top: 6px;">
+        날짜별 일지는 이렇게 위에서 아래로 쌓입니다. 최근 일지가 맨 위에 오도록 적어 주세요.
+      </p>
+      <div class="photo-grid">
+        <div class="empty-slot"><div class="empty-slot-icon">🖼</div>사진 01</div>
+        <div class="empty-slot"><div class="empty-slot-icon">🖼</div>사진 02</div>
+      </div>
+    </div>
+
+    <div class="card" style="text-align: center; padding: 26px 20px;">
+      <div style="font-size: 26px; margin-bottom: 8px;">📷</div>
+      <div style="font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">현장 사진은 날짜별로 계속 쌓입니다</div>
+      <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">철거·샷시·타일·도장 등 공정이 진행될 때마다<br>날짜별 사진과 작업 내용을 이 일지에 올려 드립니다.</div>
+    </div>
+  </div>
+
+  <!-- 2. 자재 스펙북 탭 -->
+  <div id="tab-spec" class="tab-content">
+    <!-- 상단 안내 배너 -->
+    <div class="spec-notice">
+      <div class="spec-notice-icon">💡</div>
+      <div>
+        ※ <b>'트렌드 추천(협의)'</b> 품목은 고객 미팅 시 원하시는 색상·모델로 <b>즉시 변경 반영</b>되는 항목입니다. 확정된 품목은 <b>'확정'</b>으로 바꿔 주세요.
+      </div>
+    </div>
+
+    <div class="section-title">
+      선정 및 확정 자재 스펙
+      <span class="section-desc">[OO아파트 OO동 OOO호] · OO평형</span>
+    </div>
+
+    <!-- 범례 / 상태 안내 -->
+    <div class="spec-legend">
+      <div class="spec-legend-item"><span class="spec-dot" style="background:#10b981;"></span>확정 사양 0개 공종</div>
+      <div class="spec-legend-item"><span class="spec-dot" style="background:#f59e0b;"></span>입력 대기 8개 공종</div>
+      <div class="spec-legend-item" style="margin-left:auto; font-weight:500; color:#94a3b8;">📷 사진 터치 시 확대</div>
+    </div>
+
+    <!-- 1. 창호(샷시) -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">WINDOWS &amp; DOORS</div>
+          <div class="spec-card-title">창호 (샷시 전면 교체)</div>
+        </div>
+        <span class="spec-status recommended">미정</span>
+      </div>
+
+      <div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-bottom: 14px; border: 1px solid #e2e8f0;">
+        <div style="font-size: 13.5px; font-weight: 700; color: #1e293b;">브랜드 · 시리즈 — 입력 대기</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">제조사, 프레임 사양, 시공 예정일을 적어 주세요.</div>
+      </div>
+
+      <div style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
+        📍 공간별 창짝 분할 및 유리 사양
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">거실 발코니 외창</span>
+            <span style="font-size: 11.5px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">분할 미정</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">창짝 수 · 유리 사양 입력 대기</div>
+        </div>
+
+        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">안방 발코니 외창</span>
+            <span style="font-size: 11.5px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">분할 미정</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">창짝 수 · 유리 사양 입력 대기</div>
+        </div>
+
+        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">거실 분합창 (거실 내창)</span>
+            <span style="font-size: 11.5px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">분할 미정</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">창짝 수 · 유리 사양 입력 대기</div>
+        </div>
+
+        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">안방 침실 내창</span>
+            <span style="font-size: 11.5px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">분할 미정</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">창짝 수 · 유리 사양 입력 대기</div>
+        </div>
+
+        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">중방 (작은방1) 침실 내창</span>
+            <span style="font-size: 11.5px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">분할 미정</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">창짝 수 · 유리 사양 입력 대기</div>
+        </div>
+
+        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">입구방 (작은방2) 침실 내창</span>
+            <span style="font-size: 11.5px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">분할 미정</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">창짝 수 · 유리 사양 입력 대기</div>
+        </div>
+
+        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">주방 창문 (소창)</span>
+            <span style="font-size: 11.5px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">분할 미정</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">창짝 수 · 유리 사양 입력 대기</div>
+        </div>
+
+        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">주방 발코니 외창</span>
+            <span style="font-size: 11.5px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">분할 미정</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">창짝 수 · 유리 사양 입력 대기</div>
+        </div>
+
+        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">주방 베란다 출입문 (터닝도어)</span>
+            <span style="font-size: 11.5px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">사양 미정</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">도어 종류 · 유리 사양 입력 대기</div>
+        </div>
+      </div>
+
+      <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 12px; text-align: right;">
+        ※ 창호별 가로×세로(W×H) 정밀 치수는 실측표 확보 후 순차 업데이트됩니다.
+      </div>
+    </div>
+
+    <!-- 2. 거실 욕실 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">BATHROOM</div>
+          <div class="spec-card-title">거실 욕실 자재 사양</div>
+        </div>
+        <span class="spec-status recommended">미정</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);">🚽</div>
+          <div class="spec-body">
+            <div class="spec-name">양변기</div>
+            <div class="spec-desc">브랜드 · 모델명 · 형태 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#f8fafc,#e2e8f0);">🚰</div>
+          <div class="spec-body">
+            <div class="spec-name">세면기 · 세면 수전</div>
+            <div class="spec-desc">형태 · 브랜드 · 마감 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);">🛁</div>
+          <div class="spec-body">
+            <div class="spec-name">욕조 · 방수 마감</div>
+            <div class="spec-desc">규격 · 자재 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#f1f5f9,#e2e8f0);">🚿</div>
+          <div class="spec-body">
+            <div class="spec-name">샤워기 · 수전 세트</div>
+            <div class="spec-desc">브랜드 · 마감 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);">💨</div>
+          <div class="spec-body">
+            <div class="spec-name">환풍기 (복합 환기)</div>
+            <div class="spec-desc">모델명 · 기능 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#ffffff,#eef2f6);">🪞</div>
+          <div class="spec-body">
+            <div class="spec-name">수납장 · 거울</div>
+            <div class="spec-desc">형태 · 마감 <b>입력 대기</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 실제 자재 사진과 품번은 확정 후 이 자리에 넣어 주세요. 사진을 넣으면 고객님이 눌러서 크게 볼 수 있습니다.
+      </div>
+    </div>
+
+    <!-- 3. 안방 욕실 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">BATHROOM · MASTER</div>
+          <div class="spec-card-title">안방 욕실 자재 사양</div>
+        </div>
+        <span class="spec-status recommended">미정</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);">🚽</div>
+          <div class="spec-body">
+            <div class="spec-name">양변기</div>
+            <div class="spec-desc">브랜드 · 모델명 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#ffffff,#eef2f6);">🚰</div>
+          <div class="spec-body">
+            <div class="spec-name">세면기</div>
+            <div class="spec-desc">형태 · 규격 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#f1f5f9,#e2e8f0);">🚿</div>
+          <div class="spec-body">
+            <div class="spec-name">수전 세트</div>
+            <div class="spec-desc">브랜드 · 마감 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#f8fafc,#dbe4ee);">🧴</div>
+          <div class="spec-body">
+            <div class="spec-name">수납 · 선반</div>
+            <div class="spec-desc">형태 · 수량 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#e0f2fe,#bfdbfe);">🪟</div>
+          <div class="spec-body">
+            <div class="spec-name">샤워 파티션</div>
+            <div class="spec-desc">재질 · 두께 <b>입력 대기</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 이 욕실에만 적용되는 특이사항(철거 범위, 젠다이 유무 등)을 적어 주세요.
+      </div>
+    </div>
+
+    <!-- 4. 도배 & 바닥재 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">WALLPAPER &amp; FLOORING</div>
+          <div class="spec-card-title">도배 &amp; 바닥재</div>
+        </div>
+        <span class="spec-status recommended">미정</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f8f4ec,#ece0cd);"></div>
+          <div class="spec-body">
+            <div class="spec-name">벽지</div>
+            <div class="spec-desc">브랜드 · 품명 · 색상 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#f4f6f8);"></div>
+          <div class="spec-body">
+            <div class="spec-name">천장 마감</div>
+            <div class="spec-desc">재질 · 색상 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#efe7da,#d8c8ae);"></div>
+          <div class="spec-body">
+            <div class="spec-name">바닥재</div>
+            <div class="spec-desc">브랜드 · 품번 · 두께 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f7f7f5,#dfe2e6);"></div>
+          <div class="spec-body">
+            <div class="spec-name">부자재 · 시공 방식</div>
+            <div class="spec-desc">접착제 · 마감 방식 <b>입력 대기</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 벽지·장판 거래처와 시공 방식(융착 등)을 함께 적어 두면 상담 때 설명이 빠릅니다.
+      </div>
+    </div>
+
+    <!-- 5. 타일 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">TILE</div>
+          <div class="spec-card-title">타일 (욕실 · 주방 · 현관)</div>
+        </div>
+        <span class="spec-status recommended">미정</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#e7e4df,#c9c4bb);"></div>
+          <div class="spec-body">
+            <div class="spec-name">욕실 벽 타일</div>
+            <div class="spec-desc">규격 · 색상 · 질감 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#d6d3cd,#a8a29a);"></div>
+          <div class="spec-body">
+            <div class="spec-name">욕실 바닥 타일</div>
+            <div class="spec-desc">규격 · 논슬립 등급 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#f0f4f8);"></div>
+          <div class="spec-body">
+            <div class="spec-name">주방 벽 타일</div>
+            <div class="spec-desc">규격 · 색상 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#4b5563,#1f2937);"></div>
+          <div class="spec-body">
+            <div class="spec-name">현관 바닥 타일</div>
+            <div class="spec-desc">규격 · 재질 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#eef2f6,#cfd8e3);"></div>
+          <div class="spec-body">
+            <div class="spec-name">줄눈 (메지)</div>
+            <div class="spec-desc">재질 · 색상 <b>입력 대기</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 타일 규격은 자재비·시공비에 직접 영향을 줍니다. 확정 규격과 수량을 함께 적어 두세요.
+      </div>
+    </div>
+
+    <!-- 6. 주방 가구 & 붙박이장 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">KITCHEN &amp; FURNITURE</div>
+          <div class="spec-card-title">주방 가구 &amp; 붙박이장</div>
+        </div>
+        <span class="spec-status recommended">미정</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fdfbf7,#f0e8d8);"></div>
+          <div class="spec-body">
+            <div class="spec-name">싱크대 도어</div>
+            <div class="spec-desc">재질 · 색상 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#eef1f4);"></div>
+          <div class="spec-body">
+            <div class="spec-name">상판</div>
+            <div class="spec-desc">재질 · 색상 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f8fafc,#e2e8f0);"></div>
+          <div class="spec-body">
+            <div class="spec-name">싱크볼</div>
+            <div class="spec-desc">브랜드 · 모델명 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f1f5f9,#dbe4ee);"></div>
+          <div class="spec-body">
+            <div class="spec-name">싱크 수전</div>
+            <div class="spec-desc">브랜드 · 마감 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fbf9f5,#eae3d7);"></div>
+          <div class="spec-body">
+            <div class="spec-name">후드</div>
+            <div class="spec-desc">형식 · 모델명 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f6f1e7,#e4d7c3);"></div>
+          <div class="spec-body">
+            <div class="spec-name">신발장</div>
+            <div class="spec-desc">형태 · 마감 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fbf9f5,#eae3d7);"></div>
+          <div class="spec-body">
+            <div class="spec-name">붙박이장</div>
+            <div class="spec-desc">적용 공간 · 문짝 방식 <b>입력 대기</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 가구는 실측 미팅 후 도어 색상·수납 구성·레일 방식이 최종 확정됩니다. 확정일을 함께 적어 주세요.
+      </div>
+    </div>
+
+    <!-- 7. 도어 · 몰딩 · 필름 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">DOOR &amp; FILM</div>
+          <div class="spec-card-title">도어 · 몰딩 · 필름</div>
+        </div>
+        <span class="spec-status recommended">미정</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#edeef0);"></div>
+          <div class="spec-body">
+            <div class="spec-name">방문 · 욕실문</div>
+            <div class="spec-desc">재질 · 색상 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fbfbfb,#e6e8ea);"></div>
+          <div class="spec-body">
+            <div class="spec-name">손잡이 (도어 핸들)</div>
+            <div class="spec-desc">브랜드 · 모델 · 마감 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f7f7f5,#dfe2e6);"></div>
+          <div class="spec-body">
+            <div class="spec-name">몰딩 · 걸레받이</div>
+            <div class="spec-desc">형태 · 폭 · 색상 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fbfbfb,#e6e8ea);"></div>
+          <div class="spec-body">
+            <div class="spec-name">필름</div>
+            <div class="spec-desc">브랜드 · 색상 · 적용 부위 <b>입력 대기</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 문틀·몰딩·걸레받이를 같은 색으로 통일하면 마감이 깔끔해집니다. 색상 코드를 적어 두세요.
+      </div>
+    </div>
+
+    <!-- 8. 조명 & 배선기구 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">LIGHTING &amp; SWITCH</div>
+          <div class="spec-card-title">조명 &amp; 배선기구</div>
+        </div>
+        <span class="spec-status recommended">미정</span>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fffdf5,#fef3c7);"></div>
+          <div class="spec-body">
+            <div class="spec-name">거실 조명</div>
+            <div class="spec-desc">형식 · 색온도 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#fffbeb,#fde68a);"></div>
+          <div class="spec-body">
+            <div class="spec-name">다운라이트 · 매립등</div>
+            <div class="spec-desc">규격 · 수량 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#e2e8f0);"></div>
+          <div class="spec-body">
+            <div class="spec-name">침실 · 주방 조명</div>
+            <div class="spec-desc">형식 · 색온도 <b>입력 대기</b></div>
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f8fafc,#dbe4ee);"></div>
+          <div class="spec-body">
+            <div class="spec-name">스위치 · 콘센트</div>
+            <div class="spec-desc">브랜드 · 색상 <b>입력 대기</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card-note">
+        ※ 조명 색온도는 집 전체를 같은 값으로 맞추는 것이 요즘 표준입니다. 확정 값(예: 주백색)을 적어 두세요.
+      </div>
+    </div>
+
+    <!-- 하단 안내 -->
+    <div class="spec-footnote">
+      ※ 위 품목은 <b>빈 양식</b>입니다. 미팅에서 확정된 브랜드·모델·색상을 입력하면 그대로 고객용 자재 스펙표가 되며, 변경 시 견적 금액이 조정될 수 있습니다.<br>
+      ※ 확정된 품목은 상태를 <b>'확정'</b>으로 바꾸고, 실물 사진을 넣어 주세요.
+    </div>
+  </div>
+
+  <!-- 3. 공사 일정표 탭 -->
+  <div id="tab-schedule" class="tab-content">
+    <div class="section-title">
+      전체 공정 스케줄
+      <span class="section-desc">일정 입력 대기</span>
+    </div>
+
+    <div class="card">
+      <div class="timeline">
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 1일차</div>
+          <div class="timeline-title">가구 철거 (착공일)</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 2일차</div>
+          <div class="timeline-title">욕실 철거 · 1차 방수 · 문/문틀 철거</div>
+          <div class="timeline-notice">※ 소음 발생 공정 — 사전 안내 문구를 적어 주세요</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 3일차</div>
+          <div class="timeline-title">2차 방수 · 샷시 철거 및 창호 시공 · 전기 배선</div>
+          <div class="timeline-notice">※ 반입·철거 소음 공정</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) ~ 00.00 (요일) · 4~5일차</div>
+          <div class="timeline-title">목공 공사 (천장 몰딩, 문틀, 벽체 보강)</div>
+          <div style="font-size: 13px; font-weight: 700; color: var(--primary-light); margin-top: 4px;">📍 [00.00 (요일) 00:00] 맞춤 가구 현장 실측 미팅</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) ~ 00.00 (요일) · 6~8일차</div>
+          <div class="timeline-title">타일 시공 (욕실 벽·바닥, 주방, 현관) 및 줄눈</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 9일차</div>
+          <div class="timeline-title">욕실 기구 세팅 · 필름 시공</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 10일차</div>
+          <div class="timeline-title">발코니 도장</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) ~ 00.00 (요일) · 11~12일차</div>
+          <div class="timeline-title">도배 공사 (벽면 밑작업 및 벽지 시공)</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 13일차</div>
+          <div class="timeline-title">싱크대 및 주방 가구 세팅</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 14일차</div>
+          <div class="timeline-title">조명 기구 시공 (매립등, 스위치, 콘센트)</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 15일차</div>
+          <div class="timeline-title">장판 시공</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 16일차</div>
+          <div class="timeline-title">방문 및 중문 시공</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 17일차</div>
+          <div class="timeline-title">전체 공정 마감 점검 및 잔손보기</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 18일차</div>
+          <div class="timeline-title">입주 청소</div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">00.00 (요일) · 19일차</div>
+          <div class="timeline-title">최종 준공 검수 및 현장 인수인계 (완공)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 계약 · 정산 안내 탭 -->
+  <div id="tab-payment" class="tab-content">
+    <div class="section-title">
+      계약 및 정산 안내
+      <span class="section-desc">계약서 기준으로 안내드립니다</span>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="width: 38px; height: 38px; border-radius: 10px; background: #eff6ff; display: flex; align-items: center; justify-content: center; font-size: 19px;">📄</div>
+        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">계약서 · 상세 견적서</div>
+      </div>
+      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;">
+        공사 범위와 자재 사양이 확정된 최종 계약서와 상세 견적서는 대면 미팅 또는 문자로 전달드립니다.
+        이 화면에는 계약서와 동일한 내용만 반영하며, 임의로 금액을 표시하지 않습니다.
+      </p>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="width: 38px; height: 38px; border-radius: 10px; background: #ecfdf5; display: flex; align-items: center; justify-content: center; font-size: 19px;">💳</div>
+        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">대금 일정 (계약금 · 중도금 · 잔금)</div>
+      </div>
+      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;">
+        대금은 계약서에 명시된 일정과 금액대로 진행됩니다. 입금이 확인되면 이 화면의 정산 현황에 날짜와 함께 표시해 드리고,
+        공정 변경으로 금액이 조정될 경우에는 반영 전에 먼저 말씀드립니다.
+      </p>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="width: 38px; height: 38px; border-radius: 10px; background: #fffbeb; display: flex; align-items: center; justify-content: center; font-size: 19px;">☎️</div>
+        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">정산 문의</div>
+      </div>
+      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;">
+        금액·일정과 관련해 궁금하신 점은 [업체명] 대표님께 편하게 연락 주시면 바로 확인해 드립니다.
+      </p>
+    </div>
+  </div>
+
+  <!-- 자재 실물 사진 확대 모달 -->
+  <div id="photo-modal" class="modal-overlay" onclick="if(event.target.id==='photo-modal')closeSpecPhoto()">
+    <div class="modal-box photo-modal-box">
+      <img id="photo-modal-img" src="" alt="">
+      <div class="photo-modal-bar">
+        <div id="photo-modal-caption" class="photo-modal-caption"></div>
+        <button class="modal-close" onclick="closeSpecPhoto()">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ───────── 공정 기준일 (한국 시간 기준 자동 계산) ─────────
+       아래 두 줄에 착공일·완공일을 넣으면 상단 D-day와 공정률이 자동으로 계산됩니다.
+       예) const SITE_START = { y: 2026, m: 11, d: 16 };
+           const SITE_END   = { y: 2026, m: 12, d: 10 };
+       비워 두면 빈 양식 상태(D-00 · 공정률 0%)로 표시됩니다. */
+    const SITE_START = null;   // 착공일
+    const SITE_END   = null;   // 완공 인도일
+    const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+    function utcDate(y, m, d) { return Date.UTC(y, m - 1, d); }
+
+    // 기기 시간대와 무관하게 '한국 시간(Asia/Seoul)' 기준 오늘 날짜를 UTC 자정 기준 값으로 반환
+    function seoulToday() {
+      try {
+        const parts = new Intl.DateTimeFormat('en-CA', {
+          timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit'
+        }).formatToParts(new Date());
+        const pick = function (type) {
+          const hit = parts.find(function (p) { return p.type === type; });
+          return hit ? Number(hit.value) : NaN;
+        };
+        const y = pick('year'), m = pick('month'), d = pick('day');
+        if (y && m && d) return utcDate(y, m, d);
+      } catch (e) { /* Intl 미지원 기기는 아래 기기 날짜로 대체 */ }
+      const now = new Date();
+      return utcDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    }
+
+    function utcFromText(text) {
+      const p = text.split('-').map(Number);
+      return utcDate(p[0], p[1], p[2]);
+    }
+
+    function daysFrom(a, b) { return Math.round((b - a) / MS_PER_DAY); }
+
+    // 주어진 날짜(UTC 자정 기준)에 해당하는 D-day·진행 상태를 계산만 하는 함수
+    function computeStatus(today) {
+      // 기준일이 입력되지 않은 빈 양식 상태
+      if (!SITE_START || !SITE_END) {
+        return { ddayText: 'D-00', stageText: '공정 준비', headlineText: '공정률 0%', percent: 0 };
+      }
+
+      const start = utcDate(SITE_START.y, SITE_START.m, SITE_START.d);
+      const end = utcDate(SITE_END.y, SITE_END.m, SITE_END.d);
+      const leftToStart = daysFrom(today, start);   // 착공까지 남은 일수
+      const leftToEnd = daysFrom(today, end);       // 완공까지 남은 일수
+      const workDay = 1 - leftToStart;              // 공사 일차 (착공일 = 1일차)
+
+      let ddayText, stageText, headlineText, percent;
+
+      if (leftToStart > 0) {
+        ddayText = '착공 D-' + leftToStart + ' · 완공 D-' + leftToEnd;
+        stageText = '착공 준비 중';
+        headlineText = '착공 준비 완료';
+        percent = 0;
+      } else if (leftToEnd < 0) {
+        ddayText = '착공 D+' + (-leftToStart) + ' · 공사 완료';
+        stageText = '준공 완료';
+        headlineText = '준공 완료';
+        percent = 100;
+      } else {
+        const totalDays = daysFrom(start, end) + 1;
+        percent = Math.min(100, Math.max(0, Math.round((workDay / totalDays) * 100)));
+        ddayText = (leftToStart === 0 ? 'D-Day · 공사 1일차' : '공사 ' + workDay + '일차')
+                 + ' · 완공 ' + (leftToEnd === 0 ? 'D-Day' : 'D-' + leftToEnd);
+        stageText = leftToEnd === 0 ? '최종 준공 검수 · 인수인계' : '공사 진행 중';
+        headlineText = '공사 ' + workDay + '일차 · 공정률 ' + percent + '%';
+      }
+
+      return { ddayText: ddayText, stageText: stageText, headlineText: headlineText, percent: percent };
+    }
+
+    function updateProgress() {
+      const status = computeStatus(seoulToday());
+
+      const ddayEl = document.getElementById('status-dday');
+      if (ddayEl) ddayEl.textContent = status.ddayText;
+      const stageEl = document.getElementById('status-stage');
+      if (stageEl) stageEl.innerHTML = '현재 상태: <strong>' + status.stageText + '</strong>';
+      const percentEl = document.getElementById('status-percent');
+      if (percentEl) percentEl.textContent = status.headlineText;
+      const barEl = document.getElementById('progress-fill');
+      if (barEl) barEl.style.width = status.percent + '%';
+    }
+
+    // 공정표: data-start / data-end(YYYY-MM-DD)를 적으면 지난 단계는 완료, 오늘 단계는 진행 중으로 표시
+    function updateTimeline() {
+      const today = seoulToday();
+      document.querySelectorAll('.timeline-step').forEach(function (step) {
+        const s = step.dataset.start;
+        if (!s) return;
+        const e = step.dataset.end || s;
+        step.classList.remove('done', 'current');
+        if (today > utcFromText(e)) step.classList.add('done');
+        else if (today >= utcFromText(s)) step.classList.add('current');
+      });
+    }
+
+    function switchTab(tabName, el) {
+      document.querySelectorAll('.nav-tab').forEach(function (t) { t.classList.remove('active'); });
+      document.querySelectorAll('.tab-content').forEach(function (c) { c.classList.remove('active'); });
+      const target = document.getElementById('tab-' + tabName);
+      if (target) target.classList.add('active');
+      if (el) el.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openSpecPhoto(src, caption) {
+      document.getElementById('photo-modal-img').src = src;
+      document.getElementById('photo-modal-caption').textContent = caption;
+      document.getElementById('photo-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSpecPhoto() {
+      document.getElementById('photo-modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      updateProgress();
+      updateTimeline();
+    });
+  </script>
+</body>
+</html>
