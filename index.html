@@ -148,6 +148,9 @@
     .day1-gallery[hidden] { display: none; }
     .day1-gallery .photo-item { aspect-ratio: 1; }
     .day1-gallery .photo-badge { font-size: 9.5px; padding: 2px 4px; left: 3px; bottom: 3px; letter-spacing: -0.2px; }
+    /* 2일차 갤러리 (세로 사진 원본 비율 유지) */
+    .day2-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .day2-grid .photo-item { aspect-ratio: 3 / 4; }
     .gallery-toggle {
       display: flex;
       align-items: center;
@@ -562,6 +565,48 @@
     <div class="section-title">
       현장 일지
       <span class="section-desc">메종플러스 대표가 직접 기록합니다</span>
+    </div>
+
+    <!-- 2026.11.17 2일차 -->
+    <div class="card" style="border-left: 4px solid var(--accent);">
+      <div class="log-item" style="border-left-color: var(--accent);">
+        <div class="log-date">2026.11.17 (화) · 2일차</div>
+        <div class="log-work">욕실·주방 타일 및 문틀 철거, 자재 미팅 완료</div>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-top: 6px; word-break: keep-all;">
+        거실 욕실은 벽·바닥 타일을 모두 걷어냈고, 안방 욕실은 천장과 위생기(도기·수전)를 내린 뒤 덧방 준비까지 들어갔습니다.
+        주방 벽타일과 문틀, 작은방 문틀도 철거해 폐기물로 정리했고, 안방 욕실 앞 바닥에는 급수 배관을 새로 잡았습니다.
+        거실 천장 등기구를 내리고 레미탈 자재도 반입해 두었습니다. 낮 12시에는 장인타일위생기에서 오셔서 욕실·타일 자재를 함께 골랐습니다.
+        철거하며 드러난 벽체 상태는 다음 공정(방수·목공)에 반영하겠습니다. 원본 사진은 현장 아카이브(구글 드라이브)에 함께 보관합니다.
+      </p>
+
+      <div class="day2-grid">
+        <div class="photo-item tap" onclick="openSpecPhoto('images/hanbit_day02_01.jpg','01 · 주방 벽타일·문틀 철거 및 폐기물 정리')">
+          <img src="images/hanbit_day02_01.jpg" alt="주방 벽타일과 문틀 철거, 폐기물 정리">
+          <div class="photo-badge">01 주방 철거</div>
+        </div>
+        <div class="photo-item tap" onclick="openSpecPhoto('images/hanbit_day02_02.jpg','02 · 거실 욕실 벽·바닥 전체 철거')">
+          <img src="images/hanbit_day02_02.jpg" alt="거실 욕실 벽과 바닥 전체 철거" loading="lazy">
+          <div class="photo-badge">02 거실욕실</div>
+        </div>
+        <div class="photo-item tap" onclick="openSpecPhoto('images/hanbit_day02_03.jpg','03 · 안방 욕실 앞 바닥 급수 배관 작업 및 문틀 철거')">
+          <img src="images/hanbit_day02_03.jpg" alt="안방 욕실 앞 급수 배관 작업과 문틀 철거" loading="lazy">
+          <div class="photo-badge">03 급수배관</div>
+        </div>
+        <div class="photo-item tap" onclick="openSpecPhoto('images/hanbit_day02_04.jpg','04 · 안방 욕실 천장·위생기 철거 및 덧방 준비')">
+          <img src="images/hanbit_day02_04.jpg" alt="안방 욕실 천장과 위생기 철거, 덧방 준비" loading="lazy">
+          <div class="photo-badge">04 안방욕실</div>
+        </div>
+        <div class="photo-item tap" onclick="openSpecPhoto('images/hanbit_day02_05.jpg','05 · 주방 옆 작은방 문틀 철거')">
+          <img src="images/hanbit_day02_05.jpg" alt="주방 옆 작은방 문틀 철거" loading="lazy">
+          <div class="photo-badge">05 작은방</div>
+        </div>
+        <div class="photo-item tap" onclick="openSpecPhoto('images/hanbit_day02_06.jpg','06 · 거실 천장 등기구 철거 및 레미탈 자재 반입')">
+          <img src="images/hanbit_day02_06.jpg" alt="거실 천장 등기구 철거와 레미탈 자재 반입" loading="lazy">
+          <div class="photo-badge">06 조명·자재</div>
+        </div>
+      </div>
+      <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 8px; text-align: right;">📷 사진 터치 시 확대</div>
     </div>
 
     <!-- 2026.11.16 착공 1일차 -->
