@@ -600,6 +600,9 @@ const SAMPLE = [
   }
 ];
 
+// 1차 시안의 샘플 기록(날짜·요일이 휴무일과 어긋나 교체됨). 예전에 열어본 기기에 남아 있으면 걷어낸다.
+const LEGACY_SAMPLE_IDS = ['s-yj-20261117-morning','s-yj-20261116-core','s-yj-20261115-posture'];
+
 let entries = [];
 let curCat = 'all';
 let draftPhotos = [];
@@ -651,6 +654,16 @@ function load(){
     const parsed = JSON.parse(raw);
     arr = Array.isArray(parsed) ? parsed : [];
   }catch(e){ arr = []; }
+
+  try{
+    const stale = arr.filter(x=>x && x.sample !== false && LEGACY_SAMPLE_IDS.indexOf(x.id) !== -1);
+    if(stale.length){
+      const ids = stale.map(x=>x.id);
+      arr = arr.filter(x=>ids.indexOf(x.id) === -1);
+      markDeleted(ids);
+      try{ localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }catch(e){}
+    }
+  }catch(e){}
 
   // 새로 더해진 샘플만 골라 합친다. 사용자가 고치거나 지운 글은 건드리지 않는다.
   try{
