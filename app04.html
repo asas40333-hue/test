@@ -215,9 +215,8 @@
   .nb-row{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px;background:#fff;}
   .nb-row.done{background:#f7fbf9;border-color:#c9e8e2;}
   .nb-top{display:grid;grid-template-columns:78px minmax(0,1fr) 32px;gap:6px;align-items:center;}
-  select.nb-rel{width:100%;font-size:13.5px;font-weight:700;padding:10px 4px;border:1.5px solid var(--line);
-    border-radius:9px;background:#fdfbf8;color:var(--ink);-webkit-appearance:none;appearance:none;
-    text-align:center;letter-spacing:-.4px;}
+  select.nb-rel{width:100%;font-size:13.5px;font-weight:700;padding:10px 2px;border:1.5px solid var(--line);
+    border-radius:9px;background:#fdfbf8;color:var(--ink);text-align:center;letter-spacing:-.4px;}
   .nb-ho{padding:10px 11px !important;font-size:15px !important;}
   .nb-x{width:32px;height:38px;border-radius:9px;border:0;background:#f7f1e8;color:#a8410f;
     font-size:12px;font-weight:800;cursor:pointer;line-height:1;}
@@ -904,7 +903,7 @@
       if (fl.length){
         var names = sortedProcs().filter(function(p){
           var d = procDef(p.key);
-          return d && d.noise === "high";
+          return d && d.noise === "high" && p.from && p.to;
         }).map(function(p){ return procDef(p.key).name; });
         out.push("집중 " + fl.map(function(r){ return rangeShort(r.from, r.to); }).join(", ") +
           (names.length ? " (" + names.join("·") + ")" : ""));
