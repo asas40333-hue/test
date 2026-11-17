@@ -1,7 +1,7 @@
 {
-  "name": "유정의 하루 · Pilates Studio",
-  "short_name": "유정의 하루",
-  "description": "기구 필라테스 원장님의 레슨 기록과 스튜디오 이야기 — 부드럽게 엮어가는 하루 한 페이지",
+  "name": "끌로에필라테스 상수점 · 레슨 일지",
+  "short_name": "끌로에 상수",
+  "description": "체형교정 전문 · 작업치료사 출신 김유정 원장의 1:1 · 듀엣 · 소그룹 기구 필라테스 레슨 기록과 스튜디오 명함",
   "lang": "ko-KR",
   "dir": "ltr",
   "start_url": "./yujeong-pilates.html",

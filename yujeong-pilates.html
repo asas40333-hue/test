@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>유정의 하루 · Pilates Studio</title>
+<title>끌로에필라테스 상수점 · ChloePilates SangSu</title>
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="유정의 하루 — 필라테스 스튜디오 레슨 일지">
-<meta property="og:description" content="1:1 · 듀엣 · 소그룹 기구 필라테스. 원장 김유정의 레슨 기록과 스튜디오 이야기.">
+<meta property="og:title" content="끌로에필라테스 상수점 — 레슨 일지">
+<meta property="og:description" content="체형교정 전문 · 작업치료사 출신 김유정 원장의 1:1 · 듀엣 · 소그룹 기구 필라테스. 서울 마포구 독막로 91 동호빌딩 2층.">
 <meta property="og:image" content="https://asas40333-hue.github.io/test/icon-yujeong-512.png">
 <meta property="og:url" content="https://asas40333-hue.github.io/test/yujeong-pilates.html">
 
@@ -18,7 +18,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="유정의 하루">
+<meta name="apple-mobile-web-app-title" content="끌로에필라테스">
 <meta name="theme-color" content="#F7F4EC">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -331,10 +331,28 @@ body::before{
 .biz .contact{display:flex;flex-direction:column;gap:7px}
 .biz .contact span{font-size:13.5px;color:var(--ink-2);letter-spacing:.02em}
 .biz .contact b{color:var(--ink);font-weight:600}
-.biz .pending{
-  margin-top:15px;background:rgba(201,154,107,.09);border:1px dashed #DDBE97;border-radius:10px;
-  padding:10px 12px;font-size:12px;color:#A87844;line-height:1.6
+.biz-en{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:7px
 }
+.biz .contact span{line-height:1.75}
+.biz .contact a{
+  color:var(--sage-deep);text-decoration:none;border-bottom:1px solid rgba(113,135,95,.4);padding-bottom:1px
+}
+.biz .contact .sub-line{font-size:11.5px;color:var(--muted);letter-spacing:.01em;margin-top:-4px}
+.biz .intro{
+  margin-top:17px;background:var(--sage-soft);border-radius:12px;padding:14px 15px;
+  font-family:var(--serif);font-size:12.8px;line-height:1.78;color:var(--sage-deep);text-align:left
+}
+.biz .intro .quote{display:block;font-size:13.5px;color:var(--ink-2);margin-bottom:7px}
+.link-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.link-btns a{
+  display:flex;align-items:center;justify-content:center;gap:5px;min-height:44px;
+  border:1px solid var(--line);background:#FFFDF7;border-radius:11px;padding:11px 6px;
+  font-size:12.5px;font-weight:600;color:var(--ink-2);text-decoration:none;letter-spacing:.01em
+}
+.link-btns a:active{background:var(--ivory-2)}
+.link-btns a.kakao{background:#FAE100;border-color:#F0D400;color:#3B1D1D}
+.link-btns a.kakao:active{background:#EFD600}
 .share-btns{display:flex;gap:9px;margin-bottom:20px}
 .share-btns button{
   flex:1;border:1px solid var(--line);background:var(--card);border-radius:12px;
@@ -359,12 +377,12 @@ body::before{
 
 <div class="wrap">
   <header class="app-head">
-    <div class="eyebrow">Pilates Studio Journal</div>
-    <h1 id="headTitle">유정의 하루 <span class="en">· Pilates Studio</span></h1>
-    <div class="sub" id="headSub">김유정 원장 · 1:1 · 듀엣 · 소그룹 기구 필라테스</div>
+    <div class="eyebrow">Chloe Pilates · Sangsu</div>
+    <h1 id="headTitle">끌로에필라테스 <span class="en">상수점</span></h1>
+    <div class="sub" id="headSub">김유정 원장의 레슨 일지 · 체형교정 전문 1:1 · 듀엣 · 소그룹</div>
     <div class="head-rule"></div>
     <div class="head-meta">
-      <span id="metaCount">기록 0건</span><span class="sep"></span><span>천천히, 그러나 꾸준히</span>
+      <span id="metaCount">기록 0건</span><span class="sep"></span><span>월~금 09:00 – 23:00</span>
     </div>
     <button class="more-btn" id="btnMore" aria-label="설정">⋯</button>
   </header>
@@ -388,7 +406,7 @@ body::before{
     <div class="prog">
       <div class="prog-head"><span class="num">01</span><h2>1:1 프라이빗 레슨</h2></div>
       <div class="tagline">체형 분석 · 맞춤 지도</div>
-      <p>첫 상담에서 자세와 체형, 평소 습관을 함께 살펴봅니다. 회원님의 몸에 맞춘 동작 하나하나를 정확히 지도하고, 목표에 따라 강도를 조절해 드려요.</p>
+      <p>작업치료사 출신 원장이 근골격계와 해부학을 바탕으로, 첫 상담에서 자세와 체형·평소 습관을 함께 살펴봅니다. 회원님의 몸에 맞춘 동작을 하나하나 정확히 지도하고, 목표에 따라 강도를 조절해 드려요.</p>
       <ul>
         <li>정밀 체형 평가와 개인 목표 설정</li>
         <li>코어·자세 균형 중심의 맞춤 커리큘럼</li>
@@ -421,7 +439,7 @@ body::before{
       <div class="prog-head"><span class="num">04</span><h2>체험 레슨 · 1회 상담</h2></div>
       <div class="tagline">처음 시작하는 분들을 편하게</div>
       <p>필라테스가 처음이어도 괜찮습니다. 가벼운 체형 상담과 함께 몸의 긴장을 풀어 주는 첫 레슨을 천천히 진행해 드려요.</p>
-      <div class="trial-note"><strong>1회 체험 레슨 + 체형 상담 안내</strong><br>예약은 전화 또는 문자로 편하게 남겨 주세요. 시간과 코스는 상담 때 맞춰 드립니다.</div>
+      <div class="trial-note"><strong>1회 체험 레슨 + 체형 상담 안내</strong><br>예약은 전화 또는 문자로 편하게 남겨 주세요. (<a href="tel:010-8939-3828" style="color:inherit;font-weight:700;text-decoration:underline">010-8939-3828</a>)<br>시간과 코스는 상담 때 맞춰 드립니다.</div>
     </div>
   </section>
 
@@ -430,21 +448,28 @@ body::before{
     <p class="page-sub">모바일에서 그대로 저장해 두었다가,<br>필요할 때 회원님께 보내 드릴 수 있어요.</p>
 
     <div class="biz" id="bizCard">
-      <div class="mono">유</div>
-      <div class="role">PILATES INSTRUCTOR · STUDIO OWNER</div>
-      <h2 id="bizName">김유정 원장</h2>
-      <div class="career" id="bizCareer">기구 필라테스 지도 5년+<br>스튜디오 운영 (독립 개원)</div>
+      <div class="mono" id="bizMono">끌</div>
+      <div class="role">CHLOE PILATES · SANGSU</div>
+      <h2 id="bizStudio">끌로에필라테스 상수점</h2>
+      <div class="biz-en" id="bizEn">ChloePilates SangSu</div>
+      <div class="career" id="bizCareer">작업치료사 출신 · 체형교정 전문<br>근골격계·해부학 기반의 안전하고 건강한 필라테스</div>
       <div class="divider"></div>
       <div class="contact">
-        <span id="bizStudio"><b>스튜디오</b> · 명함 도착 후 반영 예정</span>
-        <span id="bizAddr"><b>오시는 길</b> · 명함 도착 후 반영 예정</span>
-        <span id="bizPhone"><b>전화</b> · 명함 도착 후 반영 예정</span>
-        <span id="bizInsta"><b>인스타그램</b> · 명함 도착 후 반영 예정</span>
-        <span id="bizNaver"><b>네이버 예약</b> · 명함 도착 후 반영 예정</span>
+        <span id="bizName"><b>원장</b> · 김유정</span>
+        <span id="bizPhone"><b>전화</b> · <a href="tel:010-8939-3828">010-8939-3828</a></span>
+        <span id="bizAddr"><b>오시는 길</b> · 서울 마포구 독막로 91<br>동호빌딩 2층 (상수동 309-5)</span>
+        <span class="sub-line">상수역 2번 출구 도보 1분</span>
+        <span id="bizHours"><b>운영시간</b> · 월~금 09:00 – 23:00<br>토·일 휴무</span>
       </div>
-      <div class="pending">
-        🗂 실제 명함을 받으면 상호·주소·전화·인스타그램·네이버 예약 링크를<br>
-        <strong>우측 상단 ⋯ → 명함 정보 수정</strong>에서 직접 채워 넣으실 수 있어요.
+      <div class="intro" id="bizIntro">
+        <span class="quote">“회원님이 직접 느끼는 몸의 변화를 지향합니다.”</span>
+        근골격계와 해부학을 바탕으로 한 안전하고 건강한 필라테스로, 체형교정을 전문으로 지도합니다.
+      </div>
+      <div class="link-btns">
+        <a id="lnkKakao" class="kakao" href="http://pf.kakao.com/_fxgBLK" target="_blank" rel="noopener">💬 카카오톡 상담</a>
+        <a id="lnkBlog" href="https://blog.naver.com/chloe_sangsu" target="_blank" rel="noopener">📝 네이버 블로그</a>
+        <a id="lnkMap" href="http://place.map.kakao.com/1564669017" target="_blank" rel="noopener">🗺 카카오맵 길찾기</a>
+        <a id="lnkNaver" href="https://m.place.naver.com/place/18779366/location" target="_blank" rel="noopener">📍 네이버 지도</a>
       </div>
     </div>
 
@@ -464,15 +489,15 @@ body::before{
   <div class="grab"></div>
   <h3>설정</h3>
   <div class="sheet-sub">헤더와 명함에 바로 반영됩니다 · 이 기기에만 저장</div>
+  <div class="field"><label>스튜디오 이름(상호)</label><input type="text" id="setStudio" placeholder="끌로에필라테스 상수점"></div>
   <div class="field"><label>원장님 이름</label><input type="text" id="setName" placeholder="김유정"></div>
-  <div class="field"><label>스튜디오 이름(상호)</label><input type="text" id="setStudio" placeholder="예) 필라테스 유정"></div>
-  <div class="field"><label>전화번호</label><input type="tel" id="setPhone" placeholder="예) 010-0000-0000"></div>
-  <div class="row2">
-    <div class="field"><label>주소</label><input type="text" id="setAddr" placeholder="스튜디오 주소"></div>
-    <div class="field"><label>인스타그램</label><input type="text" id="setInsta" placeholder="@아이디"></div>
-  </div>
-  <div class="field"><label>네이버 예약 링크</label><input type="text" id="setNaver" placeholder="예약 페이지 주소"></div>
-  <div class="sheet-note">※ 명함 도착 후 실제 상호·연락처로 채워 넣으시면 헤더와 명함 카드가 함께 바뀝니다. 비워 두면 '반영 예정' 안내가 그대로 보입니다.</div>
+  <div class="field"><label>전화번호</label><input type="tel" id="setPhone" placeholder="010-8939-3828"></div>
+  <div class="field"><label>주소</label><input type="text" id="setAddr" placeholder="서울 마포구 독막로 91"></div>
+  <div class="field"><label>운영시간</label><input type="text" id="setHours" placeholder="월~금 09:00 – 23:00"></div>
+  <div class="field"><label>카카오톡 상담 채널 주소</label><input type="text" id="setKakao" placeholder="http://pf.kakao.com/_fxgBLK"></div>
+  <div class="field"><label>네이버 블로그 주소</label><input type="text" id="setBlog" placeholder="https://blog.naver.com/chloe_sangsu"></div>
+  <div class="field"><label>카카오맵 길찾기 주소</label><input type="text" id="setMap" placeholder="http://place.map.kakao.com/1564669017"></div>
+  <div class="sheet-note">※ 지금은 실제 스튜디오 정보가 들어가 있습니다. 고치고 싶은 칸만 다시 적으시면 되고, 비워 두면 처음 정리한 정보가 그대로 쓰입니다.</div>
   <button class="btn-ghost" id="btnSaveCard">명함 정보 저장</button>
   <div style="height:10px"></div>
   <button class="btn-ghost" id="btnExport">⬇︎ 기록 백업 내려받기 (JSON)</button>
@@ -857,36 +882,61 @@ function importJSON(mode){
 }
 
 /* ───────── 명함 ───────── */
+const CARD_DEFAULTS = {
+  studio:'끌로에필라테스 상수점',
+  name:'김유정',
+  phone:'010-8939-3828',
+  addr:'서울 마포구 독막로 91',
+  hours:'월~금 09:00 – 23:00',
+  kakao:'http://pf.kakao.com/_fxgBLK',
+  blog:'https://blog.naver.com/chloe_sangsu',
+  map:'http://place.map.kakao.com/1564669017'
+};
+const CARD_ADDR2 = '동호빌딩 2층 (상수동 309-5)';
+const CARD_HOURS2 = '토·일 휴무';
 const CARD_FIELDS = [
-  ['setName','name'],['setStudio','studio'],['setPhone','phone'],
-  ['setAddr','addr'],['setInsta','insta'],['setNaver','naver']
+  ['setStudio','studio'],['setName','name'],['setPhone','phone'],['setAddr','addr'],
+  ['setHours','hours'],['setKakao','kakao'],['setBlog','blog'],['setMap','map']
 ];
 function loadCard(){
   let c = null;
   try{ c = JSON.parse(localStorage.getItem(CARD_KEY) || 'null'); }catch(e){ c = null; }
   return c && typeof c === 'object' ? c : {};
 }
+function cardVal(c, key){
+  const v = c[key];
+  return (typeof v === 'string' && v.trim()) ? v.trim() : CARD_DEFAULTS[key];
+}
+function paintHeadTitle(studio){
+  const m = studio.match(/^(.*\S)\s+(상수점)$/);
+  $('headTitle').innerHTML = m
+    ? esc(m[1]) + ' <span class="en">' + esc(m[2]) + '</span>'
+    : esc(studio);
+}
 function applyCard(){
   const c = loadCard();
-  const name = c.name || '김유정';
-  const studio = c.studio || '';
-  const phone = c.phone || '';
-  const addr = c.addr || '';
-  const insta = c.insta || '';
-  const naver = c.naver || '';
-  $('headSub').textContent = (name ? name+' 원장' : '') + ' · 1:1 · 듀엣 · 소그룹 기구 필라테스'
-    + (studio ? ' · '+studio : '');
-  $('bizName').textContent = name + ' 원장';
-  $('bizCareer').innerHTML = '기구 필라테스 지도 5년+<br>스튜디오 운영 (독립 개원)';
-  $('bizStudio').innerHTML = '<b>스튜디오</b> · ' + esc(studio || '명함 도착 후 반영 예정');
-  $('bizAddr').innerHTML   = '<b>오시는 길</b> · ' + esc(addr || '명함 도착 후 반영 예정');
-  $('bizPhone').innerHTML  = '<b>전화</b> · ' + esc(phone || '명함 도착 후 반영 예정');
-  $('bizInsta').innerHTML  = '<b>인스타그램</b> · ' + esc(insta || '명함 도착 후 반영 예정');
-  $('bizNaver').innerHTML  = '<b>네이버 예약</b> · ' + esc(naver || '명함 도착 후 반영 예정');
+  const studio = cardVal(c,'studio');
+  const name   = cardVal(c,'name');
+  const phone  = cardVal(c,'phone');
+  const addr   = cardVal(c,'addr');
+  const hours  = cardVal(c,'hours');
+
+  paintHeadTitle(studio);
+  document.title = studio + ' · ChloePilates SangSu';
+  $('bizMono').textContent = studio.charAt(0);
+  $('bizStudio').textContent = studio;
+  $('bizName').innerHTML = '<b>원장</b> · ' + esc(name);
+  $('bizPhone').innerHTML = '<b>전화</b> · <a href="tel:' + esc(phone.replace(/[^0-9+]/g,'')) + '">' + esc(phone) + '</a>';
+  $('bizAddr').innerHTML  = '<b>오시는 길</b> · ' + esc(addr) + '<br>' + esc(CARD_ADDR2);
+  $('bizHours').innerHTML = '<b>운영시간</b> · ' + esc(hours) + '<br>' + esc(CARD_HOURS2);
+  $('headSub').textContent = name + ' 원장의 레슨 일지 · 체형교정 전문 1:1 · 듀엣 · 소그룹';
+  $('lnkKakao').href = cardVal(c,'kakao');
+  $('lnkBlog').href  = cardVal(c,'blog');
+  $('lnkMap').href   = cardVal(c,'map');
 }
 function openSheet(){
   const c = loadCard();
-  CARD_FIELDS.forEach(([id,key])=>{ $(id).value = c[key] || ''; });
+  CARD_FIELDS.forEach(([id,key])=>{ $(id).value = (typeof c[key]==='string' && c[key].trim()) ? c[key] : ''; });
   $('sheet').classList.add('show');
   $('sheetBack').classList.add('show');
 }
