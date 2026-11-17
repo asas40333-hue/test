@@ -338,6 +338,73 @@
       line-height: 1.65;
     }
     .spec-footnote b { color: #334155; }
+
+    /* 자재 스펙 — 확정 사양 사진 그리드 */
+    .spec-confirm-banner {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: #065f46;
+      letter-spacing: -0.2px;
+      word-break: keep-all;
+    }
+    .spec-confirm-banner b { color: #047857; }
+    .spec-confirm-banner .spec-notice-icon { font-size: 15px; }
+    .spec-sec-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.2px;
+      margin: 14px 0 8px;
+    }
+    .spec-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .spec-cell {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: zoom-in;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .spec-cell:active { opacity: .88; }
+    .spec-cell .ph { position: relative; background: #f1f5f9; }
+    .spec-cell img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+    .spec-cell .tag {
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      background: rgba(15, 23, 42, 0.62);
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+    .spec-cell .cap { padding: 8px 9px 9px; }
+    .spec-cell .cap b {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+    }
+    .spec-cell .cap em {
+      display: block;
+      font-style: normal;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-top: 3px;
+    }
     .photo-modal-box { padding: 0; background: #0f172a; border-radius: 16px 16px 0 0; overflow: hidden; }
     .photo-modal-box img { width: 100%; max-height: 62vh; object-fit: contain; display: block; background: #0f172a; }
     .photo-modal-bar {
@@ -703,9 +770,17 @@
 
     <!-- 범례 / 상태 안내 -->
     <div class="spec-legend">
-      <div class="spec-legend-item"><span class="spec-dot" style="background:#10b981;"></span>확정 사양 2개 공종</div>
-      <div class="spec-legend-item"><span class="spec-dot" style="background:#f59e0b;"></span>트렌드 추천(협의) 6개 공종</div>
+      <div class="spec-legend-item"><span class="spec-dot" style="background:#10b981;"></span>확정 사양 4개 공종</div>
+      <div class="spec-legend-item"><span class="spec-dot" style="background:#f59e0b;"></span>트렌드 추천(협의) 4개 공종</div>
       <div class="spec-legend-item" style="margin-left:auto; font-weight:500; color:#94a3b8;">📷 사진 터치 시 확대</div>
+    </div>
+
+    <!-- 11/17 장인타일위생기 미팅 확정 안내 -->
+    <div class="spec-confirm-banner">
+      <div class="spec-notice-icon">✅</div>
+      <div>
+        2026-11-17 <b>장인타일위생기 미팅</b>에서 욕실·타일 자재가 최종 선정되었습니다. 아래 <b>욕실·타일 카드의 사진은 미팅 현장에서 직접 촬영한 실물 사진</b>이며, 터치하시면 크게 보실 수 있습니다.
+      </div>
     </div>
 
     <!-- 1. 창호(샷시) 전면 교체 스펙 카드 -->
@@ -845,116 +920,156 @@
 
     <!-- 2. 거실 욕실 확정 스펙 카드 -->
     <div class="card" style="margin-bottom: 16px;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+      <div class="spec-card-head">
         <div>
-          <div style="font-size: 11px; font-weight: 700; color: var(--primary-light); text-transform: uppercase;">BATHROOM</div>
-          <div style="font-size: 16px; font-weight: 800; color: var(--text-main); margin-top: 2px;">거실 욕실 자재 사양</div>
+          <div class="spec-cat-en">BATHROOM · LIVING</div>
+          <div class="spec-card-title">거실 욕실 자재 사양</div>
         </div>
-        <span class="spec-status confirmed">11/13 견적확정</span>
+        <span class="spec-status confirmed">11/17 확정</span>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
-          <div style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">카운터 세면기 (날개형)</div>
-          <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-            선반 일체형 와이드 세면기 시공 (기존 조적 젠다이 제외 후 깔끔한 관리)
-          </div>
+      <div class="spec-grid">
+        <div class="spec-cell" onclick="openSpecPhoto('images/spec_toilet_dc1218ur.jpg','대림 도비도스 DC-1218UR · 림리스 토네이도 치마형 양변기 (1등급) — 거실·안방 공통')">
+          <div class="ph"><span class="tag">거실·안방</span><img src="images/spec_toilet_dc1218ur_t.jpg" alt="대림 도비도스 DC-1218UR 양변기" loading="lazy"></div>
+          <div class="cap"><b>양변기 · DC-1218UR</b><em>대림 도비도스 · 림리스 토네이도 치마형 · 1등급</em></div>
         </div>
-
-        <div style="padding: 10px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px;">
-          <div style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">욕조 시공</div>
-          <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-            거실 욕실 고급 욕조 및 방수 마감
-          </div>
+        <div class="spec-cell" onclick="openSpecPhoto('images/spec_cabinet_living.jpg','거실 욕실장 · 크림 플랩 상부장(골드 손잡이·오픈 선반) + 골드 프레임 팔각 거울 세트')">
+          <div class="ph"><span class="tag">거실</span><img src="images/spec_cabinet_living_t.jpg" alt="거실 욕실장과 골드 팔각 거울" loading="lazy"></div>
+          <div class="cap"><b>욕실장 · 거울 세트</b><em>크림 플랩 상부장 + 골드 프레임 팔각 거울</em></div>
         </div>
+        <div class="spec-cell" onclick="openSpecPhoto('images/spec_faucet_var342.jpg','거실 세면수전 (40) VAR342 + 샤워수전 VA-600 · 비반트 무광 니켈 세트')">
+          <div class="ph"><span class="tag">거실</span><img src="images/spec_faucet_var342_t.jpg" alt="비반트 무광 니켈 세면·샤워 수전" loading="lazy"></div>
+          <div class="cap"><b>세면 · 샤워 수전</b><em>비반트 무광 니켈 · 세면 (40) VAR342 / 샤워 VA-600</em></div>
+        </div>
+        <div class="spec-cell" onclick="openSpecPhoto('images/spec_slidebar_f110.jpg','슬라이드바 (60) F-110 원형 · 무광 스테인리스 (거실 욕실만)')">
+          <div class="ph"><span class="tag">거실</span><img src="images/spec_slidebar_f110_t.jpg" alt="(60) F-110 원형 슬라이드바" loading="lazy"></div>
+          <div class="cap"><b>슬라이드바 · F-110</b><em>(60) 원형 · 무광 스테인리스 · 거실만</em></div>
+        </div>
+      </div>
 
+      <div class="spec-sec-label">🚽 도기 · 욕조</div>
+      <div class="spec-list">
         <div class="spec-row">
-          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_hugent.jpg','힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1)')"><img src="images/mat_hugent.jpg" alt="힘펠 휴젠트 복합 환기시스템"></div>
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);">🛁</div>
           <div class="spec-body">
-            <div class="spec-name">힘펠 휴젠트 복합 환기시스템</div>
+            <div class="spec-name">카운터 세면기 (날개형)</div>
+            <div class="spec-desc">선반 일체형 와이드 세면기 · 조적 젠다이 없이 깔끔하게 시공</div>
+          </div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#e0f2fe,#bfdbfe);">🛀</div>
+          <div class="spec-body">
+            <div class="spec-name">욕조 — 아크릴 170cm + 민자형 치마 날개(에이프런)</div>
+            <div class="spec-desc">170cm 제품을 <b>거실 욕실 실측 156cm에 맞춰 컷팅</b> 시공 · 옆면은 <b>민자형 치마 날개 세트</b>로 마감</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-sec-label">💨 환풍기</div>
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_hugent.jpg','힘펠 휴젠트 3 복합 환기가풍기 (FHD-P150S1) — 거실 욕실')"><img src="images/mat_hugent.jpg" alt="힘펠 휴젠트 복합 환기시스템"></div>
+          <div class="spec-body">
+            <div class="spec-name">힘펠 휴젠트 (복합 환풍기)</div>
             <div class="spec-desc">온풍·제습·환기·드라이 기능 일체형 스마트 환풍기 (FHD-P150S1)</div>
           </div>
         </div>
+      </div>
 
-        <div class="spec-subhead">
-          <span>추가 표준 사양 (위생도기 · 수전 · 수납)</span>
-          <span class="spec-status recommended">트렌드 추천(협의)</span>
-        </div>
-
+      <div class="spec-sec-label">🧴 액세서리</div>
+      <div class="spec-list">
         <div class="spec-row">
-          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_toilet.jpg','대림바스 CC-603 치마형 투피스 양변기')"><img src="images/mat_toilet.jpg" alt="대림바스 CC-603 치마형 투피스 양변기"></div>
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/spec_shelf_corner.jpg','코너선반 · 블랙 유리 + 무광 실버 가드 (40) 실버 — 거실 2개 / 안방 1개')"><img src="images/spec_shelf_corner_t.jpg" alt="블랙 유리 코너선반" loading="lazy"></div>
           <div class="spec-body">
-            <div class="spec-name">대림바스 CC-603 투피스 양변기</div>
-            <div class="spec-desc">치마형 일체 디자인 · 절수형 6L · 30년 검증 국민 실속 모델</div>
+            <div class="spec-name">코너선반 — 블랙 유리 + 무광 실버 가드</div>
+            <div class="spec-desc"><b>(40) 실버</b> · 거실 욕실 <b>2개</b> 설치 (안방은 1개)</div>
           </div>
         </div>
-
         <div class="spec-row">
-          <div class="spec-thumb photo" onclick="openSpecPhoto('images/mat_faucet_bath.jpg','무광 SUS304 스테인리스 세면·샤워 수전')"><img src="images/mat_faucet_bath.jpg" alt="무광 SUS304 스테인리스 세면·샤워 수전"></div>
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/spec_acc_1009.jpg','수건걸이 · 휴지걸이 1009 매트 SUS · 무광 스테인리스 2종 (거실·안방 공통)')"><img src="images/spec_acc_1009_t.jpg" alt="1009 매트 SUS 수건걸이와 휴지걸이" loading="lazy"></div>
           <div class="spec-body">
-            <div class="spec-name">무광 SUS304 샤워 · 세면 수전</div>
-            <div class="spec-desc">욕실 전체 <b>무광 스테인리스 통일</b> · 크롬 대비 물때·손때가 덜 타는 마감</div>
+            <div class="spec-name">수건걸이 · 휴지걸이 — 1009 매트 SUS</div>
+            <div class="spec-desc">무광 스테인리스 2종 세트 · <b>거실·안방 공통</b> (사진 가운데가 휴지걸이)</div>
           </div>
         </div>
-
         <div class="spec-row">
-          <div class="spec-thumb" style="background:linear-gradient(135deg,#eef2f6,#cbd5e1);"></div>
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/spec_clean_gun_sg100.jpg','변기 청소건 (40) SG-100 코일 3M 청소셋 (MS) 매트실버 — 거실 욕실만 시공')"><img src="images/spec_clean_gun_sg100_t.jpg" alt="SG-100 코일 3M 변기 청소건" loading="lazy"></div>
           <div class="spec-body">
-            <div class="spec-name">은경 슬라이딩장 (거울 일체형)</div>
-            <div class="spec-desc">습기 많은 욕실에 강한 은경 도어 · 여닫이 공간 없이 수납 확보</div>
+            <div class="spec-name">변기 청소건 — (40) SG-100 코일 3M 셋</div>
+            <div class="spec-desc">매트실버 · <b>거실 욕실만 시공</b> (안방 욕실은 미설치)</div>
           </div>
         </div>
       </div>
+
+      <div class="spec-card-note">
+        ※ 거실 욕실은 <b>조적 젠다이를 넣지 않고</b> 카운터 세면기로 마감합니다. 욕조·타일 물량이 줄어 공사 기간과 비용이 함께 절감됩니다.
+      </div>
     </div>
 
-    <!-- 3. 안방 욕실 스펙 카드 -->
+    <!-- 3. 안방 욕실 확정 스펙 카드 -->
     <div class="card" style="margin-bottom: 16px;">
       <div class="spec-card-head">
         <div>
           <div class="spec-cat-en">BATHROOM · MASTER</div>
           <div class="spec-card-title">안방 욕실 자재 사양</div>
         </div>
-        <span class="spec-status recommended">트렌드 추천(협의)</span>
+        <span class="spec-status confirmed">11/17 확정</span>
       </div>
 
+      <div class="spec-grid">
+        <div class="spec-cell" onclick="openSpecPhoto('images/spec_basin_dl511n.jpg','대림 도비도스 DL-511N · 일체형 사각 반다리 세면기 (사진 위쪽 모델)')">
+          <div class="ph"><span class="tag">안방</span><img src="images/spec_basin_dl511n_t.jpg" alt="대림 도비도스 DL-511N 반다리 세면기" loading="lazy"></div>
+          <div class="cap"><b>세면기 · DL-511N</b><em>대림 도비도스 · 일체형 사각 반다리</em></div>
+        </div>
+        <div class="spec-cell" onclick="openSpecPhoto('images/spec_cabinet_master_hidden.jpg','안방 욕실장 · HIDDEN 양문형 상부장 + 팔각 거울 세트 — 실제 시공 색상은 화이트 (사진은 다크그레이 시연 제품)')">
+          <div class="ph"><span class="tag">안방</span><img src="images/spec_cabinet_master_hidden_t.jpg" alt="HIDDEN 양문형 욕실장과 팔각 거울" loading="lazy"></div>
+          <div class="cap"><b>욕실장 · 거울 세트</b><em>HIDDEN 양문형 + 팔각 거울 · <span style="color:#059669;font-weight:800;">화이트 확정</span></em></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 8px; padding: 9px 11px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; font-size: 11px; color: #92400e; line-height: 1.55; word-break: keep-all;">
+        ※ 위 욕실장 사진은 <b>같은 디자인의 다크그레이 시연 제품</b>입니다. 실제 시공 색상은 <b>화이트</b>로 확정되었습니다.
+      </div>
+
+      <div class="spec-sec-label">🚽 도기 · 수전</div>
       <div class="spec-list">
         <div class="spec-row">
           <div class="spec-thumb icon" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);">🚽</div>
           <div class="spec-body">
-            <div class="spec-name">대림바스 투피스 양변기 (안방)</div>
-            <div class="spec-desc">거실 욕실과 <b>동일 계열로 통일</b> · 절수형 · 부품 수급 쉬운 실속 모델</div>
+            <div class="spec-name">양변기 — 거실과 동일 DC-1218UR</div>
+            <div class="spec-desc">대림 도비도스 <b>림리스 토네이도 치마형 · 1등급</b> · 두 욕실 같은 모델로 통일</div>
           </div>
         </div>
-
         <div class="spec-row">
-          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#eef2f6);"></div>
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/spec_faucet_jta360n.jpg','안방 세면·샤워 겸용 수전 (33) JT-A360N · 무광 니켈')"><img src="images/spec_faucet_jta360n_t.jpg" alt="(33) JT-A360N 세면·샤워 겸용 수전" loading="lazy"></div>
           <div class="spec-body">
-            <div class="spec-name">반다리 세면기 (스탠드형)</div>
-            <div class="spec-desc">하부 배관을 가려 깔끔하고 바닥 청소가 쉬운 사각 반다리형 (약 500~600mm)</div>
+            <div class="spec-name">세면 · 샤워 겸용 수전 — (33) JT-A360N</div>
+            <div class="spec-desc">무광 니켈 · 세면기에서 샤워까지 한 몸체로 쓰는 겸용 타입</div>
           </div>
         </div>
+      </div>
 
+      <div class="spec-sec-label">🧴 액세서리 · 환풍기</div>
+      <div class="spec-list">
         <div class="spec-row">
-          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#f1f5f9,#e2e8f0);">🚿</div>
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f1f5f9,#dbe4ee);"></div>
           <div class="spec-body">
-            <div class="spec-name">무광 수전 세트 (샤워 · 세면)</div>
-            <div class="spec-desc">거실 욕실과 동일한 무광 SUS304로 두 욕실 톤 통일</div>
+            <div class="spec-name">코너선반 — 안방 1개</div>
+            <div class="spec-desc">거실과 같은 <b>블랙 유리 + 무광 실버 가드</b> · 모서리 1단</div>
           </div>
         </div>
-
         <div class="spec-row">
-          <div class="spec-thumb" style="background:linear-gradient(135deg,#f8fafc,#dbe4ee);"></div>
+          <div class="spec-thumb" style="background:linear-gradient(135deg,#f8fafc,#e2e8f0);"></div>
           <div class="spec-body">
-            <div class="spec-name">코너선반 (젠다이 대체)</div>
-            <div class="spec-desc">모서리 3단 수납으로 마감 · <b>조적 없이 정리</b>되어 공간이 넓어 보임</div>
+            <div class="spec-name">수건걸이 · 휴지걸이 — 1009 매트 SUS</div>
+            <div class="spec-desc">거실과 동일한 <b>무광 스테인리스 2종</b></div>
           </div>
         </div>
-
         <div class="spec-row">
-          <div class="spec-thumb" style="background:linear-gradient(135deg,#e0f2fe,#bfdbfe);"></div>
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#eef2ff,#e0e7ff);">💨</div>
           <div class="spec-body">
-            <div class="spec-name">샤워 파티션 (강화유리 6T)</div>
-            <div class="spec-desc">반고정형 1면 시공 · 세면대 쪽으로 튀는 물을 막아 곰팡이·물때 예방</div>
+            <div class="spec-name">환풍기 — 힘펠 일반형</div>
+            <div class="spec-desc">안방 욕실은 일반형 · 거실은 휴젠트 복합형으로 구분 시공</div>
           </div>
         </div>
       </div>
@@ -1018,55 +1133,43 @@
       <div class="spec-card-head">
         <div>
           <div class="spec-cat-en">TILE</div>
-          <div class="spec-card-title">타일 (욕실 · 주방 · 현관)</div>
+          <div class="spec-card-title">타일 · 줄눈 (욕실 · 주방 · 발코니 · 현관)</div>
         </div>
-        <span class="spec-status recommended">트렌드 추천(협의)</span>
+        <span class="spec-status confirmed">11/17 확정</span>
       </div>
 
+      <div class="spec-grid">
+        <div class="spec-cell" onclick="openSpecPhoto('images/spec_tile_insta_white.jpg','욕실 벽·바닥 타일 (6) 인스타 화이트 — 위쪽 매끈한 판이 벽 300×600 무광, 아래쪽 질감 있는 판이 바닥 300×300 논슬립')">
+          <div class="ph"><span class="tag">욕실</span><img src="images/spec_tile_insta_white_t.jpg" alt="(6) 인스타 화이트 욕실 벽·바닥 타일" loading="lazy"></div>
+          <div class="cap"><b>인스타 화이트 (6)</b><em>벽 300×600 무광 · 바닥 300×300 논슬립</em></div>
+        </div>
+        <div class="spec-cell" onclick="openSpecPhoto('images/spec_tile_sahara_white.jpg','주방 벽 타일 (6) 사하라 화이트 · 300×600')">
+          <div class="ph"><span class="tag">주방</span><img src="images/spec_tile_sahara_white_t.jpg" alt="(6) 사하라 화이트 주방 벽 타일" loading="lazy"></div>
+          <div class="cap"><b>사하라 화이트 (6)</b><em>주방 벽 300×600</em></div>
+        </div>
+        <div class="spec-cell" onclick="openSpecPhoto('images/spec_tile_3360.jpg','앞·뒤 발코니 바닥 타일 (6) 3360 · 300×300 논슬립')">
+          <div class="ph"><span class="tag">발코니</span><img src="images/spec_tile_3360_t.jpg" alt="(6) 3360 발코니 바닥 타일" loading="lazy"></div>
+          <div class="cap"><b>3360 (6)</b><em>앞·뒤 발코니 바닥 300×300 논슬립</em></div>
+        </div>
+        <div class="spec-cell" onclick="openSpecPhoto('images/spec_tile_epic_6603.jpg','현관 바닥 타일 (6) 에픽 6603 · 600×600각 포세린')">
+          <div class="ph"><span class="tag">현관</span><img src="images/spec_tile_epic_6603_t.jpg" alt="(6) 에픽 6603 현관 바닥 타일" loading="lazy"></div>
+          <div class="cap"><b>에픽 6603 (6)</b><em>현관 바닥 600×600각 포세린</em></div>
+        </div>
+      </div>
+
+      <div class="spec-sec-label">🧱 줄눈</div>
       <div class="spec-list">
-        <div class="spec-row">
-          <div class="spec-thumb" style="background:linear-gradient(135deg,#e7e4df,#c9c4bb);"></div>
-          <div class="spec-body">
-            <div class="spec-name">욕실 벽 — 300×600각 스톤·테라조 매트</div>
-            <div class="spec-desc">그레이/베이지 <b>톤온톤</b> · 유광 대비 물때와 얼룩이 덜 보이는 매트 질감</div>
-          </div>
-        </div>
-
-        <div class="spec-row">
-          <div class="spec-thumb" style="background:linear-gradient(135deg,#d6d3cd,#a8a29a);"></div>
-          <div class="spec-body">
-            <div class="spec-name">욕실 바닥 — 300×300 논슬립 그레이</div>
-            <div class="spec-desc">미끄럼 방지 3~4등급 · 배수 구배 시공으로 물이 고이지 않게 마감</div>
-          </div>
-        </div>
-
-        <div class="spec-row">
-          <div class="spec-thumb" style="background:linear-gradient(135deg,#ffffff,#f0f4f8);"></div>
-          <div class="spec-body">
-            <div class="spec-name">주방 벽 — 화이트 300×600 스톤·비앙코 유광</div>
-            <div class="spec-desc">기름때가 부드럽게 닦이는 <b>유광 마감</b> · 주방을 밝고 넓어 보이게</div>
-          </div>
-        </div>
-
-        <div class="spec-row">
-          <div class="spec-thumb" style="background:linear-gradient(135deg,#4b5563,#1f2937);"></div>
-          <div class="spec-body">
-            <div class="spec-name">현관 바닥 — 600×600각 딥그레이 논슬립 포세린</div>
-            <div class="spec-desc">오염·스크래치에 강한 포세린 · 신발 벗고 들어와도 미끄럽지 않은 표면</div>
-          </div>
-        </div>
-
         <div class="spec-row">
           <div class="spec-thumb" style="background:linear-gradient(135deg,#eef2f6,#cfd8e3);"></div>
           <div class="spec-body">
-            <div class="spec-name">줄눈 — 에폭시 메지 (그레이/화이트)</div>
-            <div class="spec-desc">백시멘트 대신 에폭시로 곰팡이·변색 방지 · 5년이 지나도 처음 색 유지</div>
+            <div class="spec-name">줄눈 — 밝은 그레이 · 화이트 톤</div>
+            <div class="spec-desc">욕실·주방·발코니·현관 모두 <b>밝은 톤으로 통일</b> · 물때와 변색이 덜 보이는 마감</div>
           </div>
         </div>
       </div>
 
       <div class="spec-card-note">
-        ※ 300×600각은 자재비·시공비가 가장 안정적인 <b>국민 규격</b>입니다. 큰 판(600각·900각)보다 시공 실패 위험이 낮습니다.
+        ※ 욕실은 벽 300×600 무광 / 바닥 300×300 논슬립으로 구분 시공합니다. 300×600각은 자재비·시공비가 가장 안정적인 <b>국민 규격</b>이고, 바닥 논슬립 타일은 배수 구배를 잡아 물이 고이지 않게 마감합니다.
       </div>
     </div>
 
@@ -1244,7 +1347,7 @@
     <!-- 하단 안내 -->
     <div class="spec-footnote">
       ※ 상기 품목은 <b>어은동 한빛아파트 31평형 실속형 표준 세팅</b>입니다. 미팅 중 원하시는 색상·모델로 즉시 변경 반영되며, 변경 시 견적 금액이 조정될 수 있습니다.<br>
-      ※ 실물 사진과 상세 스펙은 상단 <b>「메종플러스 실전 자재 도감」</b>에서 크게 보실 수 있습니다.
+      ※ <b>11/17 확정</b> 품목(창호·욕실 2곳·타일)은 미팅에서 최종 선정된 사양입니다. 카드의 사진을 누르면 크게 볼 수 있고, 상세 자재 사진은 <b>「메종플러스 실전 자재 도감」</b>에서도 보실 수 있습니다.
     </div>
   </div>
 
