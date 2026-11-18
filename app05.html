@@ -670,10 +670,9 @@
 
     var kn = $("kToday");
     kn.innerHTML = todayDue.length + "<span>건</span>";
-    kn.className = "k-v" + (todayDue.length ? "" : "");
     var ko = $("kOpen");
     ko.innerHTML = open.length + "<span>건</span>";
-    ko.className = "k-v" + (open.length ? "" : "");
+    ko.className = "k-v" + (warnItems.length ? " red" : "");
 
     var box = $("warnBox");
     if (warnItems.length){
@@ -1175,7 +1174,10 @@
       if (used){ toast("이 배송지에 " + used + "건이 있어 지울 수 없습니다", "warn"); return; }
       if (!window.confirm('"' + siteName(sid) + '" 배송지를 지울까요?')) return;
       state.sites = state.sites.filter(function(s){ return s.id !== sid; });
-      if (form.site === sid) form.site = state.sites[0].id;
+      if (form.site === sid){
+        var cur = editingId ? find(editingId) : null;
+        form.site = (cur && cur.site !== sid) ? cur.site : state.sites[0].id;
+      }
       if (state.filter === "site:" + sid) state.filter = "all";
       save(); renderAll(); renderMgr(); toast("배송지를 지웠습니다");
     });
