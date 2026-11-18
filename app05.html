@@ -892,6 +892,7 @@
     setSeg("fVat","data-vat",form.vat);
     setSeg("fCat","data-cat",form.cat);
     setSeg("fStatus","data-st",form.status);
+    renderSites();
     $("formTitle").textContent = "주문 수정";
     $("formHint").textContent = "저장하면 바로 반영";
     $("fSave").textContent = "✓ 수정 저장";
@@ -1058,7 +1059,7 @@
       var c = calc(it);
       h += '<tr><td>' + esc(it.name) + (it.memo ? '<br><span style="font-size:.9em;color:#777">' + esc(it.memo) + '</span>' : '') + '</td>' +
         '<td>' + esc(siteName(it.site)) + '</td>' +
-        '<td>' + esc(CATS[it.cat] || "") + '</td>' +
+        '<td>' + esc(CATS[it.cat] || "") + (isBus(it) ? "" : '<br><span style="font-size:.88em;color:#999">집계제외</span>') + '</td>' +
         '<td>' + (it.proc ? dmd(it.proc) : "-") + '</td>' +
         '<td>' + (it.eta ? dmd(it.eta) : "-") + '</td>' +
         '<td>' + STATUS[it.status].label + '</td>' +
