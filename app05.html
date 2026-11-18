@@ -743,6 +743,7 @@
   }
   function parseWhen(t){
     var td = todayISO();
+    t = String(t).replace(/오늘의집|todayhouse/gi, " ");
     if (/오늘/.test(t)) return td;
     if (/내일/.test(t)) return addDays(td, 1);
     if (/모레/.test(t)) return addDays(td, 2);
