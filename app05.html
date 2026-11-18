@@ -494,6 +494,11 @@
     return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
   }
   function WD(d){ return "일월화수목금토".charAt(d.getDay()); }
+  function cleanDate(v){           /* 날짜칸에 남은 어긋난 값은 비운다 */
+    if (!v || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return "";
+    var y = parseInt(v.slice(0, 4), 10);
+    return (y >= 2000 && y <= 2100) ? v : "";
+  }
   function dmd(v){                 /* 11.18.(화) */
     var d = parseISO(v);
     if (!d) return "";
@@ -603,7 +608,7 @@
         return {
           id:it.id, name:String(it.name), amount:Number(it.amount) || 0,
           vat:(VATS[it.vat] ? it.vat : "incl"), cat:(CATS[it.cat] ? it.cat : "mat"),
-          site:(it.site || state.sites[0].id), proc:it.proc || "", eta:it.eta || "",
+          site:(it.site || state.sites[0].id), proc:cleanDate(it.proc), eta:cleanDate(it.eta),
           status:(STATUS[it.status] ? it.status : "ready"), memo:it.memo || "",
           created:it.created || Date.now()
         };
@@ -902,7 +907,7 @@
     if (!name){ toast("품목명을 적어 주세요", "warn"); $("fName").focus(); return; }
     if (!(amt > 0)){ toast("금액을 숫자로 적어 주세요", "warn"); $("fAmount").focus(); return; }
 
-    var proc = $("fProc").value || "", eta = $("fEta").value || "";
+    var proc = cleanDate($("fProc").value), eta = cleanDate($("fEta").value);
     var old = editingId ? find(editingId) : null;
 
     var obj = {
