@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#2b1d14">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>현장·사무실·자택 5초 택배 · 원가 정리 | 메종플러스</title>
+<title>현장 배송 · 원가 정리 | 메종플러스</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <style>
   :root{
@@ -18,247 +18,233 @@
     --red:#c2281f; --red-dk:#a8271f;
     --bg:#f6f3ee; --card:#ffffff; --line:#e7e0d4;
     --ink:#221a13; --ink-2:#5a4b3d; --ink-3:#9a8b7b;
-    --r:16px;
+    --r:14px;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;
     font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;}
   html{-webkit-text-size-adjust:100%;}
-  body{background:var(--bg);color:var(--ink);line-height:1.5;font-size:16px;
-    max-width:430px;margin:0 auto;padding-bottom:126px;overflow-x:hidden;}
+  body{background:var(--bg);color:var(--ink);line-height:1.5;font-size:15px;
+    max-width:430px;margin:0 auto;padding:0 0 20px;overflow-x:hidden;}
   .hide{display:none !important;}
 
-  /* header */
+  /* ── 고정 상단 바 ── */
   header{position:sticky;top:0;z-index:60;background:var(--brown);
-    display:flex;align-items:center;justify-content:space-between;gap:8px;
-    padding:11px 16px;border-bottom:1px solid rgba(201,162,39,.28);}
-  .brand{display:flex;align-items:center;gap:9px;min-width:0;}
-  .brand-logo{width:34px;height:34px;flex:none;border-radius:9px;
+    border-bottom:1px solid rgba(201,162,39,.28);box-shadow:0 2px 10px rgba(43,29,20,.14);}
+  .hbar{display:flex;align-items:center;gap:8px;padding:8px 12px 5px;}
+  .brand-logo{width:26px;height:26px;flex:none;border-radius:7px;
     background:linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 100%);
     color:#2b1d14;display:flex;align-items:center;justify-content:center;
-    font-weight:900;font-size:14px;letter-spacing:-.5px;}
-  .brand-title{font-size:15px;font-weight:800;letter-spacing:-.4px;line-height:1.2;color:#fdf9f2;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .brand-sub{font-size:10.5px;font-weight:600;color:#c9b79f;letter-spacing:-.1px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .h-tag{flex:none;font-size:10.5px;font-weight:800;color:var(--gold-lt);
-    border:1px solid rgba(201,162,39,.6);background:rgba(201,162,39,.12);
-    padding:4px 8px;border-radius:20px;letter-spacing:-.2px;}
+    font-weight:900;font-size:11px;letter-spacing:-.5px;}
+  .brand-title{flex:1;min-width:0;font-size:14px;font-weight:800;letter-spacing:-.4px;line-height:1.2;
+    color:#fdf9f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .h-tag{flex:none;font-size:9.5px;font-weight:800;color:var(--gold-lt);
+    border:1px solid rgba(201,162,39,.55);background:rgba(201,162,39,.12);
+    padding:2px 7px;border-radius:20px;letter-spacing:-.2px;}
 
-  /* hero */
-  .hero{background:linear-gradient(140deg,#2b1d14 0%,#16243a 100%);color:#fff;padding:16px 18px 15px;}
-  .hero-badge{display:inline-flex;align-items:center;gap:5px;
-    background:rgba(230,191,79,.14);border:1px solid rgba(230,191,79,.55);
-    color:var(--gold-lt);font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;
-    letter-spacing:-.2px;margin-bottom:8px;}
-  .hero h1{font-size:20px;font-weight:800;letter-spacing:-.9px;line-height:1.32;}
-  .hero h1 em{font-style:normal;color:var(--gold-lt);}
-  .hero p{margin-top:6px;font-size:12.4px;color:#cdbfae;letter-spacing:-.3px;line-height:1.55;}
+  .sumline{display:flex;align-items:center;gap:5px;padding:0 12px 6px;overflow:hidden;}
+  .hchip{display:inline-flex;align-items:center;gap:4px;min-width:0;flex:0 1 auto;
+    border:1px solid rgba(201,162,39,.4);background:rgba(201,162,39,.1);border-radius:20px;
+    padding:2px 8px;color:#e2d5bf;font-size:10.5px;font-weight:700;letter-spacing:-.2px;
+    white-space:nowrap;cursor:pointer;line-height:1.5;}
+  .hchip span{overflow:hidden;text-overflow:ellipsis;}
+  .hchip b{flex:none;color:#fff;font-size:11.5px;font-weight:800;letter-spacing:-.2px;}
+  .hchip.warn{border-color:rgba(216,94,86,.7);background:rgba(194,40,31,.24);color:#f0c7c3;}
+  .hchip.warn b{color:#ff9f96;}
+  .hchip.money{margin-left:auto;border-color:rgba(201,162,39,.6);}
+  .hchip.money b{color:var(--gold-lt);}
 
-  main{padding:14px 14px 0;}
+  .tabs{display:flex;border-top:1px solid rgba(201,162,39,.18);}
+  .tabs button{flex:1;min-width:0;border:0;background:transparent;color:#b8a58d;
+    font-size:12.3px;font-weight:800;letter-spacing:-.5px;padding:8px 2px 7px;cursor:pointer;
+    position:relative;white-space:nowrap;}
+  .tabs button.on{color:var(--gold-lt);}
+  .tabs button.on:after{content:"";position:absolute;left:16%;right:16%;bottom:0;height:3px;
+    background:var(--gold);border-radius:3px 3px 0 0;}
+
+  main{padding:10px 12px 0;}
+  .panel{scroll-margin-top:106px;}
+
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
-    box-shadow:0 1px 3px rgba(43,29,20,.06);padding:15px 14px;margin-bottom:12px;}
-  .card-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+    box-shadow:0 1px 3px rgba(43,29,20,.06);padding:12px;margin-bottom:9px;}
+  .card-head{display:flex;align-items:center;gap:7px;margin-bottom:9px;}
   .step{width:22px;height:22px;flex:none;border-radius:7px;background:var(--brown);
-    color:var(--gold-lt);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;}
-  .card-head h2{font-size:15.5px;font-weight:800;letter-spacing:-.5px;}
-  .card-head .hint{margin-left:auto;font-size:11px;color:var(--ink-3);font-weight:700;letter-spacing:-.2px;
-    text-align:right;white-space:nowrap;}
+    color:var(--gold-lt);font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .card-head h2{font-size:14px;font-weight:800;letter-spacing:-.5px;}
+  .card-head .hint{margin-left:auto;font-size:10.5px;color:var(--ink-3);font-weight:700;
+    letter-spacing:-.2px;text-align:right;white-space:nowrap;}
 
-  /* dashboard */
-  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
-  .kpi{background:#fdfbf8;border:1px solid var(--line);border-radius:12px;padding:10px 11px;}
-  .k-l{font-size:11.5px;font-weight:800;color:var(--ink-3);letter-spacing:-.3px;}
-  .k-v{font-size:24px;font-weight:800;letter-spacing:-1.2px;line-height:1.15;margin-top:2px;color:var(--brown);}
-  .k-v span{font-size:12px;font-weight:700;color:var(--ink-3);margin-left:2px;letter-spacing:0;}
-  .k-v.red{color:var(--red);}
-  .warn-banner{background:linear-gradient(135deg,#fdeceb,#fdf4f2);border:1px solid #efb9b4;
-    border-left:4px solid #d9363e;border-radius:11px;padding:10px 12px;margin-bottom:10px;}
-  .wb-t{font-size:13px;font-weight:800;color:var(--red-dk);letter-spacing:-.4px;}
-  .wb-n{font-size:11.8px;font-weight:700;color:#8a4a3f;margin-top:4px;line-height:1.6;word-break:keep-all;}
-  .wb-n b{color:var(--red-dk);}
-  .ok-banner{background:#f1f8f6;border:1px solid #c9e8e2;color:#0f766e;font-size:12.3px;
-    font-weight:800;border-radius:11px;padding:9px 12px;margin-bottom:10px;letter-spacing:-.3px;}
-  .money{background:var(--brown);border-radius:13px;padding:12px 14px;color:#fdf9f2;}
-  .m-lab{font-size:11.5px;font-weight:800;color:#c9b79f;letter-spacing:-.2px;}
-  .m-lab small{font-weight:700;color:#8f7f6c;margin-left:4px;font-size:10.5px;}
-  .m-total{font-size:25px;font-weight:800;letter-spacing:-1.3px;line-height:1.15;margin-top:2px;color:var(--gold-lt);}
-  .m-sub{display:flex;gap:16px;margin-top:5px;font-size:11.8px;font-weight:700;color:#d8cbb9;}
-  .m-sub b{color:#fff;font-weight:800;}
-  .m-note{margin-top:7px;font-size:10.8px;color:#a8998a;font-weight:600;letter-spacing:-.2px;line-height:1.5;}
-
-  /* paste / auto fill */
-  .paste{background:linear-gradient(160deg,#fffdf6 0%,#ffffff 70%);border:1.5px solid #ecdbae;}
-  .paste textarea{width:100%;min-height:86px;resize:vertical;font-size:14px;line-height:1.58;font-weight:600;
-    color:var(--ink);padding:11px 12px;border:1.5px solid var(--line);border-radius:11px;background:#fffdf8;
-    letter-spacing:-.3px;font-family:inherit;}
-  .paste textarea:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(201,162,39,.14);}
-  .paste textarea::placeholder{color:#b6a898;font-weight:500;}
-  .p-btn{display:grid;grid-template-columns:1.3fr 1fr;gap:7px;margin-top:8px;}
-  .p-main{height:50px;border:0;border-radius:12px;background:linear-gradient(135deg,#2b1d14,#4a3322);
-    color:var(--gold-lt);font-size:15.5px;font-weight:800;letter-spacing:-.5px;cursor:pointer;
-    box-shadow:0 3px 12px rgba(43,29,20,.2);}
-  .p-main:active{transform:scale(.985);}
-  .p-sub{height:50px;border:1.5px dashed #dcc78d;border-radius:12px;background:#fffaee;color:#8a6a2a;
-    font-size:12.6px;font-weight:800;letter-spacing:-.5px;cursor:pointer;line-height:1.25;}
-  .pv{margin-top:9px;border-top:1px dashed var(--line);padding-top:9px;}
-  .pv-h{font-size:11.8px;font-weight:800;color:var(--ink-3);letter-spacing:-.3px;margin-bottom:5px;}
-  .pv-row{display:flex;align-items:baseline;gap:7px;padding:5px 0;border-bottom:1px dotted #eee5d6;
-    font-size:12.4px;font-weight:700;letter-spacing:-.3px;color:var(--ink-2);}
-  .pv-row:last-of-type{border-bottom:0;}
-  .pv-row b{flex:1;min-width:0;font-weight:800;color:var(--brown);word-break:keep-all;}
-  .pv-row .pv-m{flex:none;font-size:11.2px;font-weight:700;color:var(--ink-3);white-space:nowrap;text-align:right;}
-  .pv-btn{margin-top:8px;width:100%;height:44px;border:1.5px solid var(--emerald);border-radius:11px;
-    background:#f0faf7;color:var(--emerald);font-size:13.5px;font-weight:800;letter-spacing:-.4px;cursor:pointer;}
-
-  /* filter tabs */
-  .ftabs{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 9px;margin:0 -2px;
+  /* ── 필터 칩 ── */
+  .ftabs{display:flex;gap:5px;overflow-x:auto;padding:0 1px 8px;margin:0 -1px;
     scrollbar-width:none;-webkit-overflow-scrolling:touch;}
   .ftabs::-webkit-scrollbar{display:none;}
   .ftab{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:20px;
-    padding:8px 12px;font-size:12.8px;font-weight:800;color:var(--ink-2);letter-spacing:-.4px;
-    cursor:pointer;display:inline-flex;align-items:center;gap:5px;line-height:1.2;}
+    padding:5px 10px;font-size:12px;font-weight:800;color:var(--ink-2);letter-spacing:-.4px;
+    cursor:pointer;display:inline-flex;align-items:center;gap:4px;line-height:1.3;}
   .ftab.on{background:var(--brown);border-color:var(--brown);color:#fff;}
-  .ftab .c{font-size:10.5px;font-weight:800;background:#f1ebe2;color:var(--ink-3);border-radius:20px;padding:1px 6px;}
+  .ftab .c{font-size:10px;font-weight:800;background:#f1ebe2;color:var(--ink-3);border-radius:20px;padding:0 5px;}
   .ftab.on .c{background:rgba(255,255,255,.22);color:#fff;}
   .ftab .c.red{background:#fde3e0;color:var(--red-dk);}
 
-  .list-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 8px;}
-  .list-head b{font-size:13.5px;font-weight:800;letter-spacing:-.4px;}
-  .list-head span{font-size:11.5px;font-weight:700;color:var(--ink-3);letter-spacing:-.2px;}
+  .list-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 6px;}
+  .list-head b{font-size:12.5px;font-weight:800;letter-spacing:-.4px;color:var(--ink-2);}
+  .list-head span{font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:-.2px;}
 
-  /* item card */
-  .item{background:#fff;border:1px solid var(--line);border-left:4px solid #ddd3c4;border-radius:13px;
-    padding:11px 12px;margin-bottom:9px;box-shadow:0 1px 3px rgba(43,29,20,.05);}
-  .item.warn{border-left-color:#d9363e;background:linear-gradient(100deg,#fff6f5 0%,#fff 62%);}
-  .item.done{border-left-color:var(--emerald);background:#f9fcfb;}
-  .i-top{display:flex;align-items:flex-start;gap:8px;}
-  .i-nm{flex:1;min-width:0;font-size:15px;font-weight:800;letter-spacing:-.5px;line-height:1.35;word-break:keep-all;}
-  .i-amt{flex:none;text-align:right;font-size:15px;font-weight:800;letter-spacing:-.5px;color:var(--brown);line-height:1.3;}
-  .i-amt small{display:block;font-size:10px;font-weight:700;color:var(--ink-3);letter-spacing:-.2px;margin-top:1px;}
-  .i-meta{margin-top:6px;font-size:11.8px;font-weight:600;color:var(--ink-2);letter-spacing:-.3px;line-height:1.58;word-break:keep-all;}
-  .i-meta .tag{display:inline-block;background:#f4efe7;color:#5a4b3d;border-radius:5px;
-    padding:1px 5px;font-size:10.8px;font-weight:800;margin-right:4px;}
-  .i-tax{margin-top:3px;font-size:10.8px;font-weight:700;color:var(--ink-3);letter-spacing:-.2px;}
-  .i-memo{margin-top:3px;font-size:11px;font-weight:600;color:var(--ink-3);letter-spacing:-.2px;word-break:keep-all;}
-  .pill{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:-.2px;padding:2px 6px;border-radius:5px;}
+  /* ── 슬림 주문 카드 ── */
+  .oi{background:#fff;border:1px solid var(--line);border-left:3px solid #ddd3c4;border-radius:11px;
+    padding:7px 9px 6px;margin-bottom:6px;box-shadow:0 1px 2px rgba(43,29,20,.05);}
+  .oi.warn{border-left-color:#d9363e;background:linear-gradient(100deg,#fff6f5 0%,#fff 62%);}
+  .oi.done{border-left-color:var(--emerald);background:#f9fcfb;}
+  .oi-l1{display:flex;align-items:center;gap:6px;min-width:0;}
+  .pill{flex:none;display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:-.2px;
+    padding:1px 5px;border-radius:5px;line-height:1.5;}
   .st-ready{background:#eef1f6;color:#4b5872;}
   .st-ship{background:#e6effc;color:#1d4ed8;}
   .st-late{background:#fde3e0;color:var(--red-dk);}
   .st-done{background:#e3f4f0;color:#0f766e;}
-  .i-warn{margin-top:7px;background:#fdeceb;border-radius:8px;padding:6px 9px;font-size:11.3px;
-    font-weight:800;color:var(--red-dk);letter-spacing:-.3px;line-height:1.5;word-break:keep-all;}
-  .i-warn span{display:block;font-weight:700;color:#8a4a3f;font-size:11px;margin-top:1px;}
-  .i-acts{display:flex;gap:6px;margin-top:9px;}
-  .a-btn{height:36px;border:1.5px solid var(--line);border-radius:9px;background:#fdfbf8;
-    color:var(--ink-2);font-size:12.5px;font-weight:800;letter-spacing:-.4px;cursor:pointer;padding:0 10px;}
-  .a-btn.main{flex:1;}
-  .a-btn.on{background:var(--emerald);border-color:var(--emerald);color:#fff;}
-  .a-btn.ic{flex:none;width:40px;font-size:14px;padding:0;}
-  .a-btn.del{color:#a8410f;background:#f8f2e9;border-color:#efe3d4;}
-  .empty{text-align:center;padding:24px 12px;color:var(--ink-3);font-size:13px;font-weight:700;
-    letter-spacing:-.3px;line-height:1.7;background:#fff;border:1px dashed var(--line);border-radius:13px;margin-bottom:9px;}
-  .empty b{display:block;font-size:14px;color:var(--ink-2);margin-bottom:3px;}
+  .oi-nm{flex:1;min-width:0;font-size:13.8px;font-weight:800;letter-spacing:-.5px;line-height:1.35;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .oi.warn .oi-nm{color:var(--red-dk);}
+  .oi-bw{flex:none;font-size:9.3px;font-weight:800;color:var(--red-dk);background:#fde3e0;
+    border-radius:5px;padding:1px 5px;letter-spacing:-.3px;white-space:nowrap;}
+  .oi-amt{flex:none;font-size:13px;font-weight:800;letter-spacing:-.5px;color:var(--brown);white-space:nowrap;}
+  .oi-l2{display:flex;align-items:center;gap:5px;margin-top:3px;min-width:0;}
+  .oi-meta{flex:1;min-width:0;display:flex;align-items:center;gap:5px;overflow:hidden;
+    white-space:nowrap;font-size:10.6px;font-weight:700;color:var(--ink-2);letter-spacing:-.3px;}
+  .oi-meta .tg{flex:none;display:inline-block;background:#f4efe7;color:#5a4b3d;border-radius:4px;
+    padding:0 4px;font-size:9.8px;font-weight:800;line-height:1.6;}
+  .oi-meta .mt{overflow:hidden;text-overflow:ellipsis;}
+  .oi-acts{flex:none;display:flex;gap:4px;margin-left:auto;}
+  .ib{height:25px;border:1.3px solid var(--line);border-radius:7px;background:#fdfbf8;
+    color:var(--ink-2);font-size:10.5px;font-weight:800;letter-spacing:-.4px;cursor:pointer;
+    padding:0 6px;line-height:1;display:inline-flex;align-items:center;justify-content:center;}
+  .ib.main{background:var(--emerald);border-color:var(--emerald);color:#fff;}
+  .ib.main.on{background:#eef7f5;border-color:#bfded8;color:var(--emerald);}
+  .ib.ic{width:26px;padding:0;font-size:11.5px;}
+  .ib.del{width:26px;padding:0;font-size:11px;color:#a8410f;background:#f8f2e9;border-color:#efe3d4;}
+  .empty{text-align:center;padding:22px 12px;color:var(--ink-3);font-size:12.5px;font-weight:700;
+    letter-spacing:-.3px;line-height:1.7;background:#fff;border:1px dashed var(--line);border-radius:12px;margin-bottom:8px;}
+  .empty b{display:block;font-size:13.5px;color:var(--ink-2);margin-bottom:3px;}
 
-  /* summary */
-  .subhead{font-size:12px;font-weight:800;color:var(--ink-3);letter-spacing:-.2px;margin:10px 0 2px;}
-  .subhead:first-of-type{margin-top:0;}
-  .srow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;
-    border-bottom:1px dashed var(--line);font-size:13.2px;font-weight:700;letter-spacing:-.3px;}
-  .srow:last-child{border-bottom:0;}
-  .srow .s-l{color:var(--ink-2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .srow .s-l i{font-style:normal;font-size:11px;font-weight:700;color:var(--ink-3);margin-left:4px;}
-  .srow b{font-weight:800;letter-spacing:-.4px;white-space:nowrap;}
-  .srow.tot{border-top:1.5px solid var(--brown);border-bottom:0;margin-top:2px;padding-top:9px;}
-  .srow.tot b{color:var(--brown);font-size:15px;}
-  .srow.priv b{color:var(--ink-3);}
-  .muted{font-size:12px;font-weight:700;color:var(--ink-3);padding:8px 0;letter-spacing:-.3px;}
+  /* ── 자동 채우기 ── */
+  .paste{background:linear-gradient(160deg,#fffdf6 0%,#ffffff 70%);border:1.5px solid #ecdbae;}
+  .paste textarea{width:100%;min-height:58px;resize:none;font-size:14px;line-height:1.52;font-weight:600;
+    color:var(--ink);padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fffdf8;
+    letter-spacing:-.3px;font-family:inherit;}
+  .paste textarea:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(201,162,39,.14);}
+  .paste textarea::placeholder{color:#b6a898;font-weight:500;}
+  .p-btn{display:grid;grid-template-columns:1.25fr 1fr;gap:6px;margin-top:6px;}
+  .p-main{height:42px;border:0;border-radius:10px;background:linear-gradient(135deg,#2b1d14,#4a3322);
+    color:var(--gold-lt);font-size:14.5px;font-weight:800;letter-spacing:-.5px;cursor:pointer;
+    box-shadow:0 3px 10px rgba(43,29,20,.18);}
+  .p-main:active{transform:scale(.985);}
+  .p-sub{height:42px;border:1.5px dashed #dcc78d;border-radius:10px;background:#fffaee;color:#8a6a2a;
+    font-size:12px;font-weight:800;letter-spacing:-.5px;cursor:pointer;line-height:1.2;}
+  .pv{margin-top:7px;border-top:1px dashed var(--line);padding-top:6px;}
+  .pv-h{font-size:11px;font-weight:800;color:var(--ink-3);letter-spacing:-.3px;margin-bottom:3px;}
+  .pv-row{display:flex;align-items:baseline;gap:6px;padding:3px 0;border-bottom:1px dotted #eee5d6;
+    font-size:11.6px;font-weight:700;letter-spacing:-.3px;color:var(--ink-2);}
+  .pv-row:last-of-type{border-bottom:0;}
+  .pv-row b{flex:1;min-width:0;font-weight:800;color:var(--brown);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pv-row i{flex:none;font-style:normal;font-size:10.3px;font-weight:700;color:var(--ink-3);white-space:nowrap;}
+  .pv-btn{margin-top:6px;width:100%;height:38px;border:1.5px solid var(--emerald);border-radius:9px;
+    background:#f0faf7;color:var(--emerald);font-size:12.5px;font-weight:800;letter-spacing:-.4px;cursor:pointer;}
 
-  /* form */
-  .field{margin-bottom:12px;}
-  .field:last-of-type{margin-bottom:12px;}
-  .flabel{display:block;font-size:13.5px;font-weight:700;color:var(--ink-2);
-    letter-spacing:-.4px;margin-bottom:6px;}
-  .flabel .u{font-size:11.5px;color:var(--ink-3);font-weight:600;margin-left:3px;}
-  .frow{display:grid;grid-template-columns:80px minmax(0,1fr);align-items:center;gap:10px;margin-bottom:10px;}
-  input[type=text], input[type=date]{
+  /* ── 폼 ── */
+  .field{margin-bottom:8px;}
+  .flabel{display:block;font-size:11.3px;font-weight:800;color:var(--ink-3);
+    letter-spacing:-.2px;margin-bottom:3px;}
+  .flabel .u{font-size:10.3px;color:#b3a493;font-weight:600;margin-left:2px;}
+  input[type=text], input[type=date], select{
     width:100%;min-width:0;font-size:16px;font-weight:600;color:var(--ink);
-    padding:11px 12px;border:1.5px solid var(--line);border-radius:11px;background:#fdfbf8;
+    padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fdfbf8;
     letter-spacing:-.3px;-webkit-appearance:none;appearance:none;}
-  input[type=date]{font-weight:700;padding:10px 9px;font-size:14.5px;}
-  input:focus, select:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(201,162,39,.13);}
+  input[type=date]{font-weight:700;padding:7px 8px;font-size:14px;}
+  select{font-size:13.5px;font-weight:700;padding:8px 6px;}
+  input:focus, select:focus{outline:none;border-color:var(--gold);background:#fff;
+    box-shadow:0 0 0 3px rgba(201,162,39,.13);}
   input::placeholder{color:#b6a898;font-weight:600;}
+  .frow2{display:flex;gap:6px;}
+  .frow2 > div{min-width:0;}
+  .frow2 .grow{flex:1;}
+  .frow2 .vat{width:104px;flex:none;}
+  .calc-hint{font-size:10.6px;font-weight:700;color:var(--ink-3);margin-top:3px;letter-spacing:-.2px;line-height:1.45;}
+  .calc-hint b{color:var(--brown);font-weight:800;}
+  .drow{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .qdates{display:flex;gap:4px;margin-top:4px;}
+  .qd{border:1px solid var(--line);background:#fdfbf8;border-radius:7px;font-size:10.6px;
+    font-weight:800;color:var(--ink-2);padding:3px 8px;cursor:pointer;letter-spacing:-.3px;}
 
-  .seg{display:flex;gap:5px;background:#f3eee6;padding:4px;border-radius:12px;}
-  .seg-btn{flex:1;min-width:0;border:0;background:transparent;padding:9px 2px;border-radius:9px;
-    font-size:12.5px;font-weight:700;color:var(--ink-2);letter-spacing:-.5px;cursor:pointer;
+  .seg{display:flex;gap:4px;background:#f3eee6;padding:3px;border-radius:10px;}
+  .seg-btn{flex:1;min-width:0;border:0;background:transparent;padding:6px 2px;border-radius:8px;
+    font-size:11.5px;font-weight:700;color:var(--ink-2);letter-spacing:-.5px;cursor:pointer;
     line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .seg-btn.on{background:#fff;color:var(--brown);box-shadow:0 1px 4px rgba(43,29,20,.14);font-weight:800;}
-  .calc-hint{font-size:11.3px;font-weight:700;color:var(--ink-3);margin-top:6px;letter-spacing:-.2px;line-height:1.5;}
-  .calc-hint b{color:var(--brown);font-weight:800;}
-  .qdates{display:flex;gap:5px;margin-top:6px;}
-  .qd{border:1px solid var(--line);background:#fdfbf8;border-radius:8px;font-size:11.5px;
-    font-weight:800;color:var(--ink-2);padding:5px 10px;cursor:pointer;letter-spacing:-.3px;}
 
-  .chips{display:flex;flex-wrap:wrap;gap:6px;}
-  .chip{border:1.5px solid var(--line);background:#fdfbf8;color:var(--ink-2);
-    font-size:13.5px;font-weight:700;padding:9px 12px;border-radius:20px;
-    letter-spacing:-.4px;cursor:pointer;line-height:1.2;display:inline-flex;align-items:center;gap:4px;}
+  .chips{display:flex;flex-wrap:wrap;gap:5px;}
+  .chip{border:1.4px solid var(--line);background:#fdfbf8;color:var(--ink-2);
+    font-size:12px;font-weight:700;padding:5px 9px;border-radius:20px;
+    letter-spacing:-.4px;cursor:pointer;line-height:1.35;display:inline-flex;align-items:center;gap:3px;}
   .chip.on{background:var(--brown);border-color:var(--brown);color:#fff;font-weight:800;}
   .chip.on .ck{color:var(--gold-lt);}
-  .chip .ck{font-size:11px;font-weight:900;color:#c9bda9;}
+  .chip .ck{font-size:10px;font-weight:900;color:#c9bda9;}
   .chip.add{border-style:dashed;color:var(--ink-3);font-weight:800;}
-  .tag.shop{background:#f5edda;color:#8a6a2a;}
 
-  .link-btn{border:0;background:transparent;padding:7px 0 0;font-size:11.5px;font-weight:800;
+  .link-btn{border:0;background:transparent;padding:4px 0 0;font-size:10.6px;font-weight:800;
     color:var(--ink-3);text-decoration:underline;cursor:pointer;letter-spacing:-.2px;}
-  .mgr{margin-top:8px;border:1px dashed var(--line);border-radius:10px;padding:9px;background:#fdfbf8;}
-  .mgr-row{display:grid;grid-template-columns:minmax(0,1fr) 56px;gap:6px;margin-bottom:6px;}
+  .mgr{margin-top:6px;border:1px dashed var(--line);border-radius:9px;padding:7px;background:#fdfbf8;}
+  .mgr-row{display:grid;grid-template-columns:minmax(0,1fr) 50px;gap:5px;margin-bottom:5px;}
   .mgr-row:last-child{margin-bottom:0;}
-  .mgr-in{padding:9px 10px !important;font-size:14px !important;}
-  .mgr-del{height:38px;border-radius:9px;border:0;background:#f7f1e8;color:#a8410f;
-    font-size:12px;font-weight:800;cursor:pointer;letter-spacing:-.3px;}
+  .mgr-in{padding:7px 8px !important;font-size:14px !important;}
+  .mgr-del{height:34px;border-radius:8px;border:0;background:#f7f1e8;color:#a8410f;
+    font-size:11px;font-weight:800;cursor:pointer;letter-spacing:-.3px;}
 
-  .add-btn{width:100%;height:52px;border:0;border-radius:13px;
+  .add-btn{width:100%;height:46px;border:0;border-radius:11px;
     background:linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 100%);
-    color:#2b1d14;font-size:16px;font-weight:800;letter-spacing:-.5px;cursor:pointer;
-    box-shadow:0 4px 14px rgba(201,162,39,.28);}
+    color:#2b1d14;font-size:15px;font-weight:800;letter-spacing:-.5px;cursor:pointer;
+    box-shadow:0 4px 12px rgba(201,162,39,.26);}
   .add-btn:active{transform:scale(.985);}
-  .btn-line{height:46px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink-2);
-    font-size:14px;font-weight:800;letter-spacing:-.4px;cursor:pointer;}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  .btn-primary{height:52px;border:0;border-radius:13px;background:var(--brown);color:#fff;
-    font-size:15px;font-weight:800;letter-spacing:-.4px;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;gap:6px;width:100%;}
+  .btn-line{height:42px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink-2);
+    font-size:12.5px;font-weight:800;letter-spacing:-.4px;cursor:pointer;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .btn-primary{height:48px;border:0;border-radius:11px;background:var(--brown);color:#fff;
+    font-size:14.5px;font-weight:800;letter-spacing:-.4px;cursor:pointer;width:100%;}
   .btn-primary:active{transform:scale(.985);}
-  .btn-print{height:50px;border:1.5px solid var(--brown);border-radius:12px;background:#fff;color:var(--brown);
-    font-size:14.5px;font-weight:800;letter-spacing:-.4px;cursor:pointer;width:100%;
-    display:flex;align-items:center;justify-content:center;gap:6px;margin-top:9px;}
-  .tip{font-size:11.3px;color:var(--ink-3);letter-spacing:-.2px;line-height:1.65;margin-top:9px;}
-  .tip b{color:var(--ink-2);}
-  .brandline{margin:14px 0 12px;text-align:center;font-size:11.3px;color:#b7a794;letter-spacing:-.2px;line-height:1.7;}
+  .btn-print{height:46px;border:1.5px solid var(--brown);border-radius:11px;background:#fff;color:var(--brown);
+    font-size:13.5px;font-weight:800;letter-spacing:-.4px;cursor:pointer;width:100%;margin-top:7px;}
+  .brandline{margin:12px 0 10px;text-align:center;font-size:10.6px;color:#b7a794;letter-spacing:-.2px;line-height:1.7;}
 
-  /* action bar */
-  .actionbar{position:fixed;left:0;right:0;bottom:0;z-index:70;max-width:430px;margin:0 auto;
-    background:var(--brown);border-top:1px solid rgba(201,162,39,.3);
-    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
-    display:flex;align-items:center;gap:9px;}
-  .ab-info{min-width:0;flex:1;}
-  .ab-count{font-size:12px;font-weight:800;color:var(--gold-lt);letter-spacing:-.2px;}
-  .ab-sub{font-size:10.8px;font-weight:600;color:#c9b79f;letter-spacing:-.2px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .ab-btn{flex:none;border:0;border-radius:11px;background:linear-gradient(135deg,var(--gold),var(--gold-lt));
-    color:#2b1d14;font-size:13px;font-weight:800;padding:12px 12px;letter-spacing:-.4px;cursor:pointer;}
-  .ab-btn.line{background:transparent;border:1.5px solid rgba(201,162,39,.65);color:var(--gold-lt);}
+  /* ── 원가 ── */
+  .money{background:var(--brown);border-radius:12px;padding:11px 13px;color:#fdf9f2;}
+  .m-lab{font-size:11px;font-weight:800;color:#c9b79f;letter-spacing:-.2px;}
+  .m-lab small{font-weight:700;color:#8f7f6c;margin-left:4px;font-size:10px;}
+  .m-total{font-size:25px;font-weight:800;letter-spacing:-1.3px;line-height:1.15;margin-top:2px;color:var(--gold-lt);}
+  .m-sub{display:flex;gap:14px;margin-top:4px;font-size:11.3px;font-weight:700;color:#d8cbb9;}
+  .m-sub b{color:#fff;font-weight:800;}
+  .m-note{margin-top:6px;font-size:10.3px;color:#a8998a;font-weight:600;letter-spacing:-.2px;line-height:1.5;}
+  .subhead{font-size:11.3px;font-weight:800;color:var(--ink-3);letter-spacing:-.2px;margin:9px 0 1px;}
+  .subhead:first-child{margin-top:0;}
+  .srow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;
+    border-bottom:1px dashed var(--line);font-size:12.8px;font-weight:700;letter-spacing:-.3px;}
+  .srow:last-child{border-bottom:0;}
+  .srow .s-l{color:var(--ink-2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .srow .s-l i{font-style:normal;font-size:10.5px;font-weight:700;color:var(--ink-3);margin-left:3px;}
+  .srow b{font-weight:800;letter-spacing:-.4px;white-space:nowrap;}
+  .srow.tot{border-top:1.5px solid var(--brown);border-bottom:0;margin-top:2px;padding-top:8px;}
+  .srow.tot b{color:var(--brown);font-size:14px;}
+  .srow.priv b{color:var(--ink-3);}
+  .muted{font-size:11.5px;font-weight:700;color:var(--ink-3);padding:6px 0;letter-spacing:-.3px;}
+  .note-line{font-size:10.8px;font-weight:700;color:var(--ink-3);letter-spacing:-.2px;line-height:1.5;margin-bottom:8px;}
 
-  /* toast */
-  .toast{position:fixed;left:50%;bottom:calc(108px + env(safe-area-inset-bottom));transform:translate(-50%,12px);
-    background:#1c140e;color:#fff;font-size:13.5px;font-weight:700;letter-spacing:-.3px;padding:12px 18px;
-    border-radius:12px;z-index:120;opacity:0;transition:.2s;pointer-events:none;max-width:86vw;text-align:center;
+  /* ── toast ── */
+  .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,12px);
+    background:#1c140e;color:#fff;font-size:12.8px;font-weight:700;letter-spacing:-.3px;padding:11px 16px;
+    border-radius:11px;z-index:120;opacity:0;transition:.2s;pointer-events:none;max-width:88vw;text-align:center;
     box-shadow:0 8px 24px rgba(0,0,0,.28);}
   .toast.show{opacity:1;transform:translate(-50%,0);}
   .toast.ok{background:#0f766e;}
   .toast.warn{background:#a8410f;}
-  @keyframes flash{0%{box-shadow:0 0 0 0 rgba(201,162,39,.55);}100%{box-shadow:0 0 0 12px rgba(201,162,39,0);}}
+  @keyframes flash{0%{box-shadow:0 0 0 0 rgba(201,162,39,.55);}100%{box-shadow:0 0 0 10px rgba(201,162,39,0);}}
   .flash{animation:flash .7s ease;}
 
   /* ── print ── */
@@ -266,7 +252,7 @@
   @media print{
     @page{size:A4;margin:14mm 13mm 12mm;}
     html,body{background:#fff !important;max-width:none !important;padding:0 !important;margin:0 !important;}
-    header,.hero,main,.actionbar,.toast{display:none !important;}
+    header,main,.toast{display:none !important;}
     #printDoc{display:block !important;color:#141414;font-size:10.2pt;line-height:1.45;}
     #printDoc .p-brand{font-size:.76em;letter-spacing:.18em;color:#8a6a2a;font-weight:800;}
     #printDoc .p-title{font-size:1.7em;font-weight:800;letter-spacing:-.04em;margin:.08em 0 .06em;line-height:1.2;}
@@ -294,202 +280,190 @@
 <body>
 
 <header>
-  <div class="brand">
+  <div class="hbar">
     <div class="brand-logo">M+</div>
-    <div style="min-width:0">
-      <div class="brand-title">5초 택배 · 원가 정리</div>
-      <div class="brand-sub">1인 소장님 전용 초경량</div>
-    </div>
+    <div class="brand-title">현장 배송 · 원가 정리</div>
+    <div class="h-tag">05호</div>
   </div>
-  <div class="h-tag">05호 · 초경량</div>
+  <div class="sumline" id="sumLine">
+    <button type="button" class="hchip" data-go="ship"><span>오늘 도착</span><b id="cToday">0</b></button>
+    <button type="button" class="hchip warn" data-go="ship" id="chipWarn"><span>⚠ 지연</span><b id="cWarn">0</b></button>
+    <button type="button" class="hchip money" data-go="cost"><span>현장·사업 지출</span><b id="cMoney">0원</b></button>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button type="button" data-tab="ship" class="on">📦 배송현황</button>
+    <button type="button" data-tab="add">➕ 주문등록</button>
+    <button type="button" data-tab="cost">📊 현장원가</button>
+  </nav>
 </header>
-
-<section class="hero">
-  <div class="hero-badge">📦 1인 소장님 전용 · 초경량</div>
-  <h1>현장·사무실·자택<br><em>5초 택배 · 원가 정리</em></h1>
-  <p>주문 문자 붙여넣고 ‘자동 채우기’ 한 번 · 배송지·세무 구분까지 5초 · 개인용은 자동 제외</p>
-</section>
 
 <main>
 
-  <!-- 5초 자동 채우기 -->
-  <section class="card paste" id="pasteCard">
-    <div class="card-head">
-      <div class="step">📋</div>
-      <h2>주문 문자 · 내역 5초 자동 채우기</h2>
-      <div class="hint">붙여넣고 한 번</div>
+  <!-- ══ 탭 1 · 배송현황 ══ -->
+  <section class="panel" id="p-ship">
+    <div class="ftabs" id="ftabs"></div>
+    <div class="list-head">
+      <b id="listTitle">전체 주문</b>
+      <span id="listCount"></span>
     </div>
-    <textarea id="pasteIn" aria-label="주문 내역 붙여넣기"
-      placeholder="쿠팡·네이버·문자 주문 내역을 그대로 붙여넣으세요. 한 줄에 한 건씩.&#10;예) 쿠팡 BMC 인조대리석 도어씰 2개 46,000원 유천동 사무실 11/20 도착"></textarea>
-    <div class="p-btn">
-      <button type="button" class="p-main" id="pasteGo">⚡ 자동 채우기</button>
-      <button type="button" class="p-sub" id="pasteDemo">예시 문구<br>넣어보기</button>
-    </div>
-    <div id="pastePreview"></div>
-    <div class="tip" style="margin-top:8px">품목·금액·쇼핑몰·배송지(현장/사무실/자택)·상태·날짜를 읽어 <b>아래 등록 폼</b>에 채웁니다. 읽은 값은 칩으로 바로 고칠 수 있습니다.</div>
+    <div id="list"></div>
   </section>
 
-  <!-- 대시보드 -->
-  <section class="card" id="dashCard">
-    <div class="card-head">
-      <div class="step">📦</div>
-      <h2>오늘의 배송 상황</h2>
-      <div class="hint" id="dashDate"></div>
-    </div>
-    <div class="kpis">
-      <div class="kpi">
-        <div class="k-l">오늘 도착</div>
-        <div class="k-v" id="kToday">0<span>건</span></div>
+  <!-- ══ 탭 2 · 주문등록 ══ -->
+  <section class="panel hide" id="p-add">
+
+    <section class="card paste" id="pasteCard">
+      <div class="card-head">
+        <div class="step">📋</div>
+        <h2>주문 문자 붙여넣기</h2>
+        <div class="hint">5초 자동 채우기</div>
       </div>
-      <div class="kpi">
-        <div class="k-l">⚠ 투입일 지연·초과</div>
-        <div class="k-v" id="kWarn">0<span>건</span></div>
+      <textarea id="pasteIn" aria-label="주문 내역 붙여넣기"
+        placeholder="쿠팡·네이버·문자 주문 내역을 그대로 붙여넣으세요. 한 줄에 한 건씩.&#10;예) 쿠팡 BMC 인조대리석 도어씰 2개 46,000원 유천동 사무실 11/20 도착"></textarea>
+      <div class="p-btn">
+        <button type="button" class="p-main" id="pasteGo">⚡ 자동 채우기</button>
+        <button type="button" class="p-sub" id="pasteDemo">예시 문구</button>
       </div>
-    </div>
-    <div id="warnBox"></div>
-    <div class="money">
-      <div class="m-lab">사업용 매입 <small>개인용 자동 제외</small></div>
-      <div class="m-total" id="mTotal">0원</div>
-      <div class="m-sub">
-        <span>공급가액 <b id="mSupply">0원</b></span>
-        <span>부가세 <b id="mVat">0원</b></span>
+      <div id="pastePreview"></div>
+    </section>
+
+    <section class="card" id="formCard">
+      <div class="card-head">
+        <div class="step">＋</div>
+        <h2 id="formTitle">주문 등록</h2>
+        <div class="hint" id="formHint">칩으로 3초</div>
       </div>
-      <div class="m-note" id="mNote"></div>
-    </div>
+
+      <div class="field">
+        <label class="flabel" for="fName">품목명 <span class="u">필수</span></label>
+        <input type="text" id="fName" placeholder="예: 욕실 도어씰 3개" maxlength="40" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <div class="frow2">
+          <div class="grow">
+            <label class="flabel" for="fAmount">금액 <span class="u">원 · 숫자만</span></label>
+            <input type="text" id="fAmount" inputmode="numeric" placeholder="42,000" maxlength="12" autocomplete="off">
+          </div>
+          <div class="vat">
+            <label class="flabel" for="fVat">부가세</label>
+            <select id="fVat">
+              <option value="incl">포함</option>
+              <option value="excl">별도</option>
+              <option value="none">면세</option>
+            </select>
+          </div>
+        </div>
+        <div class="calc-hint" id="calcHint">부가세 포함이면 결제한 금액 그대로 적으세요.</div>
+      </div>
+
+      <div class="field">
+        <label class="flabel">배송지</label>
+        <div class="chips" id="fSites"></div>
+        <button type="button" class="link-btn" id="mgrToggle">⚙ 배송지 이름 바꾸기 · 지우기</button>
+        <div class="mgr hide" id="siteMgr"></div>
+      </div>
+
+      <div class="field">
+        <label class="flabel">쇼핑몰</label>
+        <div class="chips" id="fShop"></div>
+      </div>
+
+      <div class="field">
+        <label class="flabel">용도</label>
+        <div class="seg" id="fCat">
+          <button type="button" class="seg-btn on" data-cat="mat">현장 자재</button>
+          <button type="button" class="seg-btn" data-cat="office">사무비품</button>
+          <button type="button" class="seg-btn" data-cat="private">개인용</button>
+        </div>
+        <div class="calc-hint" id="catHint">개인용은 원가 합계에서 빠집니다.</div>
+      </div>
+
+      <div class="field">
+        <div class="drow">
+          <div>
+            <label class="flabel" for="fProc">공정 투입일</label>
+            <input type="date" id="fProc">
+          </div>
+          <div>
+            <label class="flabel" for="fEta">도착 예정일</label>
+            <input type="date" id="fEta">
+          </div>
+        </div>
+        <div class="qdates">
+          <button type="button" class="qd" data-qd="0">오늘 도착</button>
+          <button type="button" class="qd" data-qd="1">내일</button>
+          <button type="button" class="qd" data-qd="3">3일 뒤</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="flabel">배송 상태</label>
+        <div class="seg" id="fStatus">
+          <button type="button" class="seg-btn on" data-st="ready">준비중</button>
+          <button type="button" class="seg-btn" data-st="ship">배송중</button>
+          <button type="button" class="seg-btn" data-st="late">지연</button>
+          <button type="button" class="seg-btn" data-st="done">도착완료</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="flabel" for="fMemo">메모 <span class="u">선택 · 송장·주문번호</span></label>
+        <input type="text" id="fMemo" placeholder="예: 쿠팡 주문 1234" maxlength="60" autocomplete="off">
+      </div>
+
+      <button type="button" class="add-btn" id="fSave">＋ 주문 등록</button>
+      <button type="button" class="btn-line hide" id="fCancel" style="width:100%;margin-top:7px">수정 취소</button>
+    </section>
+
   </section>
 
-  <!-- 필터 -->
-  <div class="ftabs" id="ftabs"></div>
+  <!-- ══ 탭 3 · 현장원가 ══ -->
+  <section class="panel hide" id="p-cost">
 
-  <!-- 목록 -->
-  <div class="list-head">
-    <b id="listTitle">전체 주문</b>
-    <span id="listCount"></span>
-  </div>
-  <div id="list"></div>
+    <section class="card">
+      <div class="money">
+        <div class="m-lab">현장·사업 지출 <small>개인용 제외</small></div>
+        <div class="m-total" id="mTotal">0원</div>
+        <div class="m-sub">
+          <span>공급가액 <b id="mSupply">0원</b></span>
+          <span>부가세 <b id="mVat">0원</b></span>
+        </div>
+        <div class="m-note" id="mNote"></div>
+      </div>
+    </section>
 
-  <!-- 원가 요약 -->
-  <section class="card" id="sumCard">
-    <div class="card-head">
-      <div class="step">🧾</div>
-      <h2>세무사 1초 전달</h2>
-      <div class="hint">개인용 자동 제외</div>
-    </div>
-    <div class="subhead">배송지별</div>
-    <div id="sumSite"></div>
-    <div class="subhead">용도 · 구분별</div>
-    <div id="sumCat"></div>
-    <div class="subhead">부가세 정리</div>
-    <div id="sumVat"></div>
-    <button type="button" class="btn-primary" id="copyBtn" style="margin-top:12px">📋 세무사 카톡 복사</button>
+    <section class="card">
+      <div class="card-head">
+        <div class="step">📊</div>
+        <h2>현장별 · 용도별</h2>
+        <div class="hint" id="costDate"></div>
+      </div>
+      <div class="subhead">배송지 · 현장별</div>
+      <div id="sumSite"></div>
+      <div class="subhead">용도별</div>
+      <div id="sumCat"></div>
+    </section>
+
+    <button type="button" class="btn-primary" id="copyBtn">📋 원가 요약 복사</button>
     <button type="button" class="btn-print" id="printBtn">🖨️ A4 인쇄 / PDF 저장</button>
-    <div class="tip">복사한 내용을 카톡에 붙여 넣으면 그대로 보낼 수 있습니다. <b>인쇄</b>는 브라우저 인쇄 창에서 ‘PDF로 저장’을 고르세요.</div>
+
+    <section class="card" style="margin-top:9px">
+      <div class="card-head">
+        <div class="step">💾</div>
+        <h2>데이터</h2>
+        <div class="hint">이 폰에만 저장</div>
+      </div>
+      <div class="row2">
+        <button type="button" class="btn-line" id="seedBtn">📋 예시 4건 불러오기</button>
+        <button type="button" class="btn-line" id="clearBtn">🧹 전체 비우기</button>
+      </div>
+    </section>
+
+    <div class="brandline">메종플러스 · 현장 배송 · 원가 정리 (1일 1앱 05호)<br>만든이 모네</div>
   </section>
 
-  <!-- 주문 등록 -->
-  <section class="card" id="formCard">
-    <div class="card-head">
-      <div class="step">＋</div>
-      <h2 id="formTitle">빠른 주문 등록</h2>
-      <div class="hint" id="formHint">3초 칩 입력</div>
-    </div>
-
-    <div class="field">
-      <label class="flabel" for="fName">품목명 <span class="u">필수</span></label>
-      <input type="text" id="fName" placeholder="예: 욕실 도어씰 3개" maxlength="40" autocomplete="off">
-    </div>
-
-    <div class="field">
-      <label class="flabel">쇼핑몰</label>
-      <div class="chips" id="fShop"></div>
-    </div>
-
-    <div class="field">
-      <label class="flabel" for="fAmount">금액 <span class="u">원 · 숫자만</span></label>
-      <input type="text" id="fAmount" inputmode="numeric" placeholder="예: 42000" maxlength="12" autocomplete="off">
-      <div class="seg" id="fVat" style="margin-top:7px">
-        <button type="button" class="seg-btn on" data-vat="incl">부가세 포함</button>
-        <button type="button" class="seg-btn" data-vat="excl">부가세 별도</button>
-        <button type="button" class="seg-btn" data-vat="none">면세·간이</button>
-      </div>
-      <div class="calc-hint" id="calcHint">부가세 포함이면 결제한 금액 그대로 적으세요.</div>
-    </div>
-
-    <div class="field">
-      <label class="flabel">배송지</label>
-      <div class="chips" id="fSites"></div>
-      <button type="button" class="link-btn" id="mgrToggle">⚙ 배송지 이름 바꾸기 · 지우기</button>
-      <div class="mgr hide" id="siteMgr"></div>
-    </div>
-
-    <div class="field">
-      <label class="flabel">용도 · 세무 구분</label>
-      <div class="seg" id="fCat">
-        <button type="button" class="seg-btn on" data-cat="mat">현장 자재</button>
-        <button type="button" class="seg-btn" data-cat="office">사무비품</button>
-        <button type="button" class="seg-btn" data-cat="private">개인용</button>
-      </div>
-      <div class="calc-hint" id="catHint">개인용은 원가·세무 합계에서 빠집니다.</div>
-    </div>
-
-    <div class="frow">
-      <label for="fProc">공정 투입일</label>
-      <input type="date" id="fProc">
-    </div>
-    <div class="frow">
-      <label for="fEta">도착 예정일</label>
-      <input type="date" id="fEta">
-    </div>
-    <div class="qdates" style="margin:-4px 0 12px">
-      <button type="button" class="qd" data-qd="0">오늘 도착</button>
-      <button type="button" class="qd" data-qd="1">내일</button>
-      <button type="button" class="qd" data-qd="3">3일 뒤</button>
-    </div>
-
-    <div class="field">
-      <label class="flabel">배송 상태</label>
-      <div class="seg" id="fStatus">
-        <button type="button" class="seg-btn on" data-st="ready">준비중</button>
-        <button type="button" class="seg-btn" data-st="ship">배송중</button>
-        <button type="button" class="seg-btn" data-st="late">지연</button>
-        <button type="button" class="seg-btn" data-st="done">도착완료</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="flabel" for="fMemo">메모 <span class="u">선택 · 송장·주문번호</span></label>
-      <input type="text" id="fMemo" placeholder="예: 쿠팡 주문 1234" maxlength="60" autocomplete="off">
-    </div>
-
-    <button type="button" class="add-btn" id="fSave">＋ 주문 등록</button>
-    <button type="button" class="btn-line hide" id="fCancel" style="width:100%;margin-top:8px">수정 취소</button>
-  </section>
-
-  <!-- 데이터 -->
-  <section class="card">
-    <div class="card-head">
-      <div class="step">💾</div>
-      <h2>예시 · 데이터</h2>
-      <div class="hint">자동 저장</div>
-    </div>
-    <p class="tip" style="margin:0 0 10px">입력한 내용은 이 휴대폰에만 저장됩니다(인터넷에 올라가지 않습니다). 예시 4건으로 감을 잡아 보세요.</p>
-    <div class="row2">
-      <button type="button" class="btn-line" id="seedBtn">📋 예시 4건 불러오기</button>
-      <button type="button" class="btn-line" id="clearBtn">🧹 전체 비우기</button>
-    </div>
-  </section>
-
-  <div class="brandline">메종플러스 · 5초 택배 원가 정리 (1일 1앱 05호 · 초경량)<br>만든이 모네</div>
 </main>
-
-<div class="actionbar">
-  <div class="ab-info">
-    <div class="ab-count" id="abCount">미도착 0건</div>
-    <div class="ab-sub" id="abSub">사업용 매입 0원</div>
-  </div>
-  <button type="button" class="ab-btn line" id="abCopy">복사</button>
-  <button type="button" class="ab-btn" id="abNew">＋ 새 주문</button>
-</div>
 
 <div class="toast" id="toast"></div>
 <div id="printDoc"></div>
@@ -518,6 +492,7 @@
   var state = {items:[], sites:[], filter:"all"};
   var form = {vat:"incl", cat:"mat", status:"ready", site:"s_site", shop:"etc"};
   var editingId = null;
+  var curTab = "ship";
 
   /* ── helpers ── */
   function esc(s){
@@ -542,7 +517,7 @@
     return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
   }
   function WD(d){ return "일월화수목금토".charAt(d.getDay()); }
-  function cleanDate(v){           /* 날짜칸에 남은 어긋난 값은 비운다 */
+  function cleanDate(v){
     if (!v || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return "";
     var y = parseInt(v.slice(0, 4), 10);
     return (y >= 2000 && y <= 2100) ? v : "";
@@ -622,6 +597,14 @@
     if (it.proc && it.eta && it.eta > it.proc) w.push("투입일(" + dmd(it.proc) + ")보다 늦게 도착 예정");
     if (it.eta && it.eta < todayISO()) w.push("도착 예정일(" + dmd(it.eta) + ")이 지났는데 미도착");
     return w;
+  }
+  function warnShort(it){
+    if (!warns(it).length) return "";
+    var t = todayISO();
+    if (it.eta && it.eta < t) return "도착일 지남";
+    if (it.status === "late") return "지연";
+    if (it.proc && it.eta && it.eta > it.proc) return "투입일 초과";
+    return "확인";
   }
   function find(id){
     for (var i = 0; i < state.items.length; i++) if (state.items[i].id === id) return state.items[i];
@@ -811,59 +794,42 @@
     return "office";
   }
 
+  /* ── 탭 ── */
+  function setTab(name){
+    curTab = name;
+    ["ship","add","cost"].forEach(function(k){
+      $("p-" + k).classList.toggle("hide", k !== name);
+      var b = document.querySelector('.tabs [data-tab="' + k + '"]');
+      if (b) b.classList.toggle("on", k === name);
+    });
+    window.scrollTo(0, 0);
+  }
+
   /* ── 화면 ── */
   function renderAll(){
-    renderDash(); renderTabs(); renderList(); renderSum(); renderSites(); renderShop(); renderAB();
-  }
-  function renderAB(){
-    var open = state.items.filter(function(it){ return it.status !== "done"; });
-    var bus = state.items.filter(isBus);
-    var warnN = state.items.filter(function(it){ return warns(it).length > 0; }).length;
-    $("abCount").textContent = "미도착 " + open.length + "건" + (warnN ? " · 경고 " + warnN : "");
-    $("abSub").textContent = (editingId ? "수정 중" : "사업용 매입 " + won(calcAll(bus).total));
+    renderHeader(); renderTabs(); renderList(); renderSum(); renderSites(); renderShop();
   }
 
-  function renderDash(){
+  function renderHeader(){
     var t = todayISO();
     var open = state.items.filter(function(it){ return it.status !== "done"; });
-    var todayDue = open.filter(function(it){ return it.eta === t; });
-    var warnItems = state.items.filter(function(it){ return warns(it).length > 0; });
-
-    var kn = $("kToday");
-    kn.innerHTML = todayDue.length + "<span>건</span>";
-    var ko = $("kWarn");
-    ko.innerHTML = warnItems.length + "<span>건</span>";
-    ko.className = "k-v" + (warnItems.length ? " red" : "");
-
-    var box = $("warnBox");
-    if (warnItems.length){
-      var names = warnItems.slice(0, 3).map(function(it){
-        return "<b>" + esc(it.name) + "</b> " + esc(warns(it)[0]);
-      }).join("<br>");
-      var more = warnItems.length > 3 ? "<br>외 " + (warnItems.length - 3) + "건" : "";
-      box.innerHTML = '<div class="warn-banner"><div class="wb-t">⚠ 지연 · 투입일 초과 ' +
-        warnItems.length + '건</div><div class="wb-n">' + names + more + '</div></div>';
-    } else {
-      box.innerHTML = '<div class="ok-banner">✅ 지금은 지연·투입일 초과 건이 없습니다</div>';
-    }
-
+    var todayDue = open.filter(function(it){ return it.eta === t; }).length;
+    var warnN = state.items.filter(function(it){ return warns(it).length > 0; }).length;
     var bus = state.items.filter(isBus);
     var sum = calcAll(bus);
-    $("mTotal").textContent = won(sum.total);
-    $("mSupply").textContent = won(sum.supply);
-    $("mVat").textContent = won(sum.vat);
-    var doneBus = bus.filter(function(it){ return it.status === "done"; });
-    var ds = calcAll(doneBus);
-    $("mNote").textContent = "사업용 " + bus.length + "건 · 도착완료 " + doneBus.length + "건 " + won(ds.total) +
-      " / 개인용 " + (state.items.length - bus.length) + "건은 뺐습니다";
-    $("dashDate").textContent = dmd(t);
+
+    $("cToday").textContent = todayDue;
+    $("cWarn").textContent = warnN;
+    $("cMoney").textContent = won(sum.total);
+    var chip = $("chipWarn");
+    chip.classList.toggle("warn", warnN > 0);
+    chip.style.opacity = warnN ? "1" : ".75";
   }
 
   function renderTabs(){
     var f = state.filter;
-    var wAll = state.items.filter(function(it){ return warns(it).length > 0; }).length;
     var html = '<button type="button" class="ftab' + (f === "all" ? " on" : "") + '" data-f="all">전체 ' +
-      '<span class="c' + (wAll ? " red" : "") + '">' + state.items.length + '</span></button>';
+      '<span class="c">' + state.items.length + '</span></button>';
     state.sites.forEach(function(s){
       var n = state.items.filter(function(it){ return it.site === s.id; }).length;
       var w = state.items.filter(function(it){ return it.site === s.id && warns(it).length > 0; }).length;
@@ -885,10 +851,11 @@
     var title = state.filter === "all" ? "전체 주문" : siteName(state.filter.slice(5));
     $("listTitle").textContent = title;
     var warnN = arr.filter(function(it){ return warns(it).length > 0; }).length;
-    $("listCount").textContent = arr.length + "건" + (warnN ? " · 경고 " + warnN : "");
+    $("listCount").textContent = arr.length + "건" + (warnN ? " · ⚠ " + warnN : "");
 
     if (!arr.length){
-      $("list").innerHTML = '<div class="empty"><b>등록된 주문이 없습니다</b>배송이 오면 아래에서 ＋ 주문 등록<br>또는 ‘예시 4건 불러오기’로 먼저 써 보세요</div>';
+      $("list").innerHTML = '<div class="empty"><b>등록된 주문이 없습니다</b>' +
+        '➕ 주문등록 탭에서 문자를 붙여넣거나 직접 등록하세요</div>';
       return;
     }
     $("list").innerHTML = arr.map(itemHTML).join("");
@@ -897,88 +864,74 @@
   function itemHTML(it){
     var st = STATUS[it.status] || STATUS.ready;
     var c = calc(it);
-    var w = warns(it);
-    var cls = "item" + (w.length ? " warn" : "") + (it.status === "done" ? " done" : "");
-    var meta = '<span class="tag">' + esc(siteName(it.site)) + "</span>";
-    if (it.shop && SHOPS[it.shop]) meta += '<span class="tag shop">' + esc(SHOPS[it.shop]) + "</span>";
-    meta += esc(CATS[it.cat] || "");
-    if (it.proc) meta += " · 투입 " + dmd(it.proc);
-    if (it.eta) meta += " · 도착 " + dmd(it.eta);
-    var vatTag = it.vat === "incl" ? "VAT 포함" : (it.vat === "excl" ? "VAT 별도" : "면세·간이");
+    var w = warnShort(it);
+    var cls = "oi" + (w ? " warn" : "") + (it.status === "done" ? " done" : "");
+    var meta = '<span class="tg">' + esc(siteName(it.site)) + '</span>';
+    meta += '<span class="mt">' + (it.eta ? "도착 " + dmd(it.eta) : "도착일 미정") +
+      (it.memo ? " · " + esc(it.memo) : "") + '</span>';
 
     var h = '<div class="' + cls + '">';
-    h += '<div class="i-top"><div class="i-nm"><span class="pill ' + st.cls + '">' + st.label + '</span> ' +
-         esc(it.name) + '</div>';
-    h += '<div class="i-amt">' + won(c.total) + '<small>' + vatTag + '</small></div></div>';
-    h += '<div class="i-meta">' + meta + '</div>';
-    h += '<div class="i-tax">공급가액 ' + fmt(c.supply) + ' + 부가세 ' + fmt(c.vat) + '</div>';
-    if (it.memo) h += '<div class="i-memo">📝 ' + esc(it.memo) + '</div>';
-    if (w.length){
-      h += '<div class="i-warn">⚠ ' + esc(w[0]) + (w.length > 1 ? '<span>' + esc(w.slice(1).join(" · ")) + '</span>' : '') + '</div>';
-    }
-    h += '<div class="i-acts">';
-    h += '<button type="button" class="a-btn main' + (it.status === "done" ? " on" : "") +
+    h += '<div class="oi-l1">';
+    h += '<span class="pill ' + st.cls + '">' + st.label + '</span>';
+    h += '<span class="oi-nm">' + esc(it.name) + '</span>';
+    if (w) h += '<span class="oi-bw">⚠ ' + w + '</span>';
+    h += '<span class="oi-amt">' + won(c.total) + '</span>';
+    h += '</div>';
+    h += '<div class="oi-l2"><div class="oi-meta">' + meta + '</div><div class="oi-acts">';
+    h += '<button type="button" class="ib main' + (it.status === "done" ? " on" : "") +
          '" data-act="done" data-id="' + it.id + '">' +
-         (it.status === "done" ? "↺ 미도착으로" : "✓ 도착완료") + '</button>';
-    h += '<button type="button" class="a-btn ic" data-act="edit" data-id="' + it.id + '" aria-label="수정">✎</button>';
-    h += '<button type="button" class="a-btn ic del" data-act="del" data-id="' + it.id + '" aria-label="삭제">🗑</button>';
-    h += '</div></div>';
+         (it.status === "done" ? "↺ 미도착" : "✓ 도착완료") + '</button>';
+    h += '<button type="button" class="ib ic" data-act="edit" data-id="' + it.id + '" aria-label="수정">✎</button>';
+    h += '<button type="button" class="ib ic del" data-act="del" data-id="' + it.id + '" aria-label="삭제">🗑</button>';
+    h += '</div></div></div>';
     return h;
   }
 
   function renderSum(){
     var bus = state.items.filter(isBus);
     var priv = state.items.filter(function(it){ return !isBus(it); });
+    var tot = calcAll(bus);
+
+    $("mTotal").textContent = won(tot.total);
+    $("mSupply").textContent = won(tot.supply);
+    $("mVat").textContent = won(tot.vat);
+    var doneBus = bus.filter(function(it){ return it.status === "done"; });
+    $("mNote").textContent = "현장·사업 " + bus.length + "건 · 도착완료 " + doneBus.length + "건 " +
+      won(calcAll(doneBus).total) + " / 개인용 " + priv.length + "건은 뺐습니다";
+    $("costDate").textContent = dmd(todayISO());
 
     if (!bus.length){
-      $("sumSite").innerHTML = '<div class="muted">사업용으로 잡힌 지출이 아직 없습니다.</div>';
+      $("sumSite").innerHTML = '<div class="muted">현장·사업으로 잡힌 지출이 아직 없습니다.</div>';
       $("sumCat").innerHTML = '<div class="muted">현장 자재·사무비품으로 등록하면 여기에 합계가 나옵니다.</div>';
-      $("sumVat").innerHTML = '<div class="muted">부가세는 입력한 금액 기준으로 자동 계산됩니다.</div>';
       return;
     }
 
-    /* 배송지별 */
     var bySite = {};
     bus.forEach(function(it){
       var k = it.site;
-      if (!bySite[k]) bySite[k] = {n:0, supply:0, vat:0, total:0};
-      var c = calc(it);
-      bySite[k].n++; bySite[k].supply += c.supply; bySite[k].vat += c.vat; bySite[k].total += c.total;
+      if (!bySite[k]) bySite[k] = {n:0, total:0};
+      bySite[k].n++; bySite[k].total += calc(it).total;
     });
     var h = "";
     state.sites.forEach(function(s){
       var v = bySite[s.id];
       if (!v) return;
-      h += '<div class="srow"><span class="s-l">' + esc(s.name) + " <i>" + v.n + "건</i></span><b>" +
-           won(v.total) + "</b></div>";
+      h += '<div class="srow"><span class="s-l">' + esc(s.name) + ' <i>' + v.n + '건</i></span><b>' +
+           won(v.total) + '</b></div>';
     });
-    var tot = calcAll(bus);
-    h += '<div class="srow tot"><span class="s-l">사업용 합계 <i>' + tot.n + '건</i></span><b>' + won(tot.total) + '</b></div>';
+    h += '<div class="srow tot"><span class="s-l">현장·사업 합계 <i>' + tot.n + '건</i></span><b>' + won(tot.total) + '</b></div>';
     if (priv.length) h += '<div class="srow priv"><span class="s-l">개인용 <i>집계 제외</i></span><b>' +
       won(calcAll(priv).total) + '</b></div>';
     $("sumSite").innerHTML = h;
 
-    /* 구분별 */
-    var order = ["mat","office"];
     h = "";
-    order.forEach(function(k){
+    ["mat","office"].forEach(function(k){
       var list = bus.filter(function(it){ return it.cat === k; });
       if (!list.length) return;
       var s2 = calcAll(list);
-      h += '<div class="srow"><span class="s-l">' + CATS[k] + " <i>" + s2.n + "건</i></span><b>" + won(s2.total) + "</b></div>";
+      h += '<div class="srow"><span class="s-l">' + CATS[k] + ' <i>' + s2.n + '건</i></span><b>' + won(s2.total) + '</b></div>';
     });
     $("sumCat").innerHTML = h || '<div class="muted">해당 없음</div>';
-
-    /* 부가세 */
-    h = '<div class="srow"><span class="s-l">공급가액</span><b>' + won(tot.supply) + '</b></div>' +
-        '<div class="srow"><span class="s-l">매입 부가세 <i>10% 기준</i></span><b>' + won(tot.vat) + '</b></div>' +
-        '<div class="srow tot"><span class="s-l">결제 합계</span><b>' + won(tot.total) + '</b></div>';
-    var doneBus = bus.filter(function(it){ return it.status === "done"; });
-    if (doneBus.length){
-      h += '<div class="srow priv"><span class="s-l">그중 도착완료 <i>' + doneBus.length + '건</i></span><b>' +
-        won(calcAll(doneBus).total) + '</b></div>';
-    }
-    $("sumVat").innerHTML = h;
   }
 
   /* ── 배송지 칩 / 관리 ── */
@@ -1029,14 +982,14 @@
            : "부가세 포함이면 결제한 금액 그대로 적으세요.");
     }
     $("catHint").textContent = form.cat === "private"
-      ? "개인용은 원가·세무 합계에서 빠집니다." : "사업용으로 원가·부가세 합계에 들어갑니다.";
+      ? "개인용은 원가 합계에서 빠집니다." : "현장·사업 원가에 들어갑니다.";
   }
 
   /* ── 자동 채우기 반영 ── */
   var lastParsed = [];
   function applyParsed(o){
     editingId = null;
-    $("formTitle").textContent = "빠른 주문 등록";
+    $("formTitle").textContent = "주문 등록";
     $("formHint").textContent = "자동 채움 · 확인만";
     $("fSave").textContent = "＋ 주문 등록";
     $("fCancel").classList.add("hide");
@@ -1047,10 +1000,11 @@
     $("fName").value = o.name;
     $("fAmount").value = o.amount ? fmt(o.amount) : "";
     $("fEta").value = o.eta || "";
-    setSeg("fVat", "data-vat", "incl"); setSeg("fCat", "data-cat", form.cat);
-    setSeg("fStatus", "data-st", form.status);
     form.vat = "incl";
-    renderSites(); renderShop(); updateCalcHint(); renderAB();
+    $("fVat").value = form.vat;
+    setSeg("fCat", "data-cat", form.cat);
+    setSeg("fStatus", "data-st", form.status);
+    renderSites(); renderShop(); updateCalcHint();
   }
   function registerParsed(list){
     var noAmt = 0;
@@ -1073,9 +1027,9 @@
     list.forEach(function(o, i){
       var st = STATUS[o.status] || STATUS.ready;
       var sn = siteGuessName(o.raw, o.name) || "배송지?";
-      h += '<div class="pv-row"><b>' + (i + 1) + '. ' + esc(o.name) + '</b><span class="pv-m">' +
+      h += '<div class="pv-row"><b>' + (i + 1) + '. ' + esc(o.name) + '</b><i>' +
         (o.amount ? won(o.amount) : "금액?") + ' · ' + esc(sn) + ' · ' + st.label +
-        (o.eta ? ' · ' + esc(dmd(o.eta)) : '') + '</span></div>';
+        (o.eta ? ' · ' + esc(dmd(o.eta)) : '') + '</i></div>';
     });
     h += '<button type="button" class="pv-btn" id="pvAll">＋ 나머지 ' + (list.length - 1) + '건 한 번에 등록</button></div>';
     box.innerHTML = h;
@@ -1086,6 +1040,7 @@
       box.innerHTML = "";
       lastParsed = [];
       toast("✅ " + rest.length + "건 등록" + (noAmt ? " · 금액 확인 " + noAmt + "건" : " · 첫 건은 폼에서 등록하세요"), noAmt ? "warn" : "ok");
+      setTab("ship");
     });
   }
 
@@ -1095,14 +1050,14 @@
     $("fProc").value = ""; $("fEta").value = "";
     form.vat = "incl"; form.cat = "mat"; form.status = "ready"; form.shop = "etc";
     form.site = state.sites[0].id;
-    setSeg("fVat","data-vat","incl");
+    $("fVat").value = form.vat;
     setSeg("fCat","data-cat","mat");
     setSeg("fStatus","data-st","ready");
-    $("formTitle").textContent = "빠른 주문 등록";
-    $("formHint").textContent = "3초 칩 입력";
+    $("formTitle").textContent = "주문 등록";
+    $("formHint").textContent = "칩으로 3초";
     $("fSave").textContent = "＋ 주문 등록";
     $("fCancel").classList.add("hide");
-    renderSites(); updateCalcHint(); renderAB();
+    renderSites(); renderShop(); updateCalcHint();
   }
   function startEdit(id){
     var it = find(id);
@@ -1116,7 +1071,7 @@
     form.vat = it.vat; form.cat = it.cat; form.status = it.status;
     form.shop = (SHOPS[it.shop] ? it.shop : "etc");
     form.site = it.site;
-    setSeg("fVat","data-vat",form.vat);
+    $("fVat").value = form.vat;
     setSeg("fCat","data-cat",form.cat);
     setSeg("fStatus","data-st",form.status);
     renderSites(); renderShop();
@@ -1125,8 +1080,10 @@
     $("fSave").textContent = "✓ 수정 저장";
     $("fCancel").classList.remove("hide");
     updateCalcHint();
-    $("formCard").scrollIntoView({behavior:"smooth", block:"start"});
-    setTimeout(function(){ $("fName").focus(); }, 350);
+    setTab("add");
+    setTimeout(function(){
+      $("formCard").scrollIntoView({behavior:"smooth", block:"start"});
+    }, 60);
   }
 
   function saveItem(){
@@ -1161,6 +1118,9 @@
       toast(lateHint ? "✅ 등록했습니다 · ⚠ 투입일보다 늦게 도착 예정" : "✅ 등록했습니다", lateHint ? "warn" : "ok");
     }
     resetForm();
+    setTab("ship");
+    if (state.filter !== "all" && state.filter !== "site:" + obj.site) state.filter = "all";
+    renderTabs(); renderList();
   }
 
   function toggleDone(id){
@@ -1185,7 +1145,7 @@
     save(); renderAll(); toast("지웠습니다");
   }
 
-  /* ── 내보내기 텍스트 ── */
+  /* ── 원가 요약 텍스트 ── */
   function buildText(){
     var bus = state.items.filter(isBus);
     var sum = calcAll(bus);
@@ -1193,19 +1153,19 @@
     var warnItems = state.items.filter(function(it){ return warns(it).length > 0; });
     var t = todayISO();
     var L = [];
-    L.push("[메종플러스] 현장 배송 · 원가 정리 (" + dfull(t).replace(/\.\s*$/, "") + " 기준)");
-    L.push("· 사업용 " + bus.length + "건 (개인용 " + (state.items.length - bus.length) + "건 제외)");
+    L.push("[메종플러스] 현장 원가 요약 (" + dfull(t).replace(/\.\s*$/, "") + " 기준)");
+    L.push("· 현장·사업 " + bus.length + "건 (개인용 " + (state.items.length - bus.length) + "건 제외)");
     L.push("· 공급가액 " + won(sum.supply) + " + 부가세 " + won(sum.vat) + " = " + won(sum.total));
     L.push("");
 
-    L.push("▸ 배송지별");
+    L.push("▸ 배송지·현장별");
     state.sites.forEach(function(s){
       var list = bus.filter(function(it){ return it.site === s.id; });
       if (!list.length) return;
       L.push("  - " + s.name + ": " + list.length + "건 " + won(calcAll(list).total));
     });
     L.push("");
-    L.push("▸ 구분별");
+    L.push("▸ 용도별");
     ["mat","office"].forEach(function(k){
       var list = bus.filter(function(it){ return it.cat === k; });
       if (!list.length) return;
@@ -1229,7 +1189,7 @@
       });
       L.push("");
     }
-    L.push("※ 사업용 지출만 집계(개인용 제외) · 부가세 10% 기준 / 메종플러스");
+    L.push("※ 현장·사업 지출만 집계(개인용 제외) / 메종플러스");
     return L.join("\n");
   }
 
@@ -1242,17 +1202,16 @@
     var open = state.items.filter(function(it){ return it.status !== "done"; });
 
     var h = '<div class="p-brand">MAISON PLUS · 메종플러스</div>';
-    h += '<div class="p-title">5초 택배 · 원가 정리</div>';
-    h += '<div class="p-sub">출력일 ' + dfull(todayISO()) + ' · 사업용 지출만 집계(개인용 제외) · 부가세 10% 기준</div>';
+    h += '<div class="p-title">현장 배송 · 원가 정리</div>';
+    h += '<div class="p-sub">출력일 ' + dfull(todayISO()) + ' · 현장·사업 지출만 집계(개인용 제외) · 부가세 10% 기준</div>';
 
     h += '<div class="p-sum">' +
       '<div><div class="l">공급가액</div><div class="v">' + won(sum.supply) + '</div></div>' +
       '<div><div class="l">매입 부가세</div><div class="v">' + won(sum.vat) + '</div></div>' +
-      '<div><div class="l">합계 (사업용 ' + sum.n + '건)</div><div class="v">' + won(sum.total) + '</div></div>' +
+      '<div><div class="l">합계 (현장·사업 ' + sum.n + '건)</div><div class="v">' + won(sum.total) + '</div></div>' +
       '</div>';
 
-    /* 배송지별 / 구분별 */
-    h += '<div class="p-h">배송지별 · 구분별 합계</div><div class="p-two">';
+    h += '<div class="p-h">배송지별 · 용도별 합계</div><div class="p-two">';
 
     h += '<div><table><colgroup><col style="width:58%"><col style="width:14%"><col style="width:28%"></colgroup>' +
       '<tr><th>배송지</th><th class="r">건수</th><th class="r">합계</th></tr>';
@@ -1262,7 +1221,7 @@
       h += '<tr><td>' + esc(s.name) + '</td><td class="r">' + list.length + '</td><td class="r">' +
         won(calcAll(list).total) + '</td></tr>';
     });
-    h += '<tr><td><b>사업용 합계</b></td><td class="r"><b>' + sum.n + '</b></td><td class="r"><b>' + won(sum.total) + '</b></td></tr>';
+    h += '<tr><td><b>현장·사업 합계</b></td><td class="r"><b>' + sum.n + '</b></td><td class="r"><b>' + won(sum.total) + '</b></td></tr>';
     h += '</table></div>';
 
     h += '<div><table><colgroup><col style="width:58%"><col style="width:14%"><col style="width:28%"></colgroup>' +
@@ -1277,7 +1236,6 @@
     h += '<tr><td>부가세</td><td class="r">-</td><td class="r">' + won(sum.vat) + '</td></tr>';
     h += '</table></div></div>';
 
-    /* 상세 */
     h += '<div class="p-h">주문 · 배송 상세 (' + all.length + '건)</div>';
     h += '<table><colgroup><col style="width:26%"><col style="width:11%"><col style="width:12%">' +
       '<col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:11%"><col style="width:10%"></colgroup>' +
@@ -1296,11 +1254,10 @@
         '<td class="r">' + fmt(c.supply) + '</td>' +
         '<td class="r">' + fmt(c.vat) + '</td></tr>';
     });
-    h += '<tr><td colspan="6"><b>사업용 합계 (개인용 제외)</b></td><td class="r"><b>' + fmt(sum.supply) +
+    h += '<tr><td colspan="6"><b>현장·사업 합계 (개인용 제외)</b></td><td class="r"><b>' + fmt(sum.supply) +
       '</b></td><td class="r"><b>' + fmt(sum.vat) + '</b></td></tr>';
     h += '</table>';
 
-    /* 경고 */
     h += '<div class="p-h">⚠ 지연 · 투입일 초과 · 미도착</div>';
     if (!warnItems.length && !open.length){
       h += '<div style="font-size:.85em;font-weight:700;color:#0f766e">해당 없음 — 모든 배송이 정상입니다.</div>';
@@ -1320,9 +1277,9 @@
       h += '</table>';
     }
 
-    h += '<div class="p-foot">이 문서는 메종플러스 ‘현장 배송 · 원가 관리판’에서 출력했습니다. ' +
-      '사업용 지출(현장 자재·사무비품)만 집계했고 개인용은 제외했습니다. ' +
-      '부가세는 입력한 금액을 기준으로 포함·별도·면세를 구분해 계산했습니다. 결제 증빙과 함께 보관해 주세요.</div>';
+    h += '<div class="p-foot">이 문서는 메종플러스 ‘현장 배송 · 원가 정리’에서 출력했습니다. ' +
+      '현장·사업 지출(현장 자재·사무비품)만 집계했고 개인용은 제외했습니다. ' +
+      '부가세는 입력한 금액을 기준으로 포함·별도·면세를 구분해 계산했습니다.</div>';
 
     return h;
   }
@@ -1335,15 +1292,22 @@
 
   /* ── 이벤트 ── */
   function bind(){
+    $("tabs").addEventListener("click", function(e){
+      var b = e.target.closest("[data-tab]"); if (!b) return;
+      setTab(b.getAttribute("data-tab"));
+    });
+    $("sumLine").addEventListener("click", function(e){
+      var b = e.target.closest("[data-go]"); if (!b) return;
+      setTab(b.getAttribute("data-go"));
+    });
+
     $("fAmount").addEventListener("input", function(e){
       var d = e.target.value.replace(/[^\d]/g, "").slice(0, 10);
       e.target.value = d ? fmt(d) : "";
       updateCalcHint();
     });
-    $("fVat").addEventListener("click", function(e){
-      var b = e.target.closest(".seg-btn"); if (!b) return;
-      form.vat = b.getAttribute("data-vat");
-      setSeg("fVat","data-vat",form.vat);
+    $("fVat").addEventListener("change", function(e){
+      form.vat = e.target.value;
       updateCalcHint();
     });
     $("fCat").addEventListener("click", function(e){
@@ -1378,7 +1342,9 @@
       lastParsed = list;
       applyParsed(list[0]);
       renderPreview(list);
-      $("formCard").scrollIntoView({behavior:"smooth", block:"start"});
+      setTimeout(function(){
+        $("formCard").scrollIntoView({behavior:"smooth", block:"start"});
+      }, 60);
       var more = list.length - 1;
       toast("⚡ " + list.length + "건 인식" + (more ? " · 1건 폼에, " + more + "건 미리보기" : " · 폼에 채웠습니다"), "ok");
     });
@@ -1455,20 +1421,15 @@
       renderTabs(); renderList();
     });
 
-    $("copyBtn").addEventListener("click", function(){ copyText(buildText(), "✅ 복사했습니다 · 카톡에 붙여 넣으세요"); });
-    $("abCopy").addEventListener("click", function(){ copyText(buildText(), "✅ 복사했습니다"); });
+    $("copyBtn").addEventListener("click", function(){ copyText(buildText(), "✅ 원가 요약을 복사했습니다"); });
     $("printBtn").addEventListener("click", doPrint);
-    $("abNew").addEventListener("click", function(){
-      resetForm();
-      $("formCard").scrollIntoView({behavior:"smooth", block:"start"});
-      setTimeout(function(){ $("fName").focus(); }, 350);
-    });
 
     $("seedBtn").addEventListener("click", function(){
       if (state.items.length && !window.confirm("예시 4건으로 채울까요?\n지금 입력한 내역은 지워집니다.")) return;
       seedSamples(true);
       state.filter = "all";
       renderAll();
+      setTab("ship");
     });
     $("clearBtn").addEventListener("click", function(){
       if (!state.items.length){ toast("이미 비어 있습니다"); return; }
@@ -1487,6 +1448,7 @@
   bind();
   renderAll();
   resetForm();
+  setTab("ship");
 })();
 </script>
 </body>
