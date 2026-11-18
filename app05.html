@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#2b1d14">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>메종플러스 현장 배송 · 원가 관리판</title>
+<title>현장·사무실·자택 5초 택배 · 원가 정리 | 메종플러스</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <style>
   :root{
@@ -85,6 +85,30 @@
   .m-sub{display:flex;gap:16px;margin-top:5px;font-size:11.8px;font-weight:700;color:#d8cbb9;}
   .m-sub b{color:#fff;font-weight:800;}
   .m-note{margin-top:7px;font-size:10.8px;color:#a8998a;font-weight:600;letter-spacing:-.2px;line-height:1.5;}
+
+  /* paste / auto fill */
+  .paste{background:linear-gradient(160deg,#fffdf6 0%,#ffffff 70%);border:1.5px solid #ecdbae;}
+  .paste textarea{width:100%;min-height:86px;resize:vertical;font-size:14px;line-height:1.58;font-weight:600;
+    color:var(--ink);padding:11px 12px;border:1.5px solid var(--line);border-radius:11px;background:#fffdf8;
+    letter-spacing:-.3px;font-family:inherit;}
+  .paste textarea:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(201,162,39,.14);}
+  .paste textarea::placeholder{color:#b6a898;font-weight:500;}
+  .p-btn{display:grid;grid-template-columns:1.3fr 1fr;gap:7px;margin-top:8px;}
+  .p-main{height:50px;border:0;border-radius:12px;background:linear-gradient(135deg,#2b1d14,#4a3322);
+    color:var(--gold-lt);font-size:15.5px;font-weight:800;letter-spacing:-.5px;cursor:pointer;
+    box-shadow:0 3px 12px rgba(43,29,20,.2);}
+  .p-main:active{transform:scale(.985);}
+  .p-sub{height:50px;border:1.5px dashed #dcc78d;border-radius:12px;background:#fffaee;color:#8a6a2a;
+    font-size:12.6px;font-weight:800;letter-spacing:-.5px;cursor:pointer;line-height:1.25;}
+  .pv{margin-top:9px;border-top:1px dashed var(--line);padding-top:9px;}
+  .pv-h{font-size:11.8px;font-weight:800;color:var(--ink-3);letter-spacing:-.3px;margin-bottom:5px;}
+  .pv-row{display:flex;align-items:baseline;gap:7px;padding:5px 0;border-bottom:1px dotted #eee5d6;
+    font-size:12.4px;font-weight:700;letter-spacing:-.3px;color:var(--ink-2);}
+  .pv-row:last-of-type{border-bottom:0;}
+  .pv-row b{flex:1;min-width:0;font-weight:800;color:var(--brown);word-break:keep-all;}
+  .pv-row .pv-m{flex:none;font-size:11.2px;font-weight:700;color:var(--ink-3);white-space:nowrap;text-align:right;}
+  .pv-btn{margin-top:8px;width:100%;height:44px;border:1.5px solid var(--emerald);border-radius:11px;
+    background:#f0faf7;color:var(--emerald);font-size:13.5px;font-weight:800;letter-spacing:-.4px;cursor:pointer;}
 
   /* filter tabs */
   .ftabs{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 9px;margin:0 -2px;
@@ -183,6 +207,7 @@
   .chip.on .ck{color:var(--gold-lt);}
   .chip .ck{font-size:11px;font-weight:900;color:#c9bda9;}
   .chip.add{border-style:dashed;color:var(--ink-3);font-weight:800;}
+  .tag.shop{background:#f5edda;color:#8a6a2a;}
 
   .link-btn{border:0;background:transparent;padding:7px 0 0;font-size:11.5px;font-weight:800;
     color:var(--ink-3);text-decoration:underline;cursor:pointer;letter-spacing:-.2px;}
@@ -272,20 +297,37 @@
   <div class="brand">
     <div class="brand-logo">M+</div>
     <div style="min-width:0">
-      <div class="brand-title">현장 배송 · 원가 관리판</div>
-      <div class="brand-sub">메종플러스 MAISON PLUS</div>
+      <div class="brand-title">5초 택배 · 원가 정리</div>
+      <div class="brand-sub">1인 소장님 전용 초경량</div>
     </div>
   </div>
-  <div class="h-tag">05호</div>
+  <div class="h-tag">05호 · 초경량</div>
 </header>
 
 <section class="hero">
-  <div class="hero-badge">📦 오늘의 배송부터 세무 정리까지</div>
-  <h1>배송은 <em>지연 전에</em><br>원가는 <em>한눈에</em></h1>
-  <p>주문 한 건 30초 등록 · 투입일보다 늦는 배송은 자동 경고 · 세무사 전달용 정리까지 한 화면</p>
+  <div class="hero-badge">📦 1인 소장님 전용 · 초경량</div>
+  <h1>현장·사무실·자택<br><em>5초 택배 · 원가 정리</em></h1>
+  <p>주문 문자 붙여넣고 ‘자동 채우기’ 한 번 · 배송지·세무 구분까지 5초 · 개인용은 자동 제외</p>
 </section>
 
 <main>
+
+  <!-- 5초 자동 채우기 -->
+  <section class="card paste" id="pasteCard">
+    <div class="card-head">
+      <div class="step">📋</div>
+      <h2>주문 문자 · 내역 5초 자동 채우기</h2>
+      <div class="hint">붙여넣고 한 번</div>
+    </div>
+    <textarea id="pasteIn" aria-label="주문 내역 붙여넣기"
+      placeholder="쿠팡·네이버·문자 주문 내역을 그대로 붙여넣으세요. 한 줄에 한 건씩.&#10;예) 쿠팡 BMC 인조대리석 도어씰 2개 46,000원 유천동 사무실 11/20 도착"></textarea>
+    <div class="p-btn">
+      <button type="button" class="p-main" id="pasteGo">⚡ 자동 채우기</button>
+      <button type="button" class="p-sub" id="pasteDemo">예시 문구<br>넣어보기</button>
+    </div>
+    <div id="pastePreview"></div>
+    <div class="tip" style="margin-top:8px">품목·금액·쇼핑몰·배송지(현장/사무실/자택)·상태·날짜를 읽어 <b>아래 등록 폼</b>에 채웁니다. 읽은 값은 칩으로 바로 고칠 수 있습니다.</div>
+  </section>
 
   <!-- 대시보드 -->
   <section class="card" id="dashCard">
@@ -296,17 +338,17 @@
     </div>
     <div class="kpis">
       <div class="kpi">
-        <div class="k-l">오늘 도착 예정</div>
+        <div class="k-l">오늘 도착</div>
         <div class="k-v" id="kToday">0<span>건</span></div>
       </div>
       <div class="kpi">
-        <div class="k-l">아직 안 온 건</div>
-        <div class="k-v" id="kOpen">0<span>건</span></div>
+        <div class="k-l">⚠ 투입일 지연·초과</div>
+        <div class="k-v" id="kWarn">0<span>건</span></div>
       </div>
     </div>
     <div id="warnBox"></div>
     <div class="money">
-      <div class="m-lab">사업용 지출 합계 <small>개인용 제외</small></div>
+      <div class="m-lab">사업용 매입 <small>개인용 자동 제외</small></div>
       <div class="m-total" id="mTotal">0원</div>
       <div class="m-sub">
         <span>공급가액 <b id="mSupply">0원</b></span>
@@ -330,8 +372,8 @@
   <section class="card" id="sumCard">
     <div class="card-head">
       <div class="step">🧾</div>
-      <h2>원가 · 세무사 전달용</h2>
-      <div class="hint">개인용 제외</div>
+      <h2>세무사 1초 전달</h2>
+      <div class="hint">개인용 자동 제외</div>
     </div>
     <div class="subhead">배송지별</div>
     <div id="sumSite"></div>
@@ -339,7 +381,7 @@
     <div id="sumCat"></div>
     <div class="subhead">부가세 정리</div>
     <div id="sumVat"></div>
-    <button type="button" class="btn-primary" id="copyBtn" style="margin-top:12px">📋 카톡 · 세무사 전달용 복사</button>
+    <button type="button" class="btn-primary" id="copyBtn" style="margin-top:12px">📋 세무사 카톡 복사</button>
     <button type="button" class="btn-print" id="printBtn">🖨️ A4 인쇄 / PDF 저장</button>
     <div class="tip">복사한 내용을 카톡에 붙여 넣으면 그대로 보낼 수 있습니다. <b>인쇄</b>는 브라우저 인쇄 창에서 ‘PDF로 저장’을 고르세요.</div>
   </section>
@@ -349,12 +391,17 @@
     <div class="card-head">
       <div class="step">＋</div>
       <h2 id="formTitle">빠른 주문 등록</h2>
-      <div class="hint" id="formHint">한 건 30초</div>
+      <div class="hint" id="formHint">3초 칩 입력</div>
     </div>
 
     <div class="field">
       <label class="flabel" for="fName">품목명 <span class="u">필수</span></label>
       <input type="text" id="fName" placeholder="예: 욕실 도어씰 3개" maxlength="40" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label class="flabel">쇼핑몰</label>
+      <div class="chips" id="fShop"></div>
     </div>
 
     <div class="field">
@@ -432,13 +479,13 @@
     </div>
   </section>
 
-  <div class="brandline">메종플러스 · 현장 배송 원가 관리판 (1일 1앱 05호)<br>만든이 모네</div>
+  <div class="brandline">메종플러스 · 5초 택배 원가 정리 (1일 1앱 05호 · 초경량)<br>만든이 모네</div>
 </main>
 
 <div class="actionbar">
   <div class="ab-info">
     <div class="ab-count" id="abCount">미도착 0건</div>
-    <div class="ab-sub" id="abSub">사업용 지출 0원</div>
+    <div class="ab-sub" id="abSub">사업용 매입 0원</div>
   </div>
   <button type="button" class="ab-btn line" id="abCopy">복사</button>
   <button type="button" class="ab-btn" id="abNew">＋ 새 주문</button>
@@ -466,9 +513,10 @@
   };
   var CATS = {mat:"현장 자재", office:"사무비품", private:"개인용"};
   var VATS = {incl:"부가세 포함", excl:"부가세 별도", none:"면세·간이"};
+  var SHOPS = {coupang:"쿠팡", naver:"네이버", today:"오늘의집", etc:"기타"};
 
   var state = {items:[], sites:[], filter:"all"};
-  var form = {vat:"incl", cat:"mat", status:"ready", site:"s_site"};
+  var form = {vat:"incl", cat:"mat", status:"ready", site:"s_site", shop:"etc"};
   var editingId = null;
 
   /* ── helpers ── */
@@ -608,6 +656,7 @@
         return {
           id:it.id, name:String(it.name), amount:Number(it.amount) || 0,
           vat:(VATS[it.vat] ? it.vat : "incl"), cat:(CATS[it.cat] ? it.cat : "mat"),
+          shop:(SHOPS[it.shop] ? it.shop : guessShopFromMemo(it.memo)),
           site:(it.site || state.sites[0].id), proc:cleanDate(it.proc), eta:cleanDate(it.eta),
           status:(STATUS[it.status] ? it.status : "ready"), memo:it.memo || "",
           created:it.created || Date.now()
@@ -637,29 +686,140 @@
     var homeId  = ensureSite("자택", "s_home");
     var now = Date.now();
     state.items = [
-      {id:uid(), name:"욕실 도어씰 3개", amount:42000, vat:"incl", cat:"mat", site:siteId,
+      {id:uid(), name:"욕실 도어씰 3개", amount:42000, vat:"incl", cat:"mat", site:siteId, shop:"coupang",
        proc:addDays(t,-1), eta:addDays(t,1), status:"late", memo:"도어 하부 물막이 · 3개입", created:now-4000},
-      {id:uid(), name:"실리콘 · 부자재", amount:68000, vat:"incl", cat:"mat", site:siteId,
+      {id:uid(), name:"실리콘 · 부자재", amount:68000, vat:"incl", cat:"mat", site:siteId, shop:"naver",
        proc:addDays(t,2), eta:addDays(t,1), status:"ship", memo:"백색 실리콘 2통, 마스킹테이프", created:now-3000},
-      {id:uid(), name:"업무용 노트북 거치대", amount:39000, vat:"incl", cat:"office", site:officeId,
+      {id:uid(), name:"업무용 노트북 거치대", amount:39000, vat:"incl", cat:"office", site:officeId, shop:"coupang",
        proc:"", eta:t, status:"ready", memo:"사무실 책상용", created:now-2000},
-      {id:uid(), name:"생활용품 (주방세제 등)", amount:12900, vat:"incl", cat:"private", site:homeId,
+      {id:uid(), name:"생활용품 (주방세제 등)", amount:12900, vat:"incl", cat:"private", site:homeId, shop:"today",
        proc:"", eta:addDays(t,2), status:"ready", memo:"", created:now-1000}
     ];
     save();
     if (notify) toast("✅ 예시 4건을 불러왔습니다 (지연 경고 포함)", "ok");
   }
 
+  /* ── 주문 내역 자동 파싱 ── */
+  var SITE_KEYS = [
+    {re:/(현장|한빛|어은동|공사장|착공|1406)/, name:"현장"},
+    {re:/(사무실|사무|유천동|유천|오피스|매장|작업실)/, name:"사무실"},
+    {re:/(자택|우리집|집으로|버드네)/, name:"자택"}
+  ];
+  var PRIV_RE = /(생활용품|주방세제|세제|화장품|샴푸|치약|식료품|과자|커피|생필품|의류|옷|신발|장난감|반려|간식|과일|음료|휴지)/;
+  var DEMO_TEXT = "쿠팡 BMC 인조대리석 도어씰 2개 46,000원 유천동 사무실 11/20 도착\n" +
+    "로지텍 마우스 40,770원 자택 배송중\n" +
+    "오늘의집 욕실 선반 32,900원 현장 내일 도착 예정\n" +
+    "네이버 실리콘 백색 3통 21,000원 사무실 도착완료";
+
+  function guessShopFromMemo(m){
+    m = String(m || "");
+    if (/쿠팡/.test(m)) return "coupang";
+    if (/네이버|스마트/.test(m)) return "naver";
+    if (/오늘의집/.test(m)) return "today";
+    return "etc";
+  }
+  function parseShop(t){
+    if (/쿠팡|coupang/i.test(t)) return "coupang";
+    if (/네이버|스마트스토어|naver/i.test(t)) return "naver";
+    if (/오늘의집|todayhouse/i.test(t)) return "today";
+    return "etc";
+  }
+  function parseStatus(t){
+    if (/(도착\s*완료|수령\s*완료|수령|받음|받았|인수)/.test(t)) return "done";
+    if (/(지연|미도착|늦|초과|반품)/.test(t)) return "late";
+    if (/(배송\s*중|배송중|출발|집하|간선|배송\s*시작|픽업)/.test(t)) return "ship";
+    return "ready";
+  }
+  function parseMoney(t){
+    var m = t.match(/([0-9][0-9,]{2,})\s*원/) || t.match(/₩\s*([0-9][0-9,]*)/);
+    if (!m){
+      var cands = (t.match(/[0-9][0-9,]{2,}/g) || []).filter(function(s){
+        var n = parseInt(s.replace(/,/g, ""), 10);
+        return n >= 1000 && !(n >= 2000 && n <= 2100);
+      });
+      if (cands.length) m = [null, cands[0]];
+    }
+    return m ? (parseInt(String(m[1]).replace(/[^\d]/g, ""), 10) || 0) : 0;
+  }
+  function parseWhen(t){
+    var td = todayISO();
+    if (/오늘/.test(t)) return td;
+    if (/내일/.test(t)) return addDays(td, 1);
+    if (/모레/.test(t)) return addDays(td, 2);
+    var m = null, y = 0, mo = 0, d = 0;
+    if ((m = t.match(/(20\d{2})\s*[-.\/년]\s*(\d{1,2})\s*[-.\/월]\s*(\d{1,2})/))){
+      y = +m[1]; mo = +m[2]; d = +m[3];
+    } else if ((m = t.match(/(\d{1,2})\s*월\s*(\d{1,2})\s*일?/))){
+      mo = +m[1]; d = +m[2];
+    } else if ((m = t.match(/(\d{1,2})\s*[\/.]\s*(\d{1,2})(?!\d)/))){
+      mo = +m[1]; d = +m[2];
+    }
+    if (!(mo >= 1 && mo <= 12 && d >= 1 && d <= 31)) return "";
+    var now = parseISO(td);
+    var dt = new Date(y || now.getFullYear(), mo - 1, d);
+    if (dt.getTime() < now.getTime() - 180 * 86400000) dt = new Date(dt.getFullYear() + 1, mo - 1, d);
+    return dt.getFullYear() + "-" + pad(dt.getMonth() + 1) + "-" + pad(dt.getDate());
+  }
+  function parseName(t){
+    var s = " " + t + " ";
+    s = s.replace(/(쿠팡|coupang|네이버|스마트스토어|naver|오늘의집|todayhouse)/gi, " ");
+    s = s.replace(/[₩]?\s*[0-9][0-9,]*\s*원/g, " ");
+    s = s.replace(/₩\s*[0-9][0-9,]*/g, " ");
+    s = s.replace(/20\d{2}\s*[-.\/년]\s*\d{1,2}\s*[-.\/월]\s*\d{1,2}\s*일?/g, " ");
+    s = s.replace(/\d{1,2}\s*월\s*\d{1,2}\s*일?/g, " ");
+    s = s.replace(/\d{1,2}\s*[\/.]\s*\d{1,2}(?!\d)\s*일?/g, " ");
+    s = s.replace(/(오늘|내일|모레)/g, " ");
+    s = s.replace(/(현장|한빛|어은동|공사장|착공|1406|사무실|사무|유천동|유천|오피스|매장|작업실|자택|우리집|버드네|집으로)/g, " ");
+    s = s.replace(/(도착\s*완료|수령\s*완료|도착\s*예정|도착|수령|받음|받았|인수|배송\s*중|배송중|출발|집하|간선|배송\s*시작|픽업|지연|미도착|초과|반품|예정)/g, " ");
+    s = s.replace(/[·,\-–—:;|\[\](){}<>"'“”‘’]/g, " ");
+    s = s.replace(/\s+/g, " ").trim();
+    s = s.replace(/^(주문|결제|구매|송장|배송지|주소)\s*/, "");
+    s = s.replace(/\s*(에서|으로|로|에|은|는|이|가|을|를)$/, "");
+    return s.slice(0, 40).trim();
+  }
+  function parseOrders(text){
+    return String(text || "").split(/\r?\n/).map(function(line){
+      var t = line.trim();
+      if (t.length < 2) return null;
+      var amt = parseMoney(t);
+      if (!amt && !/(원|현장|사무실|자택|도착|배송)/.test(t)) return null;
+      var name = parseName(t);
+      if (!name || name.length < 2) return null;
+      return {name:name, amount:amt, shop:parseShop(t), status:parseStatus(t), eta:parseWhen(t), raw:t};
+    }).filter(Boolean);
+  }
+  function siteGuessName(raw, name){
+    var txt = (raw || "") + " " + (name || "");
+    for (var i = 0; i < state.sites.length; i++){
+      if (state.sites[i].name && txt.indexOf(state.sites[i].name) >= 0) return state.sites[i].name;
+    }
+    for (var k = 0; k < SITE_KEYS.length; k++){
+      if (SITE_KEYS[k].re.test(txt)) return SITE_KEYS[k].name;
+    }
+    return "";
+  }
+  function resolveSite(raw, name){
+    var want = siteGuessName(raw, name);
+    if (!want) return state.sites[0].id;
+    for (var i = 0; i < state.sites.length; i++) if (state.sites[i].name === want) return state.sites[i].id;
+    return ensureSite(want);
+  }
+  function guessCat(name, siteNm){
+    if (PRIV_RE.test(name || "")) return "private";
+    if (siteNm && siteNm.indexOf("현장") >= 0) return "mat";
+    return "office";
+  }
+
   /* ── 화면 ── */
   function renderAll(){
-    renderDash(); renderTabs(); renderList(); renderSum(); renderSites(); renderAB();
+    renderDash(); renderTabs(); renderList(); renderSum(); renderSites(); renderShop(); renderAB();
   }
   function renderAB(){
     var open = state.items.filter(function(it){ return it.status !== "done"; });
     var bus = state.items.filter(isBus);
     var warnN = state.items.filter(function(it){ return warns(it).length > 0; }).length;
     $("abCount").textContent = "미도착 " + open.length + "건" + (warnN ? " · 경고 " + warnN : "");
-    $("abSub").textContent = (editingId ? "수정 중" : "사업용 지출 " + won(calcAll(bus).total));
+    $("abSub").textContent = (editingId ? "수정 중" : "사업용 매입 " + won(calcAll(bus).total));
   }
 
   function renderDash(){
@@ -670,8 +830,8 @@
 
     var kn = $("kToday");
     kn.innerHTML = todayDue.length + "<span>건</span>";
-    var ko = $("kOpen");
-    ko.innerHTML = open.length + "<span>건</span>";
+    var ko = $("kWarn");
+    ko.innerHTML = warnItems.length + "<span>건</span>";
     ko.className = "k-v" + (warnItems.length ? " red" : "");
 
     var box = $("warnBox");
@@ -738,7 +898,9 @@
     var c = calc(it);
     var w = warns(it);
     var cls = "item" + (w.length ? " warn" : "") + (it.status === "done" ? " done" : "");
-    var meta = '<span class="tag">' + esc(siteName(it.site)) + "</span>" + esc(CATS[it.cat] || "");
+    var meta = '<span class="tag">' + esc(siteName(it.site)) + "</span>";
+    if (it.shop && SHOPS[it.shop]) meta += '<span class="tag shop">' + esc(SHOPS[it.shop]) + "</span>";
+    meta += esc(CATS[it.cat] || "");
     if (it.proc) meta += " · 투입 " + dmd(it.proc);
     if (it.eta) meta += " · 도착 " + dmd(it.eta);
     var vatTag = it.vat === "incl" ? "VAT 포함" : (it.vat === "excl" ? "VAT 별도" : "면세·간이");
@@ -829,6 +991,14 @@
 
     if (!$("siteMgr").classList.contains("hide")) renderMgr();
   }
+  function renderShop(){
+    var h = "";
+    for (var k in SHOPS){
+      h += '<button type="button" class="chip' + (form.shop === k ? " on" : "") + '" data-shop="' + k + '">' +
+        (form.shop === k ? '<span class="ck">✓</span> ' : '') + SHOPS[k] + '</button>';
+    }
+    $("fShop").innerHTML = h;
+  }
   function renderMgr(){
     var h = state.sites.map(function(s){
       return '<div class="mgr-row"><input class="mgr-in" type="text" value="' + esc(s.name) +
@@ -861,22 +1031,78 @@
       ? "개인용은 원가·세무 합계에서 빠집니다." : "사업용으로 원가·부가세 합계에 들어갑니다.";
   }
 
+  /* ── 자동 채우기 반영 ── */
+  var lastParsed = [];
+  function applyParsed(o){
+    editingId = null;
+    $("formTitle").textContent = "빠른 주문 등록";
+    $("formHint").textContent = "자동 채움 · 확인만";
+    $("fSave").textContent = "＋ 주문 등록";
+    $("fCancel").classList.add("hide");
+    form.shop = o.shop || "etc";
+    form.status = o.status || "ready";
+    form.site = resolveSite(o.raw, o.name);
+    form.cat = guessCat(o.name, siteName(form.site));
+    $("fName").value = o.name;
+    $("fAmount").value = o.amount ? fmt(o.amount) : "";
+    $("fEta").value = o.eta || "";
+    setSeg("fVat", "data-vat", "incl"); setSeg("fCat", "data-cat", form.cat);
+    setSeg("fStatus", "data-st", form.status);
+    form.vat = "incl";
+    renderSites(); renderShop(); updateCalcHint(); renderAB();
+  }
+  function registerParsed(list){
+    var noAmt = 0;
+    list.forEach(function(o){
+      var sid = resolveSite(o.raw, o.name);
+      if (!o.amount) noAmt++;
+      state.items.push({
+        id:uid(), name:o.name, amount:o.amount || 0, vat:"incl", shop:o.shop || "etc",
+        cat:guessCat(o.name, siteName(sid)), site:sid, proc:"", eta:o.eta || "",
+        status:o.status || "ready", memo:"자동 채우기", created:Date.now()
+      });
+    });
+    save(); renderAll();
+    return noAmt;
+  }
+  function renderPreview(list){
+    var box = $("pastePreview");
+    if (!list || list.length < 2){ box.innerHTML = ""; return; }
+    var h = '<div class="pv"><div class="pv-h">📋 ' + list.length + '건 인식 · 첫 건은 아래 폼에 채웠습니다</div>';
+    list.forEach(function(o, i){
+      var st = STATUS[o.status] || STATUS.ready;
+      var sn = siteGuessName(o.raw, o.name) || "배송지?";
+      h += '<div class="pv-row"><b>' + (i + 1) + '. ' + esc(o.name) + '</b><span class="pv-m">' +
+        (o.amount ? won(o.amount) : "금액?") + ' · ' + esc(sn) + ' · ' + st.label +
+        (o.eta ? ' · ' + esc(dmd(o.eta)) : '') + '</span></div>';
+    });
+    h += '<button type="button" class="pv-btn" id="pvAll">＋ 나머지 ' + (list.length - 1) + '건 한 번에 등록</button></div>';
+    box.innerHTML = h;
+    $("pvAll").addEventListener("click", function(){
+      var rest = lastParsed.slice(1);
+      var noAmt = registerParsed(rest);
+      $("pasteIn").value = "";
+      box.innerHTML = "";
+      lastParsed = [];
+      toast("✅ " + rest.length + "건 등록" + (noAmt ? " · 금액 확인 " + noAmt + "건" : " · 첫 건은 폼에서 등록하세요"), noAmt ? "warn" : "ok");
+    });
+  }
+
   function resetForm(){
     editingId = null;
     $("fName").value = ""; $("fAmount").value = ""; $("fMemo").value = "";
     $("fProc").value = ""; $("fEta").value = "";
-    form.vat = "incl"; form.cat = "mat"; form.status = "ready";
+    form.vat = "incl"; form.cat = "mat"; form.status = "ready"; form.shop = "etc";
     form.site = state.sites[0].id;
     setSeg("fVat","data-vat","incl");
     setSeg("fCat","data-cat","mat");
     setSeg("fStatus","data-st","ready");
     $("formTitle").textContent = "빠른 주문 등록";
-    $("formHint").textContent = "한 건 30초";
+    $("formHint").textContent = "3초 칩 입력";
     $("fSave").textContent = "＋ 주문 등록";
     $("fCancel").classList.add("hide");
     renderSites(); updateCalcHint(); renderAB();
   }
-
   function startEdit(id){
     var it = find(id);
     if (!it) return;
@@ -887,11 +1113,12 @@
     $("fEta").value = it.eta || "";
     $("fMemo").value = it.memo || "";
     form.vat = it.vat; form.cat = it.cat; form.status = it.status;
+    form.shop = (SHOPS[it.shop] ? it.shop : "etc");
     form.site = it.site;
     setSeg("fVat","data-vat",form.vat);
     setSeg("fCat","data-cat",form.cat);
     setSeg("fStatus","data-st",form.status);
-    renderSites();
+    renderSites(); renderShop();
     $("formTitle").textContent = "주문 수정";
     $("formHint").textContent = "저장하면 바로 반영";
     $("fSave").textContent = "✓ 수정 저장";
@@ -912,7 +1139,7 @@
 
     var obj = {
       id: editingId || uid(),
-      name: name, amount: amt, vat: form.vat, cat: form.cat, site: form.site,
+      name: name, amount: amt, vat: form.vat, cat: form.cat, site: form.site, shop: form.shop,
       proc: proc, eta: eta, status: form.status, memo: $("fMemo").value.trim(),
       created: old ? (old.created || Date.now()) : Date.now()
     };
@@ -988,7 +1215,7 @@
     L.push("▸ 아직 안 온 건 (" + open.length + ")");
     if (!open.length) L.push("  - 없음");
     open.slice().sort(sortItems).forEach(function(it){
-      L.push("  - " + it.name + " / " + siteName(it.site) +
+      L.push("  - " + (it.shop && it.shop !== "etc" ? "[" + SHOPS[it.shop] + "] " : "") + it.name + " / " + siteName(it.site) +
         (it.eta ? " / 도착 " + dmd(it.eta) : "") + " / " + STATUS[it.status].label +
         " (" + won(calc(it).total) + ")");
     });
@@ -1056,7 +1283,10 @@
       '<tr><th>품목</th><th>배송지</th><th>구분</th><th>투입일</th><th>도착예정</th><th>상태</th><th class="r">공급가액</th><th class="r">부가세</th></tr>';
     all.forEach(function(it){
       var c = calc(it);
-      h += '<tr><td>' + esc(it.name) + (it.memo ? '<br><span style="font-size:.9em;color:#777">' + esc(it.memo) + '</span>' : '') + '</td>' +
+      var tails = [];
+      if (it.shop && it.shop !== "etc") tails.push(SHOPS[it.shop]);
+      if (it.memo) tails.push(it.memo);
+      h += '<tr><td>' + esc(it.name) + (tails.length ? '<br><span style="font-size:.9em;color:#777">' + esc(tails.join(" · ")) + '</span>' : '') + '</td>' +
         '<td>' + esc(siteName(it.site)) + '</td>' +
         '<td>' + esc(CATS[it.cat] || "") + (isBus(it) ? "" : '<br><span style="font-size:.88em;color:#999">집계제외</span>') + '</td>' +
         '<td>' + (it.proc ? dmd(it.proc) : "-") + '</td>' +
@@ -1125,6 +1355,31 @@
       var b = e.target.closest(".seg-btn"); if (!b) return;
       form.status = b.getAttribute("data-st");
       setSeg("fStatus","data-st",form.status);
+    });
+    $("fShop").addEventListener("click", function(e){
+      var b = e.target.closest("[data-shop]"); if (!b) return;
+      form.shop = b.getAttribute("data-shop");
+      renderShop();
+    });
+    $("pasteDemo").addEventListener("click", function(){
+      var ta = $("pasteIn");
+      ta.value = DEMO_TEXT;
+      ta.focus();
+      toast("예시 문구를 넣었습니다 · ⚡ 자동 채우기를 누르세요");
+    });
+    $("pasteGo").addEventListener("click", function(){
+      var list = parseOrders($("pasteIn").value);
+      if (!list.length){
+        toast("읽을 주문 내역이 없습니다. 한 줄에 한 건씩 넣어 주세요", "warn");
+        $("pasteIn").focus();
+        return;
+      }
+      lastParsed = list;
+      applyParsed(list[0]);
+      renderPreview(list);
+      $("formCard").scrollIntoView({behavior:"smooth", block:"start"});
+      var more = list.length - 1;
+      toast("⚡ " + list.length + "건 인식" + (more ? " · 1건 폼에, " + more + "건 미리보기" : " · 폼에 채웠습니다"), "ok");
     });
     document.querySelector(".qdates").addEventListener("click", function(e){
       var b = e.target.closest(".qd"); if (!b) return;
