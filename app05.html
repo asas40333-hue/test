@@ -63,6 +63,7 @@
 
   main{padding:10px 12px 0;}
   .panel{scroll-margin-top:106px;}
+  #formCard{scroll-margin-top:110px;}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
     box-shadow:0 1px 3px rgba(43,29,20,.06);padding:11px 12px;margin-bottom:8px;}
@@ -256,7 +257,7 @@
     #printDoc{display:block !important;color:#141414;font-size:10.2pt;line-height:1.45;}
     #printDoc .p-brand{font-size:.76em;letter-spacing:.18em;color:#8a6a2a;font-weight:800;}
     #printDoc .p-title{font-size:1.7em;font-weight:800;letter-spacing:-.04em;margin:.08em 0 .06em;line-height:1.2;}
-    #printDoc .p-sub{font-size:.76em;color:#666;margin-bottom:.85em;}
+    #printDoc .p-subt{font-size:.76em;color:#666;margin-bottom:.85em;}
     #printDoc .p-h{font-size:.94em;font-weight:800;border-bottom:2px solid #2b1d14;padding-bottom:.16em;margin:.8em 0 .38em;}
     #printDoc table{width:100%;border-collapse:collapse;font-size:.79em;table-layout:fixed;}
     #printDoc th{background:#f4f0e8;color:#5a4b3d;font-weight:700;text-align:left;
@@ -1200,7 +1201,7 @@
 
     var h = '<div class="p-brand">MAISON PLUS · 메종플러스</div>';
     h += '<div class="p-title">현장 배송 · 원가 정리</div>';
-    h += '<div class="p-sub">출력일 ' + dfull(todayISO()) + ' · 현장·사업 지출만 집계(개인용 제외) · 부가세 10% 기준</div>';
+    h += '<div class="p-subt">출력일 ' + dfull(todayISO()) + ' · 현장·사업 지출만 집계(개인용 제외) · 부가세 10% 기준</div>';
 
     h += '<div class="p-sum">' +
       '<div><div class="l">공급가액</div><div class="v">' + won(sum.supply) + '</div></div>' +
