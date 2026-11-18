@@ -120,6 +120,24 @@
       box-shadow: var(--shadow);
     }
 
+    /* 4. 계약·정산 탭 : 대금 일정·입금 현황 */
+    .pay-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+    .pay-row:last-of-type { border-bottom: none; }
+    .pay-kind { flex: 1; min-width: 0; }
+    .pay-label { font-size: 13px; font-weight: 800; color: var(--text-main); }
+    .pay-ratio { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-left: 4px; }
+    .pay-amount { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .pay-status { flex-shrink: 0; text-align: right; }
+    .pay-chip { display: inline-block; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+    .pay-chip.done { background: #ecfdf5; color: #047857; }
+    .pay-chip.partial { background: #fffbeb; color: #b45309; }
+    .pay-chip.todo { background: #f1f5f9; color: #64748b; }
+    .pay-detail { font-size: 11px; color: var(--text-muted); margin-top: 3px; word-break: keep-all; }
+    .pay-sum { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-top: 12px; }
+    .pay-sum-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 12.5px; color: var(--text-muted); padding: 3px 0; }
+    .pay-sum-line b { font-size: 13.5px; color: var(--text-main); }
+    .pay-note { font-size: 11.5px; color: var(--text-muted); line-height: 1.6; margin-top: 10px; word-break: keep-all; }
+
     /* 1. 현장 일지 탭 */
     .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
     .photo-item {
@@ -1575,10 +1593,61 @@
     <div class="card">
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
         <div style="width: 38px; height: 38px; border-radius: 10px; background: #ecfdf5; display: flex; align-items: center; justify-content: center; font-size: 19px;">💳</div>
-        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">대금 일정 (계약금 · 중도금 · 잔금)</div>
+        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">대금 일정 · 입금 현황</div>
       </div>
-      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;">
-        대금은 계약서에 명시된 일정과 금액대로 진행됩니다. 입금이 확인되면 이 화면의 정산 현황에 날짜와 함께 표시해 드리고,
+      <div style="font-size: 12.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 6px; word-break: keep-all;">
+        총 계약금액 <b style="color: var(--text-main);">46,000,000원</b> (부가세 미발행) · 계약서 기준 <b style="color: var(--text-main);">10 / 30 / 30 / 30</b>
+      </div>
+
+      <div class="pay-row">
+        <div class="pay-kind">
+          <div class="pay-label">계약금<span class="pay-ratio">10%</span></div>
+          <div class="pay-amount">4,600,000원</div>
+        </div>
+        <div class="pay-status">
+          <span class="pay-chip done">✅ 입금 완료</span>
+          <div class="pay-detail">4,600,000원</div>
+        </div>
+      </div>
+
+      <div class="pay-row">
+        <div class="pay-kind">
+          <div class="pay-label">1차 중도금<span class="pay-ratio">30%</span></div>
+          <div class="pay-amount">약정 13,800,000원</div>
+        </div>
+        <div class="pay-status">
+          <span class="pay-chip partial">🟡 일부 입금</span>
+          <div class="pay-detail">10,000,000원 입금<br>잔여 3,800,000원</div>
+        </div>
+      </div>
+
+      <div class="pay-row">
+        <div class="pay-kind">
+          <div class="pay-label">2차 중도금<span class="pay-ratio">30%</span></div>
+          <div class="pay-amount">13,800,000원</div>
+        </div>
+        <div class="pay-status">
+          <span class="pay-chip todo">입금 예정</span>
+        </div>
+      </div>
+
+      <div class="pay-row">
+        <div class="pay-kind">
+          <div class="pay-label">잔금<span class="pay-ratio">30%</span></div>
+          <div class="pay-amount">13,800,000원</div>
+        </div>
+        <div class="pay-status">
+          <span class="pay-chip todo">입금 예정</span>
+        </div>
+      </div>
+
+      <div class="pay-sum">
+        <div class="pay-sum-line"><span>누적 입금액</span><b>14,600,000원 · 31.7%</b></div>
+        <div class="pay-sum-line"><span>남은 금액</span><b>31,400,000원</b></div>
+      </div>
+
+      <p class="pay-note">
+        1차 중도금 잔여 380만 원은 계좌 이체 한도로 나누어 입금된 금액이며, 추후 입금 확인되는 대로 이 화면에 바로 반영해 드립니다.
         공정 변경으로 금액이 조정될 경우에는 반영 전에 먼저 말씀드립니다.
       </p>
     </div>
