@@ -65,7 +65,7 @@
   .panel{scroll-margin-top:106px;}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
-    box-shadow:0 1px 3px rgba(43,29,20,.06);padding:12px;margin-bottom:9px;}
+    box-shadow:0 1px 3px rgba(43,29,20,.06);padding:11px 12px;margin-bottom:8px;}
   .card-head{display:flex;align-items:center;gap:7px;margin-bottom:9px;}
   .step{width:22px;height:22px;flex:none;border-radius:7px;background:var(--brown);
     color:var(--gold-lt);font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;}
@@ -127,17 +127,17 @@
 
   /* ── 자동 채우기 ── */
   .paste{background:linear-gradient(160deg,#fffdf6 0%,#ffffff 70%);border:1.5px solid #ecdbae;}
-  .paste textarea{width:100%;min-height:58px;resize:none;font-size:14px;line-height:1.52;font-weight:600;
+  .paste textarea{width:100%;min-height:64px;resize:none;font-size:14px;line-height:1.45;font-weight:600;
     color:var(--ink);padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fffdf8;
     letter-spacing:-.3px;font-family:inherit;}
   .paste textarea:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(201,162,39,.14);}
   .paste textarea::placeholder{color:#b6a898;font-weight:500;}
   .p-btn{display:grid;grid-template-columns:1.25fr 1fr;gap:6px;margin-top:6px;}
-  .p-main{height:42px;border:0;border-radius:10px;background:linear-gradient(135deg,#2b1d14,#4a3322);
+  .p-main{height:40px;border:0;border-radius:10px;background:linear-gradient(135deg,#2b1d14,#4a3322);
     color:var(--gold-lt);font-size:14.5px;font-weight:800;letter-spacing:-.5px;cursor:pointer;
     box-shadow:0 3px 10px rgba(43,29,20,.18);}
   .p-main:active{transform:scale(.985);}
-  .p-sub{height:42px;border:1.5px dashed #dcc78d;border-radius:10px;background:#fffaee;color:#8a6a2a;
+  .p-sub{height:40px;border:1.5px dashed #dcc78d;border-radius:10px;background:#fffaee;color:#8a6a2a;
     font-size:12px;font-weight:800;letter-spacing:-.5px;cursor:pointer;line-height:1.2;}
   .pv{margin-top:7px;border-top:1px dashed var(--line);padding-top:6px;}
   .pv-h{font-size:11px;font-weight:800;color:var(--ink-3);letter-spacing:-.3px;margin-bottom:3px;}
@@ -151,16 +151,16 @@
     background:#f0faf7;color:var(--emerald);font-size:12.5px;font-weight:800;letter-spacing:-.4px;cursor:pointer;}
 
   /* ── 폼 ── */
-  .field{margin-bottom:8px;}
+  .field{margin-bottom:7px;}
   .flabel{display:block;font-size:11.3px;font-weight:800;color:var(--ink-3);
-    letter-spacing:-.2px;margin-bottom:3px;}
+    letter-spacing:-.2px;margin-bottom:2px;}
   .flabel .u{font-size:10.3px;color:#b3a493;font-weight:600;margin-left:2px;}
   input[type=text], input[type=date], select{
     width:100%;min-width:0;font-size:16px;font-weight:600;color:var(--ink);
-    padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fdfbf8;
+    padding:7px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fdfbf8;
     letter-spacing:-.3px;-webkit-appearance:none;appearance:none;}
-  input[type=date]{font-weight:700;padding:7px 8px;font-size:14px;}
-  select{font-size:13.5px;font-weight:700;padding:8px 6px;}
+  input[type=date]{font-weight:700;padding:6px 8px;font-size:14px;}
+  select{font-size:13.5px;font-weight:700;padding:7px 6px;}
   input:focus, select:focus{outline:none;border-color:var(--gold);background:#fff;
     box-shadow:0 0 0 3px rgba(201,162,39,.13);}
   input::placeholder{color:#b6a898;font-weight:600;}
@@ -199,7 +199,7 @@
   .mgr-del{height:34px;border-radius:8px;border:0;background:#f7f1e8;color:#a8410f;
     font-size:11px;font-weight:800;cursor:pointer;letter-spacing:-.3px;}
 
-  .add-btn{width:100%;height:46px;border:0;border-radius:11px;
+  .add-btn{width:100%;height:44px;border:0;border-radius:11px;
     background:linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 100%);
     color:#2b1d14;font-size:15px;font-weight:800;letter-spacing:-.5px;cursor:pointer;
     box-shadow:0 4px 12px rgba(201,162,39,.26);}
@@ -370,13 +370,12 @@
       </div>
 
       <div class="field">
-        <label class="flabel">용도</label>
+        <label class="flabel">용도 <span class="u">개인용은 원가에서 제외</span></label>
         <div class="seg" id="fCat">
           <button type="button" class="seg-btn on" data-cat="mat">현장 자재</button>
           <button type="button" class="seg-btn" data-cat="office">사무비품</button>
           <button type="button" class="seg-btn" data-cat="private">개인용</button>
         </div>
-        <div class="calc-hint" id="catHint">개인용은 원가 합계에서 빠집니다.</div>
       </div>
 
       <div class="field">
@@ -981,8 +980,6 @@
         : (form.vat === "none" ? "면세·간이 계산: 입력한 금액이 그대로 합계입니다."
            : "부가세 포함이면 결제한 금액 그대로 적으세요.");
     }
-    $("catHint").textContent = form.cat === "private"
-      ? "개인용은 원가 합계에서 빠집니다." : "현장·사업 원가에 들어갑니다.";
   }
 
   /* ── 자동 채우기 반영 ── */
