@@ -903,6 +903,7 @@ function buildVanity() {
   cabinet.slideGroup = slideG;
   cabinet.slideA = sa; cabinet.slideB = sb;
   cabinet.slideAHome = -dw / 2; cabinet.slideBHome = dw / 2;
+  cabinet.slideAz0 = cabD + 0.004; cabinet.slideAz1 = cabD + 0.054;
   cabinet.flap = flapG;
 
   // 상부장 하단 LED 스트립
@@ -1609,7 +1610,7 @@ function loop() {
     var open = state.storeOpen && state.storeMode === 'slide';
     var tx = open ? cabinet.slideBHome : cabinet.slideAHome;
     cabinet.slideA.position.x += (tx - cabinet.slideA.position.x) * kk;
-    cabinet.slideA.position.z += ((open ? 0.052 : 0.022) - cabinet.slideA.position.z) * kk;
+    cabinet.slideA.position.z += ((open ? cabinet.slideAz1 : cabinet.slideAz0) - cabinet.slideA.position.z) * kk;
   }
 
   controls.update();
