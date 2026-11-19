@@ -645,7 +645,7 @@ function buildRoom() {
   // 우벽 고스트 패널: 바깥에서 볼 때 벽이 사라져 액세서리가 떠 보이지 않도록
   ghostMat = new THREE.MeshStandardMaterial({
     color: 0xffffff, roughness: 0.55, metalness: 0.0,
-    transparent: true, opacity: 0.42, side: THREE.FrontSide, depthWrite: false, envMapIntensity: 0.3
+    transparent: true, opacity: 0.26, side: THREE.FrontSide, depthWrite: false, envMapIntensity: 0.3
   });
   ghostPanel = new THREE.Mesh(new THREE.PlaneGeometry(RD, RH), ghostMat);
   ghostPanel.position.set(X1 + 0.004, RH / 2, 0);
