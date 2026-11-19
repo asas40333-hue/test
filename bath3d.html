@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0f15">
+<title>메종플러스 3D 욕실 시뮬레이터</title>
+<style>
+  :root{
+    --navy:#1e3a8a; --blue:#3b82f6; --blue-soft:rgba(59,130,246,.18);
+    --ink:#e9eef5; --muted:#93a1b3;
+    --panel:rgba(13,19,27,.86);
+    --line:rgba(255,255,255,.09);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%;overflow:hidden;background:#070a0e;color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;
+    -webkit-font-smoothing:antialiased}
+  #stage{position:fixed;inset:0;
+    background:radial-gradient(125% 95% at 50% 8%,#22303f 0%,#131b25 42%,#080b10 100%)}
+  #c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+
+  /* ---------- top bar ---------- */
+  .top{position:fixed;left:0;right:0;top:0;z-index:12;display:flex;align-items:center;gap:10px;
+    padding:calc(env(safe-area-inset-top) + 10px) 14px 14px;pointer-events:none;
+    background:linear-gradient(180deg,rgba(6,9,13,.78) 0%,rgba(6,9,13,.42) 55%,rgba(6,9,13,0) 100%)}
+  .mark{width:34px;height:34px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;
+    background:linear-gradient(145deg,#2b4bb4,#16255c);border:1px solid rgba(255,255,255,.16);
+    font-weight:900;font-size:13px;letter-spacing:-.4px;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+  .ttl{min-width:0}
+  .ttl b{display:block;font-size:13.5px;font-weight:800;letter-spacing:-.3px;line-height:1.25}
+  .ttl span{display:block;font-size:10.5px;color:var(--muted);letter-spacing:-.1px;margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .icon-btn{pointer-events:auto;margin-left:auto;flex:0 0 auto;width:32px;height:32px;border-radius:50%;
+    border:1px solid var(--line);background:rgba(255,255,255,.06);color:#dbe4ef;font-size:13px;
+    display:grid;place-items:center;cursor:pointer}
+  .icon-btn:active{background:rgba(255,255,255,.14)}
+
+  /* ---------- hint / toast ---------- */
+  #hint{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 196px);transform:translateX(-50%);
+    z-index:11;font-size:11px;color:#c8d3e0;background:rgba(10,15,21,.62);border:1px solid var(--line);
+    padding:6px 12px;border-radius:20px;white-space:nowrap;transition:opacity .8s;pointer-events:none;
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 62px);transform:translate(-50%,-6px);
+    z-index:13;font-size:11.5px;font-weight:700;color:#fff;background:rgba(30,58,138,.92);
+    border:1px solid rgba(120,160,255,.4);padding:7px 14px;border-radius:20px;opacity:0;
+    transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;
+    box-shadow:0 6px 20px rgba(0,0,0,.45)}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+
+  /* ---------- bottom panel ---------- */
+  #panel{position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:20;width:100%;max-width:560px;
+    background:var(--panel);border:1px solid var(--line);border-bottom:none;
+    border-radius:20px 20px 0 0;box-shadow:0 -14px 44px rgba(0,0,0,.55);
+    backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);
+    padding:0 8px calc(env(safe-area-inset-bottom) + 8px);
+    transition:transform .32s cubic-bezier(.22,.9,.28,1)}
+  #panel::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;border-radius:20px 20px 0 0;
+    background:linear-gradient(90deg,transparent,rgba(120,170,255,.6),transparent)}
+  .grab{height:16px;display:grid;place-items:center;cursor:pointer}
+  .grab i{display:block;width:38px;height:4px;border-radius:3px;background:rgba(255,255,255,.22)}
+  #panel.min .grab i{background:rgba(255,255,255,.34)}
+  .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:0 2px 6px}
+  .tab{appearance:none;border:0;background:transparent;color:#9fb0c4;font-size:12px;font-weight:700;
+    letter-spacing:-.3px;padding:8px 0 7px;border-radius:11px;cursor:pointer;font-family:inherit;
+    transition:background .18s,color .18s}
+  .tab.on{background:linear-gradient(160deg,rgba(59,130,246,.26),rgba(30,58,138,.42));color:#fff;
+    box-shadow:inset 0 0 0 1px rgba(120,170,255,.32)}
+  .pane{display:none}
+  .pane.on{display:block}
+  .seg{display:flex;gap:6px;margin:0 2px 7px}
+  .seg button{flex:1;appearance:none;font-family:inherit;font-size:11px;font-weight:700;letter-spacing:-.2px;
+    color:#a9b8ca;background:rgba(255,255,255,.045);border:1px solid transparent;border-radius:9px;
+    padding:6px 0;cursor:pointer}
+  .seg button.on{color:#fff;background:rgba(59,130,246,.16);border-color:rgba(110,160,255,.45)}
+  .chips{display:flex;gap:7px;overflow-x:auto;padding:1px 2px 3px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;appearance:none;font-family:inherit;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    min-width:67px;padding:6px 8px 6px;border-radius:13px;
+    background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.075);
+    color:#c3cfdd;transition:background .16s,border-color .16s,transform .1s}
+  .chip:active{transform:scale(.97)}
+  .chip.on{background:rgba(59,130,246,.17);border-color:rgba(110,160,255,.75);color:#fff;
+    box-shadow:0 0 0 1px rgba(59,130,246,.28) inset}
+  .sw{width:32px;height:32px;border-radius:8px;background-size:cover;background-position:center;
+    border:1px solid rgba(255,255,255,.16);box-shadow:0 1px 4px rgba(0,0,0,.35)}
+  .dot{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,.2);
+    box-shadow:0 1px 5px rgba(0,0,0,.4) inset,0 0 0 3px rgba(255,255,255,.035)}
+  .gl{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font-size:15px;
+    border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05)}
+  .lb{font-size:10.5px;font-weight:700;letter-spacing:-.35px;line-height:1.15;white-space:nowrap}
+  .sub{font-size:9px;color:#8697ab;letter-spacing:-.1px;line-height:1.1;white-space:nowrap}
+  .chip.on .sub{color:#b9cdf0}
+
+  /* ---------- info sheet ---------- */
+  #info{position:fixed;inset:0;z-index:30;background:rgba(4,7,11,.62);display:none;
+    backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:20px}
+  #info.on{display:grid;place-items:center}
+  .card{width:100%;max-width:390px;max-height:76vh;overflow:auto;background:#121a24;border:1px solid var(--line);
+    border-radius:18px;padding:18px 18px 16px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+  .card h3{margin:0 0 4px;font-size:14.5px;letter-spacing:-.4px}
+  .card p.lead{margin:0 0 14px;font-size:11px;color:var(--muted);line-height:1.55}
+  .card dl{margin:0;display:grid;grid-template-columns:74px 1fr;gap:7px 10px;font-size:11.5px;line-height:1.5}
+  .card dt{color:#7f90a4;font-weight:700;letter-spacing:-.2px}
+  .card dd{margin:0;color:#d3dde8;letter-spacing:-.2px}
+  .card .close{margin-top:16px;width:100%;padding:10px;border-radius:11px;border:1px solid var(--line);
+    background:rgba(59,130,246,.16);color:#e6efff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- loading / fatal ---------- */
+  #load{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:#080c11;
+    transition:opacity .55s;text-align:center;padding:24px}
+  #load.off{opacity:0;pointer-events:none}
+  .spin{width:30px;height:30px;margin:0 auto 14px;border-radius:50%;
+    border:2px solid rgba(255,255,255,.14);border-top-color:#5b91ff;animation:sp .9s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  #load p{margin:0;font-size:12px;color:#9db0c6;letter-spacing:-.2px;line-height:1.6}
+  #fatal{display:none;font-size:12px;color:#ffb9b9;line-height:1.6;max-width:320px}
+
+  @media (min-width:700px){
+    #panel{border-radius:20px;bottom:16px;border-bottom:1px solid var(--line);left:16px;transform:none;
+      max-width:520px}
+    #hint{bottom:210px;left:auto;right:26px;transform:none}
+  }
+  @media (max-height:680px){
+    .sw,.gl{width:28px;height:28px}
+    .chip{min-width:62px;padding:5px 7px}
+    .tab{padding:6px 0 5px}
+  }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<canvas id="c"></canvas>
+
+<header class="top">
+  <div class="mark">M+</div>
+  <div class="ttl">
+    <b>3D 욕실 시뮬레이터</b>
+    <span id="readout">한빛 129-1406 거실 욕실 · 1,560 × 2,250 × 2,350mm</span>
+  </div>
+  <button class="icon-btn" id="infoBtn" aria-label="자재 정보">ⓘ</button>
+</header>
+
+<div id="hint">한 손가락으로 돌리기 · 두 손가락으로 확대</div>
+<div id="toast"></div>
+
+<section id="panel">
+  <div class="grab" id="grab"><i></i></div>
+  <nav class="tabs" id="tabs">
+    <button class="tab on" data-tab="tile">타일</button>
+    <button class="tab" data-tab="light">조명</button>
+    <button class="tab" data-tab="faucet">수전</button>
+    <button class="tab" data-tab="cam">시점</button>
+    <button class="tab" data-tab="store">수납</button>
+  </nav>
+
+  <div class="pane on" data-pane="tile">
+    <div class="seg" id="tileSeg">
+      <button class="on" data-target="wall">벽 타일</button>
+      <button data-target="floor">바닥 타일</button>
+    </div>
+    <div class="chips" id="tileChips"></div>
+  </div>
+
+  <div class="pane" data-pane="light"><div class="chips" id="lightChips"></div></div>
+  <div class="pane" data-pane="faucet"><div class="chips" id="faucetChips"></div></div>
+  <div class="pane" data-pane="cam"><div class="chips" id="camChips"></div></div>
+  <div class="pane" data-pane="store"><div class="chips" id="storeChips"></div></div>
+</section>
+
+<div id="info"><div class="card">
+  <h3>확정 자재 · 실측 기준</h3>
+  <p class="lead">한빛아파트 129동 1406호 거실 욕실 실측 1,560 × 2,250mm를 그대로 세운 3D 도면입니다. 자재는 11/17 장인타일위생기 미팅 확정 사양을 따랐습니다.</p>
+  <dl>
+    <dt>도기</dt><dd>대림 도비도스 DC-1218UR (원피스·림리스 치마형)</dd>
+    <dt>세면기</dt><dd>DL-511N 카운터 세면기 + 비반트 VAR342 무광 니켈</dd>
+    <dt>샤워</dt><dd>비반트 VA-600 + 레인샤워 · 반투명 강화유리 파티션</dd>
+    <dt>수납</dt><dd>상부장(플랩/슬라이드 전환) + 골드 팔각 거울 + 일자선반 1,200mm</dd>
+    <dt>액세서리</dt><dd>1009 매트 SUS 수건걸이·휴지걸이 · 코너선반</dd>
+    <dt>환기</dt><dd>힘펠 휴젠뜨2 (복합형) + 천장 매입등 2구</dd>
+  </dl>
+  <button class="close" id="infoClose">닫기</button>
+</div></div>
+
+<div id="load">
+  <div>
+    <div class="spin"></div>
+    <p>3D 욕실을 세우고 있습니다…</p>
+    <div id="fatal"></div>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+/* ============================================================
+   0. 진단용 오류 수집 (검증 시 콘솔 에러 0건 확인)
+   ============================================================ */
+window.__bath = { errors: [], frames: 0, ready: false };
+window.addEventListener('error', function (e) {
+  window.__bath.errors.push(String(e.message) + ' @' + String(e.filename) + ':' + String(e.lineno));
+});
+window.addEventListener('unhandledrejection', function (e) {
+  window.__bath.errors.push('rejection: ' + String(e.reason));
+});
+var _consoleError = console.error.bind(console);
+console.error = function () {
+  try {
+    window.__bath.errors.push(Array.prototype.map.call(arguments, String).join(' '));
+  } catch (err) {}
+  _consoleError.apply(null, arguments);
+};
+
+var $ = function (s) { return document.querySelector(s); };
+var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+/* ============================================================
+   1. 공간 치수 (한빛 129-1406 거실 욕실 실측 1,560 × 2,250 / 높이 2,350)
+   ============================================================ */
+var RW = 1.56, RD = 2.25, RH = 2.35;
+var X0 = -RW / 2, X1 = RW / 2, Z0 = -RD / 2, Z1 = RD / 2;
+var DOOR = { l: -0.10, r: 0.60, h: 2.02 };
+var SHOWER_Z = -0.40;   // 샤워 파티션 위치
+
+/* ============================================================
+   2. 타일 프리셋
+   ============================================================ */
+var TILE = {
+  insta: {
+    key: 'insta', name: '인스타 화이트', note: '밝은 화이트',
+    wall: { w: 300, h: 600 }, floor: { w: 300, h: 300 },
+    base: '#f3f3f1', a: '#e7e7e5', b: '#fcfcfb', grain: 7, grout: '#e5e5e3',
+    rough: 0.40, speck: 0.05, vein: 0.02
+  },
+  sahara: {
+    key: 'sahara', name: '사하라 화이트', note: '따뜻한 베이지',
+    wall: { w: 300, h: 600 }, floor: { w: 300, h: 600 },
+    base: '#f1ebdf', a: '#e5dbca', b: '#fbf7ef', grain: 10, grout: '#ddd3c1',
+    rough: 0.45, speck: 0.10, vein: 0.06
+  },
+  jangin: {
+    key: 'jangin', name: '장인 3360', note: '웜그레이 스톤',
+    wall: { w: 600, h: 600 }, floor: { w: 600, h: 600 },
+    base: '#b6b0a8', a: '#a29b92', b: '#cac4bc', grain: 13, grout: '#9c958c',
+    rough: 0.50, speck: 0.14, vein: 0.10
+  },
+  epic: {
+    key: 'epic', name: '에픽 6603', note: '미디엄 그레이',
+    wall: { w: 600, h: 600 }, floor: { w: 600, h: 600 },
+    base: '#75797e', a: '#62666b', b: '#898d92', grain: 13, grout: '#5e6267',
+    rough: 0.42, speck: 0.16, vein: 0.12
+  }
+};
+var TILE_ORDER = ['insta', 'sahara', 'jangin', 'epic'];
+
+var TEMPS = {
+  warm:    { key: 'warm',    name: '전구색',  k: '3000K', color: 0xffb877, intensity: 20 },
+  neutral: { key: 'neutral', name: '주백색',  k: '4000K', color: 0xffe0c0, intensity: 17 },
+  cool:    { key: 'cool',    name: '주광색',  k: '5700K', color: 0xe8f1ff, intensity: 15 }
+};
+var TEMP_ORDER = ['warm', 'neutral', 'cool'];
+
+var FAUCETS = {
+  nickel: { key: 'nickel', name: '무광 니켈', color: 0xb9bec3, metal: 0.86, rough: 0.44, css: 'linear-gradient(150deg,#d7dbde,#9ba1a6)' },
+  black:  { key: 'black',  name: '무광 블랙', color: 0x2a2d31, metal: 0.62, rough: 0.52, css: 'linear-gradient(150deg,#4a4e53,#171a1d)' },
+  chrome: { key: 'chrome', name: '유광 크롬', color: 0xf2f5f7, metal: 1.00, rough: 0.055, css: 'linear-gradient(150deg,#ffffff,#8d959c 60%,#e8eef2)' }
+};
+
+var CAMS = {
+  all:    { key: 'all',    name: '전체',     pos: [2.02, 1.78, 2.38], tgt: [-0.05, 0.92, -0.15] },
+  vanity: { key: 'vanity', name: '세면대',   pos: [0.54, 1.58, 1.02], tgt: [-0.62, 1.22, 0.72] },
+  shower: { key: 'shower', name: '샤워부스', pos: [0.08, 1.66, 0.62], tgt: [0.30, 1.10, -0.82] },
+  top:    { key: 'top',    name: '위에서',   pos: [0.98, 3.15, 1.38], tgt: [-0.05, 0.35, -0.25] }
+};
+
+var state = {
+  wall: 'insta', floor: 'insta', tileTarget: 'wall',
+  temp: 'neutral', faucet: 'nickel', cam: 'all',
+  autoRotate: false, storeMode: 'flap', storeOpen: false,
+  panelMin: false
+};
+
+/* ============================================================
+   3. 타일 텍스처 (CanvasTexture · 줄눈/메지 포함)
+   ============================================================ */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function hashSeed(str) {
+  var h = 2166136261;
+  for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+
+var tileCanvasCache = {};
+
+function makeTileCanvas(p, tw, th) {
+  var K = 512 / 300;
+  var W = Math.round(tw * K / 2) * 2;
+  var H = Math.round(th * K / 2) * 2;
+  var cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  var g = cv.getContext('2d');
+  var rnd = mulberry32(hashSeed(p.key + tw + 'x' + th));
+
+  g.fillStyle = p.base;
+  g.fillRect(0, 0, W, H);
+
+  // 큰 얼룩(스톤 결)
+  var blotches = Math.round(16 + p.vein * 90);
+  for (var i = 0; i < blotches; i++) {
+    var cx = rnd() * W, cy = rnd() * H, r = (0.10 + rnd() * 0.30) * Math.min(W, H);
+    var grd = g.createRadialGradient(cx, cy, 0, cx, cy, r);
+    var warm = rnd() > 0.5;
+    grd.addColorStop(0, warm ? p.a : p.b);
+    grd.addColorStop(1, 'rgba(0,0,0,0)');
+    g.globalAlpha = 0.10 + rnd() * 0.14;
+    g.fillStyle = grd;
+    g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill();
+  }
+  g.globalAlpha = 1;
+
+  // 결(vein)
+  if (p.vein > 0) {
+    for (var v = 0; v < 7; v++) {
+      g.beginPath();
+      var x = rnd() * W, y = rnd() * H;
+      g.moveTo(x, y);
+      for (var s = 0; s < 6; s++) {
+        x += (rnd() - 0.5) * W * 0.42;
+        y += (rnd() - 0.35) * H * 0.34;
+        g.lineTo(x, y);
+      }
+      g.strokeStyle = rnd() > 0.5 ? p.a : p.b;
+      g.globalAlpha = 0.10 + rnd() * 0.16;
+      g.lineWidth = 0.8 + rnd() * 2.4;
+      g.stroke();
+    }
+    g.globalAlpha = 1;
+  }
+
+  // 미세 노이즈
+  var img = g.getImageData(0, 0, W, H);
+  var d = img.data;
+  for (var k = 0; k < d.length; k += 4) {
+    var n = (rnd() - 0.5) * p.grain;
+    d[k] += n; d[k + 1] += n; d[k + 2] += n;
+  }
+  g.putImageData(img, 0, 0);
+
+  // 스톤 스페클
+  if (p.speck > 0) {
+    var dots = Math.round(W * H * 0.0012 * p.speck * 10);
+    for (var q = 0; q < dots; q++) {
+      g.globalAlpha = 0.05 + rnd() * 0.16;
+      g.fillStyle = rnd() > 0.5 ? '#ffffff' : '#000000';
+      var rr = 0.4 + rnd() * 1.2;
+      g.beginPath(); g.arc(rnd() * W, rnd() * H, rr, 0, Math.PI * 2); g.fill();
+    }
+    g.globalAlpha = 1;
+  }
+
+  // 줄눈(메지) 3mm
+  var joint = Math.max(4, Math.round((3.0 / tw) * W));
+  var half = joint / 2;
+  g.fillStyle = p.grout;
+  g.fillRect(0, 0, W, half);
+  g.fillRect(0, H - half, W, half);
+  g.fillRect(0, 0, half, H);
+  g.fillRect(W - half, 0, half, H);
+
+  // 타일 모서리 음영 + 하이라이트
+  g.strokeStyle = 'rgba(0,0,0,.16)';
+  g.lineWidth = 1.4;
+  g.strokeRect(half + 0.8, half + 0.8, W - joint - 1.6, H - joint - 1.6);
+  g.strokeStyle = 'rgba(255,255,255,.42)';
+  g.lineWidth = 1;
+  g.strokeRect(half + 2.4, half + 2.4, W - joint - 4.8, H - joint - 4.8);
+
+  return cv;
+}
+
+function tileCanvas(p, kind) {
+  var key = p.key + '|' + kind;
+  if (!tileCanvasCache[key]) {
+    var s = kind === 'floor' ? p.floor : p.wall;
+    tileCanvasCache[key] = makeTileCanvas(p, s.w, s.h);
+  }
+  return tileCanvasCache[key];
+}
+
+// 칩 썸네일(타일 한 장 + 줄눈)
+var thumbCache = {};
+function tileThumb(p) {
+  if (thumbCache[p.key]) return thumbCache[p.key];
+  var S = 96;
+  var cv = document.createElement('canvas');
+  cv.width = S; cv.height = S;
+  var g = cv.getContext('2d');
+  g.fillStyle = p.grout; g.fillRect(0, 0, S, S);
+  var pad = 7;
+  g.fillStyle = p.base;
+  g.fillRect(pad, pad, S - pad * 2, S - pad * 2);
+  var rnd = mulberry32(hashSeed(p.key));
+  for (var i = 0; i < 10; i++) {
+    var x = pad + rnd() * (S - pad * 2), y = pad + rnd() * (S - pad * 2), r = 8 + rnd() * 22;
+    var grd = g.createRadialGradient(x, y, 0, x, y, r);
+    grd.addColorStop(0, rnd() > 0.5 ? p.a : p.b);
+    grd.addColorStop(1, 'rgba(0,0,0,0)');
+    g.globalAlpha = 0.6; g.fillStyle = grd;
+    g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+  }
+  g.globalAlpha = 1;
+  g.strokeStyle = 'rgba(255,255,255,.45)'; g.lineWidth = 1;
+  g.strokeRect(pad + 1.5, pad + 1.5, S - pad * 2 - 3, S - pad * 2 - 3);
+  thumbCache[p.key] = cv.toDataURL('image/png');
+  return thumbCache[p.key];
+}
+
+/* ============================================================
+   4. 렌더러 · 장면 · 카메라
+   ============================================================ */
+var canvas = $('#c');
+var renderer, scene, camera, controls, maxAniso = 4;
+var clock = new THREE.Clock();
+
+function fatal(msg) {
+  $('#fatal').style.display = 'block';
+  $('#fatal').textContent = msg;
+  $('#load').classList.remove('off');
+}
+
+function boot() {
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  } catch (e) {
+    fatal('이 브라우저에서 WebGL을 열 수 없습니다. 삼성 인터넷 또는 Chrome 최신 버전에서 다시 시도해 주세요.');
+    return;
+  }
+  if (!renderer.getContext()) { fatal('WebGL 컨텍스트를 만들지 못했습니다.'); return; }
+
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  renderer.setPixelRatio(dpr);
+  renderer.setSize(window.innerWidth, window.innerHeight, false);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.02;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  maxAniso = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
+
+  scene = new THREE.Scene();
+
+  camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.03, 60);
+  camera.position.set(CAMS.all.pos[0] * 1.35, CAMS.all.pos[1] + 0.55, CAMS.all.pos[2] * 1.28);
+
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.target.set(CAMS.all.tgt[0], CAMS.all.tgt[1], CAMS.all.tgt[2]);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.075;
+  controls.rotateSpeed = 0.78;
+  controls.zoomSpeed = 0.85;
+  controls.panSpeed = 0.7;
+  controls.minDistance = 0.55;
+  controls.maxDistance = 7.0;
+  controls.minPolarAngle = 0.06;
+  controls.maxPolarAngle = Math.PI * 0.495;
+  controls.autoRotateSpeed = 0.55;
+  controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
+  controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
+
+  scene.environment = buildEnvironment();
+
+  buildRoom();
+  buildFixtures();
+  buildLights();
+  buildCeiling();
+  applyTiles();
+  applyTemp();
+  applyFaucet();
+  updateCabinetVisibility();
+
+  requestAnimationFrame(loop);
+  setTimeout(function () {
+    flyTo(CAMS.all.pos, CAMS.all.tgt, 1500);
+  }, 120);
+}
+
+/* ---------- 환경맵(금속·도자기 반사) ---------- */
+function buildEnvironment() {
+  var cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 256;
+  var g = cv.getContext('2d');
+  var grd = g.createLinearGradient(0, 0, 0, 256);
+  grd.addColorStop(0.00, '#ffffff');
+  grd.addColorStop(0.34, '#dfe7ef');
+  grd.addColorStop(0.50, '#a8b4c0');
+  grd.addColorStop(0.62, '#7b8794');
+  grd.addColorStop(1.00, '#232a33');
+  g.fillStyle = grd; g.fillRect(0, 0, 512, 256);
+  // 천장 조명 느낌의 밝은 덩어리
+  for (var i = 0; i < 3; i++) {
+    var cx = 110 + i * 150, cy = 40;
+    var r = g.createRadialGradient(cx, cy, 0, cx, cy, 60);
+    r.addColorStop(0, 'rgba(255,255,255,1)');
+    r.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = r;
+    g.beginPath(); g.arc(cx, cy, 60, 0, Math.PI * 2); g.fill();
+  }
+  var tex = new THREE.CanvasTexture(cv);
+  tex.mapping = THREE.EquirectangularReflectionMapping;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  var pmrem = new THREE.PMREMGenerator(renderer);
+  var env = pmrem.fromEquirectangular(tex).texture;
+  pmrem.dispose();
+  tex.dispose();
+  return env;
+}
+
+/* ============================================================
+   5. 재질
+   ============================================================ */
+var MAT = {};
+function initMaterials() {
+  MAT.porcelain = new THREE.MeshStandardMaterial({ color: 0xf8f9f9, roughness: 0.13, metalness: 0.0, envMapIntensity: 1.0 });
+  MAT.porcelainSoft = new THREE.MeshStandardMaterial({ color: 0xf2f3f2, roughness: 0.26, metalness: 0.0 });
+  MAT.cabinet = new THREE.MeshStandardMaterial({ color: 0xece7de, roughness: 0.52, metalness: 0.0 });
+  MAT.cabinetIn = new THREE.MeshStandardMaterial({ color: 0xd8d2c8, roughness: 0.7, metalness: 0.0 });
+  MAT.counter = new THREE.MeshStandardMaterial({ color: 0xf3f1ec, roughness: 0.22, metalness: 0.0, envMapIntensity: 0.9 });
+  MAT.faucet = new THREE.MeshStandardMaterial({ color: 0xb9bec3, roughness: 0.44, metalness: 0.86, envMapIntensity: 1.15 });
+  MAT.gold = new THREE.MeshStandardMaterial({ color: 0xd2ab63, roughness: 0.28, metalness: 1.0, envMapIntensity: 1.2 });
+  MAT.alu = new THREE.MeshStandardMaterial({ color: 0xc4c9cd, roughness: 0.38, metalness: 0.85, envMapIntensity: 1.0 });
+  MAT.dark = new THREE.MeshStandardMaterial({ color: 0x2b2f34, roughness: 0.65, metalness: 0.25 });
+  MAT.white = new THREE.MeshStandardMaterial({ color: 0xf4f4f2, roughness: 0.78, metalness: 0.0 });
+  MAT.glass = new THREE.MeshPhysicalMaterial({
+    color: 0xdff0f2, transparent: true, opacity: 0.20, roughness: 0.04, metalness: 0.0,
+    transmission: 0.0, side: THREE.DoubleSide, depthWrite: false, envMapIntensity: 1.5,
+    clearcoat: 1.0, clearcoatRoughness: 0.05
+  });
+  MAT.frosted = new THREE.MeshStandardMaterial({
+    color: 0xf3f7f8, transparent: true, opacity: 0.72, roughness: 0.62, metalness: 0.0, side: THREE.DoubleSide
+  });
+  MAT.towel = new THREE.MeshStandardMaterial({ color: 0xecebe6, roughness: 0.92, metalness: 0.0 });
+  MAT.towel2 = new THREE.MeshStandardMaterial({ color: 0xd9dde1, roughness: 0.9, metalness: 0.0 });
+  MAT.bottle = new THREE.MeshStandardMaterial({ color: 0xdfe4e8, roughness: 0.35, metalness: 0.05 });
+  MAT.mirror = new THREE.MeshStandardMaterial({ color: 0xf2f6fa, roughness: 0.02, metalness: 1.0, envMapIntensity: 1.0 });
+  MAT.led = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 2.4, roughness: 1.0 });
+  MAT.ledWarm = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, emissive: 0xffffff, emissiveIntensity: 2.0, roughness: 0.9 });
+  MAT.fan = new THREE.MeshStandardMaterial({ color: 0xf7f7f5, roughness: 0.55, metalness: 0.0 });
+}
+
+/* ============================================================
+   6. 방 — 바닥 · 벽 · 천장
+   ============================================================ */
+var wallSurfaces = [];
+var floorSurface = null;
+
+function makeSurfaceMaterial() {
+  return new THREE.MeshStandardMaterial({
+    color: 0xffffff, roughness: 0.4, metalness: 0.0, envMapIntensity: 0.65,
+    side: THREE.FrontSide, bumpScale: 0.014
+  });
+}
+
+function addWall(w, h, pos, rotY) {
+  var mat = makeSurfaceMaterial();
+  var mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+  mesh.position.set(pos[0], pos[1], pos[2]);
+  mesh.rotation.y = rotY;
+  mesh.receiveShadow = true;
+  mesh.userData.w = w;
+  mesh.userData.h = h;
+  scene.add(mesh);
+  wallSurfaces.push({ mesh: mesh, w: w, h: h });
+  return mesh;
+}
+
+function buildRoom() {
+  initMaterials();
+
+  // 바닥
+  var fmat = makeSurfaceMaterial();
+  fmat.roughness = 0.46;
+  floorSurface = new THREE.Mesh(new THREE.PlaneGeometry(RW, RD), fmat);
+  floorSurface.rotation.x = -Math.PI / 2;
+  floorSurface.receiveShadow = true;
+  scene.add(floorSurface);
+
+  // 벽 (안쪽 면이 보이도록: 바깥에서 보면 잘려 보이는 도면형 연출)
+  addWall(RW, RH, [0, RH / 2, Z0], 0);                 // 뒷벽 (정면 +z)
+  addWall(RD, RH, [X0, RH / 2, 0], Math.PI / 2);       // 좌벽  (+x)
+  addWall(RD, RH, [X1, RH / 2, 0], -Math.PI / 2);      // 우벽  (-x)
+
+  // 앞벽 — 도어 개구부
+  var wL = DOOR.l - X0;              // 0.68
+  var wR = X1 - DOOR.r;              // 0.18
+  addWall(wL, RH, [X0 + wL / 2, RH / 2, Z1], Math.PI);
+  if (wR > 0.01) addWall(wR, RH, [DOOR.r + wR / 2, RH / 2, Z1], Math.PI);
+  addWall(DOOR.r - DOOR.l, RH - DOOR.h, [(DOOR.l + DOOR.r) / 2, DOOR.h + (RH - DOOR.h) / 2, Z1], Math.PI);
+}
+
+/* ============================================================
+   7. 천장 (매입등 2구 · 환풍기)
+   ============================================================ */
+var downlights = [];
+function buildCeiling() {
+  var ceil = new THREE.Mesh(new THREE.PlaneGeometry(RW, RD), MAT.white);
+  ceil.rotation.x = Math.PI / 2;
+  ceil.position.y = RH;
+  scene.add(ceil);
+
+  // 매입등 2구
+  var spots = [[-0.33, 0.72], [0.33, 0.05]];
+  for (var i = 0; i < spots.length; i++) {
+    var g = new THREE.Group();
+    g.position.set(spots[i][0], RH, spots[i][1]);
+    var trim = new THREE.Mesh(new THREE.CylinderGeometry(0.072, 0.072, 0.016, 28, 1, true), MAT.white);
+    trim.position.y = -0.008;
+    g.add(trim);
+    var ring = new THREE.Mesh(new THREE.TorusGeometry(0.062, 0.008, 8, 28), MAT.alu);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = -0.014;
+    g.add(ring);
+    var disc = new THREE.Mesh(new THREE.CircleGeometry(0.056, 28), MAT.ledWarm.clone());
+    disc.rotation.x = Math.PI / 2;
+    disc.position.y = -0.012;
+    g.add(disc);
+    scene.add(g);
+    downlights.push(disc);
+  }
+
+  // 환풍기 (힘펠 휴젠뜨2 느낌 · 복합형)
+  var fan = new THREE.Group();
+  fan.position.set(-0.40, RH, -0.80);
+  var housing = new THREE.Mesh(new RoundedBoxGeometry(0.31, 0.028, 0.31, 3, 0.012), MAT.fan);
+  housing.position.y = -0.016;
+  fan.add(housing);
+  for (var s = 0; s < 7; s++) {
+    var slat = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.012, 0.012), MAT.white);
+    slat.position.set(0, -0.031, -0.075 + s * 0.025);
+    fan.add(slat);
+  }
+  var fanRing = new THREE.Mesh(new THREE.TorusGeometry(0.025, 0.006, 8, 20), MAT.alu);
+  fanRing.rotation.x = Math.PI / 2;
+  fanRing.position.set(0, -0.031, 0.115);
+  fan.add(fanRing);
+  scene.add(fan);
+}
+
+/* ============================================================
+   8. 조명
+   ============================================================ */
+var hemi, spotA, spotB, ledLight, fanLight;
+function buildLights() {
+  hemi = new THREE.HemisphereLight(0xdfe9f5, 0x3a4048, 0.55);
+  scene.add(hemi);
+
+  spotA = new THREE.SpotLight(0xffffff, 18, 6.5, Math.PI * 0.40, 0.62, 1.6);
+  spotA.position.set(-0.33, RH - 0.03, 0.72);
+  spotA.target.position.set(-0.33, 0, 0.72);
+  spotA.castShadow = true;
+  spotA.shadow.mapSize.set(1024, 1024);
+  spotA.shadow.bias = -0.0009;
+  spotA.shadow.normalBias = 0.022;
+  spotA.shadow.camera.near = 0.05;
+  spotA.shadow.camera.far = 6;
+  scene.add(spotA); scene.add(spotA.target);
+
+  spotB = new THREE.SpotLight(0xffffff, 12, 6.5, Math.PI * 0.42, 0.72, 1.6);
+  spotB.position.set(0.33, RH - 0.03, 0.05);
+  spotB.target.position.set(0.33, 0, -0.05);
+  spotB.castShadow = true;
+  spotB.shadow.mapSize.set(1024, 1024);
+  spotB.shadow.bias = -0.0009;
+  spotB.shadow.normalBias = 0.022;
+  spotB.shadow.camera.near = 0.05;
+  spotB.shadow.camera.far = 6;
+  scene.add(spotB); scene.add(spotB.target);
+
+  // 상부장 하단 간접조명(LED)
+  ledLight = new THREE.PointLight(0xffffff, 0.55, 1.35, 1.7);
+  ledLight.position.set(X0 + 0.20, 1.74, 0.72);
+  scene.add(ledLight);
+
+  // 환풍기(복합) 광원
+  fanLight = new THREE.PointLight(0xffffff, 0.75, 2.4, 1.8);
+  fanLight.position.set(-0.40, RH - 0.08, -0.80);
+  scene.add(fanLight);
+}
+
+var lightTemp = { warm: 0, neutral: 0, cool: 0 };
+
+function applyTemp() {
+  var t = TEMPS[state.temp];
+  var c = new THREE.Color(t.color);
+  spotA.color.copy(c); spotA.intensity = t.intensity;
+  spotB.color.copy(c); spotB.intensity = t.intensity * 0.68;
+  fanLight.color.copy(c);
+  ledLight.color.copy(c);
+  MAT.ledWarm.emissive.copy(c);
+  for (var i = 0; i < downlights.length; i++) downlights[i].material.emissive.copy(c);
+  hemi.color.setHex(0xdfe9f5).lerp(c, 0.18);
+  hemi.intensity = 0.42 + t.intensity * 0.004;
+  if (MAT.ledStrip) MAT.ledStrip.emissive.copy(c);
+  scheduleMirror();
+}
+
+/* ============================================================
+   9. 가구 · 위생기구
+   ============================================================ */
+var cabinet = { flap: null, slideA: null, slideB: null, flapGroup: null, slideGroup: null };
+var mirrorFace = null, mirrorGroup = null, cubeRT = null, cubeCam = null;
+
+function box(w, h, d, mat, x, y, z) {
+  var m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z);
+  m.castShadow = true; m.receiveShadow = true;
+  return m;
+}
+function rbox(w, h, d, r, mat, x, y, z) {
+  var m = new THREE.Mesh(new RoundedBoxGeometry(w, h, d, 3, r), mat);
+  m.position.set(x, y, z);
+  m.castShadow = true; m.receiveShadow = true;
+  return m;
+}
+function cyl(rt, rb, h, seg, mat, x, y, z) {
+  var m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), mat);
+  m.position.set(x, y, z);
+  m.castShadow = true; m.receiveShadow = true;
+  return m;
+}
+
+function buildFixtures() {
+  buildDoor();
+  buildVanity();
+  buildToilet();
+  buildShower();
+  buildCeilingAccessories();
+}
+
+/* ---------- 도어 ---------- */
+function buildDoor() {
+  var w = DOOR.r - DOOR.l;
+  var frame = MAT.white;
+  // 상·하·좌·우 도어 프레임
+  var t = 0.045, d = 0.11;
+  scene.add(box(w + t * 2, t, d, frame, (DOOR.l + DOOR.r) / 2, DOOR.h + t / 2, Z1));
+  scene.add(box(t, DOOR.h, d, frame, DOOR.l - t / 2, DOOR.h / 2, Z1));
+  scene.add(box(t, DOOR.h, d, frame, DOOR.r + t / 2, DOOR.h / 2, Z1));
+  // 문턱
+  var thr = box(w + 0.04, 0.018, 0.13, MAT.alu, (DOOR.l + DOOR.r) / 2, 0.009, Z1);
+  scene.add(thr);
+
+  // 문짝 (열린 상태)
+  var hinge = new THREE.Group();
+  hinge.position.set(DOOR.r - 0.02, 0, Z1 + 0.005);
+  hinge.rotation.y = 1.62;
+  var leafW = w - 0.03;
+  var leaf = new THREE.Mesh(new THREE.BoxGeometry(leafW, DOOR.h - 0.02, 0.035), MAT.white);
+  leaf.position.set(-leafW / 2, (DOOR.h - 0.02) / 2, 0);
+  leaf.castShadow = true;
+  hinge.add(leaf);
+  // 무광 유리창
+  var gl = new THREE.Mesh(new THREE.BoxGeometry(leafW - 0.15, DOOR.h - 0.62, 0.038), MAT.frosted);
+  gl.position.set(-leafW / 2, DOOR.h * 0.55, 0);
+  hinge.add(gl);
+  // 손잡이
+  var hb = cyl(0.011, 0.011, 0.12, 12, MAT.alu, -leafW + 0.09, 1.02, 0.045);
+  hb.rotation.x = Math.PI / 2;
+  hinge.add(hb);
+  var hb2 = cyl(0.011, 0.011, 0.12, 12, MAT.alu, -leafW + 0.09, 1.02, -0.045);
+  hb2.rotation.x = Math.PI / 2;
+  hinge.add(hb2);
+  scene.add(hinge);
+}
+
+/* ---------- 세면대 · 거울 · 상부장 ---------- */
+function buildVanity() {
+  var g = new THREE.Group();
+  g.position.set(X0, 0, 0.72);
+  g.rotation.y = Math.PI / 2;
+  scene.add(g);
+
+  var W = 0.70, D = 0.46, H = 0.85;
+
+  // 하부장
+  var body = rbox(W, 0.68, D, 0.018, MAT.cabinet, 0, 0.14 + 0.34, D / 2);
+  g.add(body);
+  // 걸레받이
+  g.add(box(W - 0.06, 0.10, D - 0.06, MAT.dark, 0, 0.05, D / 2));
+
+  // 서랍/도어 패널
+  for (var i = 0; i < 2; i++) {
+    var px = -W / 4 + i * (W / 2);
+    var panel = rbox(W / 2 - 0.014, 0.62, 0.022, 0.008, MAT.cabinet, px, 0.48, D + 0.006);
+    panel.castShadow = false;
+    g.add(panel);
+    // 손잡이
+    var hd = box(0.10, 0.012, 0.016, MAT.alu, px, 0.74, D + 0.024);
+    g.add(hd);
+  }
+
+  // 상판 (세면기 홀)
+  var shape = new THREE.Shape();
+  var cw = W + 0.05, cd = D + 0.02;
+  shape.moveTo(-cw / 2, -cd / 2);
+  shape.lineTo(cw / 2, -cd / 2);
+  shape.lineTo(cw / 2, cd / 2);
+  shape.lineTo(-cw / 2, cd / 2);
+  shape.lineTo(-cw / 2, -cd / 2);
+  var hole = new THREE.Path();
+  hole.absellipse(0, 0, 0.175, 0.115, 0, Math.PI * 2, true);
+  shape.holes.push(hole);
+  var counterGeo = new THREE.ExtrudeGeometry(shape, { depth: 0.035, bevelEnabled: false, curveSegments: 32 });
+  counterGeo.rotateX(-Math.PI / 2);
+  var counter = new THREE.Mesh(counterGeo, MAT.counter);
+  counter.position.set(0, H - 0.035, D / 2 - 0.01);
+  counter.castShadow = true; counter.receiveShadow = true;
+  g.add(counter);
+
+  // 언더카운터 볼 (타원 반구)
+  var bowlGeo = new THREE.SphereGeometry(1, 36, 18, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2);
+  bowlGeo.scale(0.172, 0.145, 0.112);
+  var bowlMat = MAT.porcelain.clone();
+  bowlMat.side = THREE.DoubleSide;
+  var bowl = new THREE.Mesh(bowlGeo, bowlMat);
+  bowl.position.set(0, H - 0.02, D / 2 - 0.01);
+  g.add(bowl);
+  // 배수구
+  var drain = cyl(0.022, 0.022, 0.006, 16, MAT.alu, 0, H - 0.158, D / 2 - 0.01);
+  g.add(drain);
+
+  // 세면 수전 (VAR342 · 무광 니켈 느낌)
+  var fc = buildBasinFaucet();
+  fc.position.set(0, H + 0.002, 0.105);
+  g.add(fc);
+
+  // 팔각 거울 (골드)
+  var mirror = buildOctaMirror(0.30);
+  mirror.position.set(0, 1.47, 0.035);
+  g.add(mirror);
+  mirrorGroup = mirror;
+
+  // 상부장
+  var cabY = 2.20, cabH = 0.38, cabD = 0.32;
+  var cgroup = new THREE.Group();
+  cgroup.position.set(0, 0, 0);
+  g.add(cgroup);
+
+  var cabBody = rbox(W + 0.08, cabH, cabD, 0.012, MAT.cabinet, 0, cabY - cabH / 2, cabD / 2);
+  cgroup.add(cabBody);
+  // 내부
+  var inner = box(W + 0.04, cabH - 0.06, cabD - 0.06, MAT.cabinetIn, 0, cabY - cabH / 2, cabD / 2 - 0.02);
+  inner.castShadow = false;
+  cgroup.add(inner);
+  cgroup.add(box(W + 0.04, 0.016, cabD - 0.08, MAT.cabinet, 0, cabY - cabH / 2, cabD / 2 - 0.02));
+
+  // 플랩 도어 (상단 힌지)
+  var flapG = new THREE.Group();
+  flapG.position.set(0, cabY, cabD + 0.004);
+  var flapDoor = rbox(W + 0.06, cabH - 0.012, 0.022, 0.006, MAT.cabinet, 0, -(cabH - 0.012) / 2, 0);
+  flapG.add(flapDoor);
+  var fHandle = box(0.14, 0.014, 0.016, MAT.gold, 0, -cabH + 0.04, 0.02);
+  flapG.add(fHandle);
+  cgroup.add(flapG);
+  cabinet.flapGroup = flapG;
+
+  // 슬라이드 도어 2장
+  var slideG = new THREE.Group();
+  var dw = (W + 0.06) / 2;
+  var sa = rbox(dw - 0.006, cabH - 0.012, 0.02, 0.005, MAT.cabinet, -dw / 2, cabY - cabH / 2, cabD + 0.004);
+  var sb = rbox(dw - 0.006, cabH - 0.012, 0.02, 0.005, MAT.cabinet, dw / 2, cabY - cabH / 2, cabD + 0.026);
+  slideG.add(sa); slideG.add(sb);
+  var sh1 = box(0.09, 0.012, 0.014, MAT.gold, -dw / 2, cabY - cabH + 0.05, cabD + 0.018);
+  var sh2 = box(0.09, 0.012, 0.014, MAT.gold, dw / 2, cabY - cabH + 0.05, cabD + 0.04);
+  slideG.add(sh1); slideG.add(sh2);
+  cgroup.add(slideG);
+  cabinet.slideGroup = slideG;
+  cabinet.slideA = sa; cabinet.slideB = sb;
+  cabinet.slideAHome = -dw / 2; cabinet.slideBHome = dw / 2;
+  cabinet.flap = flapG;
+
+  // 상부장 하단 LED 스트립
+  MAT.ledStrip = new THREE.MeshStandardMaterial({ color: 0x222222, emissive: 0xffffff, emissiveIntensity: 2.6, roughness: 0.9 });
+  var strip = box(W + 0.02, 0.008, 0.018, MAT.ledStrip, 0, cabY - cabH - 0.006, cabD - 0.02);
+  strip.castShadow = false;
+  cgroup.add(strip);
+
+  // 거울 반사를 위한 큐브 카메라
+  cubeRT = new THREE.WebGLCubeRenderTarget(256, {
+    generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter, colorSpace: THREE.SRGBColorSpace
+  });
+  cubeCam = new THREE.CubeCamera(0.05, 24, cubeRT);
+  cubeCam.position.set(X0 + 0.42, 1.47, 0.72);
+  scene.add(cubeCam);
+}
+
+function buildOctaMirror(r) {
+  var g = new THREE.Group();
+  var pts = [];
+  for (var i = 0; i < 8; i++) {
+    var ang = Math.PI / 8 + i * Math.PI / 4;
+    pts.push(new THREE.Vector2(Math.cos(ang) * r, Math.sin(ang) * r));
+  }
+  var shape = new THREE.Shape();
+  shape.moveTo(pts[0].x, pts[0].y);
+  for (var j = 1; j < 8; j++) shape.lineTo(pts[j].x, pts[j].y);
+  shape.lineTo(pts[0].x, pts[0].y);
+
+  var face = new THREE.Mesh(new THREE.ShapeGeometry(shape), MAT.mirror);
+  face.position.z = 0.012;
+  g.add(face);
+  mirrorFace = face;
+
+  var edgeLen = 2 * r * Math.sin(Math.PI / 8) + 0.012;
+  for (var k = 0; k < 8; k++) {
+    var a = pts[k], b = pts[(k + 1) % 8];
+    var mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    var angE = Math.atan2(b.y - a.y, b.x - a.x);
+    var bar = new THREE.Mesh(new THREE.BoxGeometry(edgeLen, 0.026, 0.028), MAT.gold);
+    bar.position.set(mx, my, 0.012);
+    bar.rotation.z = angE;
+    bar.castShadow = true;
+    g.add(bar);
+  }
+  // 뒷판
+  var back = new THREE.Mesh(new THREE.ShapeGeometry(shape), MAT.dark);
+  back.position.z = -0.004;
+  g.add(back);
+  return g;
+}
+
+function buildBasinFaucet() {
+  var g = new THREE.Group();
+  var base = cyl(0.028, 0.032, 0.014, 24, MAT.faucet, 0, 0.007, 0);
+  g.add(base);
+  var col = cyl(0.019, 0.019, 0.20, 20, MAT.faucet, 0, 0.11, 0);
+  g.add(col);
+  var spine = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0.19, 0),
+    new THREE.Vector3(0, 0.225, 0.02),
+    new THREE.Vector3(0, 0.228, 0.075),
+    new THREE.Vector3(0, 0.208, 0.125),
+    new THREE.Vector3(0, 0.176, 0.145),
+    new THREE.Vector3(0, 0.16, 0.147)
+  ]);
+  var spout = new THREE.Mesh(new THREE.TubeGeometry(spine, 26, 0.0145, 12, false), MAT.faucet);
+  spout.castShadow = true;
+  g.add(spout);
+  var tip = cyl(0.017, 0.017, 0.012, 18, MAT.faucet, 0, 0.156, 0.147);
+  g.add(tip);
+  // 레버
+  var lever = new THREE.Mesh(new RoundedBoxGeometry(0.085, 0.014, 0.022, 2, 0.007), MAT.faucet);
+  lever.position.set(0.052, 0.19, 0.005);
+  lever.rotation.z = -0.16;
+  lever.castShadow = true;
+  g.add(lever);
+  g.add(cyl(0.014, 0.014, 0.02, 14, MAT.faucet, 0.028, 0.192, 0.005));
+  return g;
+}
+
+/* ---------- 양변기 (DC-1218UR 느낌 · 원피스 림리스) ---------- */
+function buildToilet() {
+  var g = new THREE.Group();
+  g.position.set(X0, 0, -0.10);
+  g.rotation.y = Math.PI / 2;
+  scene.add(g);
+
+  var P = MAT.porcelain;
+
+  // 치마형 하부
+  var skirt = new THREE.Mesh(new RoundedBoxGeometry(0.36, 0.30, 0.50, 4, 0.085), P);
+  skirt.position.set(0, 0.15, 0.30);
+  skirt.castShadow = true; skirt.receiveShadow = true;
+  g.add(skirt);
+
+  // 볼
+  var bowlGeo = new THREE.CylinderGeometry(0.186, 0.176, 0.14, 44);
+  bowlGeo.scale(1, 1, 1.33);
+  var bowl = new THREE.Mesh(bowlGeo, P);
+  bowl.position.set(0, 0.355, 0.40);
+  bowl.castShadow = true; bowl.receiveShadow = true;
+  g.add(bowl);
+
+  // 시트 링
+  var outer = new THREE.Shape();
+  outer.absellipse(0, 0, 0.196, 0.258, 0, Math.PI * 2, false);
+  var inner = new THREE.Path();
+  inner.absellipse(0, 0, 0.138, 0.192, 0, Math.PI * 2, true);
+  outer.holes.push(inner);
+  var ringGeo = new THREE.ExtrudeGeometry(outer, {
+    depth: 0.03, bevelEnabled: true, bevelSize: 0.006, bevelThickness: 0.006, bevelSegments: 2, curveSegments: 28
+  });
+  ringGeo.rotateX(-Math.PI / 2);
+  var ring = new THREE.Mesh(ringGeo, MAT.porcelainSoft);
+  ring.position.set(0, 0.408, 0.40);
+  ring.castShadow = true;
+  g.add(ring);
+
+  // 덮개 (닫힘)
+  var lidGeo = new THREE.SphereGeometry(1, 44, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+  lidGeo.scale(0.196, 0.055, 0.258);
+  var lid = new THREE.Mesh(lidGeo, P);
+  lid.position.set(0, 0.442, 0.43);
+  lid.castShadow = true;
+  g.add(lid);
+  var lidBase = new THREE.Mesh(new THREE.CircleGeometry(1, 44), MAT.porcelainSoft);
+  lidBase.scale.set(0.196, 0.258, 1);
+  lidBase.rotation.x = Math.PI / 2;
+  lidBase.position.set(0, 0.4425, 0.43);
+  g.add(lidBase);
+
+  // 물탱크
+  var tank = new THREE.Mesh(new RoundedBoxGeometry(0.345, 0.36, 0.175, 3, 0.028), P);
+  tank.position.set(0, 0.62, 0.10);
+  tank.castShadow = true; tank.receiveShadow = true;
+  g.add(tank);
+
+  // 탱크 상판
+  var tl = new THREE.Mesh(new RoundedBoxGeometry(0.362, 0.036, 0.20, 3, 0.014), P);
+  tl.position.set(0, 0.818, 0.10);
+  tl.castShadow = true;
+  g.add(tl);
+
+  // 버튼
+  var btn = cyl(0.030, 0.030, 0.008, 20, MAT.alu, 0, 0.840, 0.10);
+  g.add(btn);
+  var btnRing = new THREE.Mesh(new THREE.TorusGeometry(0.033, 0.004, 8, 24), MAT.alu);
+  btnRing.rotation.x = Math.PI / 2;
+  btnRing.position.set(0, 0.839, 0.10);
+  g.add(btnRing);
+
+  // 틈새 음영
+  var seam = new THREE.Mesh(new THREE.TorusGeometry(0.19, 0.004, 6, 40), MAT.dark);
+  seam.rotation.x = Math.PI / 2;
+  seam.scale.set(1, 1.34, 1);
+  seam.position.set(0, 0.437, 0.40);
+  g.add(seam);
+}
+
+/* ---------- 샤워부스 ---------- */
+function buildShower() {
+  var z = SHOWER_Z;
+
+  // 고정 유리
+  var fixedW = 0.78;
+  var fixed = box(fixedW, 1.98, 0.010, MAT.glass, X0 + fixedW / 2 + 0.02, 1.02, z);
+  fixed.castShadow = false; fixed.receiveShadow = false;
+  scene.add(fixed);
+
+  // 하부 채널
+  scene.add(box(fixedW, 0.028, 0.032, MAT.alu, X0 + fixedW / 2 + 0.02, 0.016, z));
+
+  // 여닫이 유리문
+  var hinge = new THREE.Group();
+  hinge.position.set(0.70, 0, z);
+  hinge.rotation.y = 0.30;
+  var doorW = 0.66;
+  var door = box(doorW, 1.96, 0.010, MAT.glass, -doorW / 2, 1.00, 0);
+  door.castShadow = false;
+  hinge.add(door);
+  // 도어 손잡이
+  var hb = cyl(0.010, 0.010, 0.34, 12, MAT.faucet, -doorW + 0.075, 1.28, 0.045);
+  hinge.add(hb);
+  hinge.add(cyl(0.009, 0.009, 0.05, 10, MAT.faucet, -doorW + 0.075, 1.42, 0.023));
+  hinge.add(cyl(0.009, 0.009, 0.05, 10, MAT.faucet, -doorW + 0.075, 1.14, 0.023));
+  hinge.children[2].rotation.x = Math.PI / 2;
+  hinge.children[3].rotation.x = Math.PI / 2;
+  scene.add(hinge);
+
+  // 힌지 기둥 / 벽 마감
+  scene.add(box(0.014, 2.00, 0.020, MAT.alu, 0.70, 1.00, z));
+  scene.add(box(0.014, 2.00, 0.020, MAT.alu, 0.02, 1.00, z));
+
+  // 바닥 배수구
+  var dr = new THREE.Group();
+  dr.position.set(0.36, 0, -0.86);
+  dr.add(box(0.14, 0.006, 0.14, MAT.alu, 0, 0.003, 0));
+  var dInner = box(0.115, 0.004, 0.115, MAT.dark, 0, 0.004, 0);
+  dr.add(dInner);
+  for (var i = 0; i < 5; i++) {
+    dr.add(box(0.10, 0.003, 0.008, MAT.alu, 0, 0.008, -0.04 + i * 0.02));
+  }
+  scene.add(dr);
+
+  // 샤워 수전 (우벽)
+  buildShowerFaucet();
+
+  // 코너선반 (샤워 코너 · 알루미늄 3단)
+  for (var k = 0; k < 3; k++) {
+    var shelf = buildQuarterShelf(0.175, 0.014);
+    shelf.position.set(X1 - 0.006, 0.62 + k * 0.30, Z0 + 0.006);
+    scene.add(shelf);
+  }
+}
+
+function buildQuarterShelf(r, t) {
+  var sh = new THREE.Shape();
+  sh.moveTo(0, 0);
+  sh.lineTo(0, r);
+  sh.absarc(0, 0, r, Math.PI / 2, Math.PI, false);
+  sh.lineTo(0, 0);
+  var geo = new THREE.ExtrudeGeometry(sh, { depth: t, bevelEnabled: false, curveSegments: 18 });
+  geo.rotateX(-Math.PI / 2);
+  var m = new THREE.Mesh(geo, MAT.alu);
+  m.castShadow = true; m.receiveShadow = true;
+  m.rotation.y = Math.PI / 2;
+  return m;
+}
+
+function buildShowerFaucet() {
+  var g = new THREE.Group();
+  g.position.set(X1, 0, -0.62);
+  g.rotation.y = -Math.PI / 2;
+  scene.add(g);
+
+  // 원형 플레이트
+  var plate = cyl(0.085, 0.085, 0.012, 32, MAT.faucet, 0, 1.02, 0.006);
+  plate.rotation.x = Math.PI / 2;
+  g.add(plate);
+  var knob = cyl(0.036, 0.040, 0.055, 24, MAT.faucet, 0, 1.02, 0.038);
+  knob.rotation.x = Math.PI / 2;
+  g.add(knob);
+  var kLever = box(0.055, 0.016, 0.014, MAT.faucet, 0, 1.02, 0.070);
+  kLever.rotation.z = 0.5;
+  g.add(kLever);
+
+  // 슬라이드바
+  var bar = cyl(0.011, 0.011, 1.05, 16, MAT.faucet, 0, 1.45, 0.055);
+  g.add(bar);
+  g.add(cyl(0.017, 0.017, 0.028, 16, MAT.faucet, 0, 1.95, 0.030));
+  g.add(cyl(0.017, 0.017, 0.028, 16, MAT.faucet, 0, 0.95, 0.030));
+  var b1 = cyl(0.014, 0.014, 0.03, 12, MAT.faucet, 0, 1.95, 0.015); b1.rotation.x = Math.PI / 2; g.add(b1);
+  var b2 = cyl(0.014, 0.014, 0.03, 12, MAT.faucet, 0, 0.95, 0.015); b2.rotation.x = Math.PI / 2; g.add(b2);
+
+  // 핸드샤워
+  var hs = new THREE.Group();
+  hs.position.set(0, 1.82, 0.062);
+  hs.rotation.x = -0.18;
+  var body = cyl(0.021, 0.028, 0.13, 18, MAT.faucet, 0, 0.0, 0);
+  hs.add(body);
+  var head = cyl(0.036, 0.030, 0.024, 20, MAT.faucet, 0, 0.075, 0);
+  hs.add(head);
+  var face = new THREE.Mesh(new THREE.CircleGeometry(0.031, 20), MAT.dark);
+  face.rotation.x = -Math.PI / 2;
+  face.position.set(0, 0.089, 0);
+  hs.add(face);
+  g.add(hs);
+
+  // 호스
+  var hoseCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 1.82, 0.062),
+    new THREE.Vector3(0, 1.70, 0.085),
+    new THREE.Vector3(0.0, 1.40, 0.10),
+    new THREE.Vector3(0.0, 1.10, 0.085),
+    new THREE.Vector3(0.0, 1.02, 0.070)
+  ]);
+  var hose = new THREE.Mesh(new THREE.TubeGeometry(hoseCurve, 30, 0.0085, 8, false), MAT.dark);
+  g.add(hose);
+
+  // 레인샤워 (벽 고정 암)
+  var armCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 2.10, 0.01),
+    new THREE.Vector3(0, 2.12, 0.10),
+    new THREE.Vector3(0, 2.10, 0.24)
+  ]);
+  var arm = new THREE.Mesh(new THREE.TubeGeometry(armCurve, 20, 0.014, 10, false), MAT.faucet);
+  arm.castShadow = true;
+  g.add(arm);
+  var rainY = 2.06;
+  var rain = cyl(0.135, 0.125, 0.022, 36, MAT.faucet, 0, rainY, 0.26);
+  rain.castShadow = true;
+  g.add(rain);
+  var rainFace = new THREE.Mesh(new THREE.CircleGeometry(0.118, 36), MAT.alu);
+  rainFace.rotation.x = Math.PI / 2;
+  rainFace.position.set(0, rainY - 0.012, 0.26);
+  g.add(rainFace);
+}
+
+/* ---------- 액세서리 (일자선반 · 수건걸이 · 휴지걸이) ---------- */
+function buildCeilingAccessories() {
+  // 일자 선반 1,200mm (우벽)
+  var shelf = new THREE.Group();
+  shelf.position.set(X1, 1.42, 0.45);
+  shelf.rotation.y = -Math.PI / 2;
+  scene.add(shelf);
+
+  var L = 1.20, DP = 0.15;
+  var board = box(L, 0.020, DP, MAT.alu, 0, 0, DP / 2);
+  board.castShadow = true;
+  shelf.add(board);
+  // 앞쪽 난간
+  shelf.add(box(L, 0.012, 0.012, MAT.alu, 0, 0.026, DP - 0.008));
+  // 브래킷
+  shelf.add(box(0.03, 0.026, 0.10, MAT.alu, -L / 2 + 0.08, -0.012, DP / 2));
+  shelf.add(box(0.03, 0.026, 0.10, MAT.alu, L / 2 - 0.08, -0.012, DP / 2));
+
+  // 수건 두 장
+  var t1 = rbox(0.28, 0.055, 0.16, 0.02, MAT.towel, -0.34, 0.038, DP / 2);
+  shelf.add(t1);
+  var t2 = rbox(0.28, 0.055, 0.16, 0.02, MAT.towel2, -0.34, 0.093, DP / 2);
+  shelf.add(t2);
+
+  // 욕실 용기
+  var b1 = cyl(0.030, 0.032, 0.135, 18, MAT.bottle, 0.16, 0.078, 0.075);
+  shelf.add(b1);
+  shelf.add(cyl(0.012, 0.012, 0.028, 12, MAT.dark, 0.16, 0.160, 0.075));
+  var b2 = cyl(0.026, 0.028, 0.105, 18, MAT.bottle, 0.26, 0.063, 0.075);
+  shelf.add(b2);
+  shelf.add(cyl(0.010, 0.010, 0.024, 12, MAT.dark, 0.26, 0.128, 0.075));
+  var b3 = cyl(0.022, 0.022, 0.075, 16, MAT.bottle, 0.35, 0.048, 0.075);
+  shelf.add(b3);
+
+  // 수건걸이 (우벽 · 1009 매트 SUS)
+  var tb = new THREE.Group();
+  tb.position.set(X1, 1.10, 0.42);
+  tb.rotation.y = -Math.PI / 2;
+  scene.add(tb);
+  var barLen = 0.60;
+  var bar = cyl(0.009, 0.009, barLen, 14, MAT.faucet, 0, 0, 0.055);
+  bar.rotation.z = Math.PI / 2;
+  tb.add(bar);
+  tb.add(box(0.028, 0.028, 0.055, MAT.faucet, -barLen / 2, 0, 0.028));
+  tb.add(box(0.028, 0.028, 0.055, MAT.faucet, barLen / 2, 0, 0.028));
+
+  // 걸린 수건
+  var towel = new THREE.Group();
+  var front = rbox(0.32, 0.50, 0.022, 0.01, MAT.towel, 0, -0.25, 0.075);
+  var back = rbox(0.32, 0.42, 0.022, 0.01, MAT.towel, 0, -0.21, 0.040);
+  var foldTop = cyl(0.021, 0.021, 0.32, 14, MAT.towel, 0, 0, 0.0575);
+  foldTop.rotation.z = Math.PI / 2;
+  towel.add(front); towel.add(back); towel.add(foldTop);
+  tb.add(towel);
+
+  // 휴지걸이 (좌벽 · 변기 옆)
+  var ph = new THREE.Group();
+  ph.position.set(X0, 0.72, 0.26);
+  ph.rotation.y = Math.PI / 2;
+  scene.add(ph);
+  ph.add(box(0.15, 0.11, 0.012, MAT.faucet, 0, 0, 0.006));
+  var arm2 = cyl(0.008, 0.008, 0.09, 10, MAT.faucet, 0, 0.02, 0.05);
+  arm2.rotation.x = Math.PI / 2;
+  ph.add(arm2);
+  var roll = cyl(0.055, 0.055, 0.10, 22, MAT.towel, 0, 0.02, 0.095);
+  roll.rotation.x = Math.PI / 2;
+  ph.add(roll);
+  var rollHole = cyl(0.018, 0.018, 0.104, 16, MAT.dark, 0, 0.02, 0.095);
+  rollHole.rotation.x = Math.PI / 2;
+  ph.add(rollHole);
+}
+
+/* ============================================================
+   10. 타일 적용
+   ============================================================ */
+function textureFor(p, kind, rx, ry) {
+  var cv = tileCanvas(p, kind);
+  var t = new THREE.CanvasTexture(cv);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = THREE.RepeatWrapping;
+  t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(rx, ry);
+  t.anisotropy = maxAniso;
+  t.needsUpdate = true;
+  return t;
+}
+
+function applyTiles() {
+  var wp = TILE[state.wall];
+  var fp = TILE[state.floor];
+
+  for (var i = 0; i < wallSurfaces.length; i++) {
+    var s = wallSurfaces[i];
+    var old = s.mesh.material.map;
+    var tex = textureFor(wp, 'wall', s.w / (wp.wall.w / 1000), s.h / (wp.wall.h / 1000));
+    s.mesh.material.map = tex;
+    s.mesh.material.bumpMap = tex;
+    s.mesh.material.bumpScale = 0.016;
+    s.mesh.material.roughness = wp.rough;
+    s.mesh.material.color.setHex(0xffffff);
+    s.mesh.material.needsUpdate = true;
+    if (old) old.dispose();
+  }
+
+  var oldF = floorSurface.material.map;
+  var ftex = textureFor(fp, 'floor', RW / (fp.floor.w / 1000), RD / (fp.floor.h / 1000));
+  floorSurface.material.map = ftex;
+  floorSurface.material.bumpMap = ftex;
+  floorSurface.material.bumpScale = 0.018;
+  floorSurface.material.roughness = fp.rough + 0.06;
+  floorSurface.material.color.setHex(0xffffff);
+  floorSurface.material.needsUpdate = true;
+  if (oldF) oldF.dispose();
+
+  updateReadout();
+  scheduleMirror();
+}
+
+function updateReadout() {
+  var w = TILE[state.wall], f = TILE[state.floor];
+  var el = $('#readout');
+  el.textContent = '벽 ' + w.name + ' ' + w.wall.w + '×' + w.wall.h + ' · 바닥 ' + f.name + ' ' + f.floor.w + '×' + f.floor.h;
+}
+
+/* ============================================================
+   11. 수전 색상
+   ============================================================ */
+function applyFaucet() {
+  var f = FAUCETS[state.faucet];
+  MAT.faucet.color.setHex(f.color);
+  MAT.faucet.metalness = f.metal;
+  MAT.faucet.roughness = f.rough;
+  MAT.faucet.needsUpdate = true;
+  scheduleMirror();
+}
+
+/* ============================================================
+   12. 수납장 모드
+   ============================================================ */
+function updateCabinetVisibility() {
+  cabinet.flapGroup.visible = state.storeMode === 'flap';
+  cabinet.slideGroup.visible = state.storeMode === 'slide';
+}
+
+/* ============================================================
+   13. 거울 반사 갱신
+   ============================================================ */
+var mirrorPending = false;
+function scheduleMirror() {
+  mirrorPending = true;
+}
+function updateMirror() {
+  if (!cubeCam || !mirrorGroup) return;
+  mirrorGroup.visible = false;
+  cubeCam.update(renderer, scene);
+  mirrorGroup.visible = true;
+  MAT.mirror.envMap = cubeRT.texture;
+  MAT.mirror.needsUpdate = true;
+}
+
+/* ============================================================
+   14. 카메라 프리셋
+   ============================================================ */
+var camTween = null;
+function flyTo(pos, tgt, dur) {
+  camTween = {
+    t: 0, dur: dur || 950,
+    p0: camera.position.clone(), p1: new THREE.Vector3(pos[0], pos[1], pos[2]),
+    t0: controls.target.clone(), t1: new THREE.Vector3(tgt[0], tgt[1], tgt[2])
+  };
+  controls.autoRotate = false;
+}
+function easeInOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+/* ============================================================
+   15. UI
+   ============================================================ */
+var toastTimer = null;
+function toast(msg) {
+  var el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.classList.remove('on'); }, 1700);
+}
+
+function chipEl(opts) {
+  var b = document.createElement('button');
+  b.className = 'chip' + (opts.on ? ' on' : '');
+  b.setAttribute('aria-pressed', opts.on ? 'true' : 'false');
+  var html = '';
+  if (opts.thumb) html += '<span class="sw" style="background-image:url(' + opts.thumb + ')"></span>';
+  else if (opts.dot) html += '<span class="dot" style="background:' + opts.dot + '"></span>';
+  else if (opts.glyph) html += '<span class="gl">' + opts.glyph + '</span>';
+  html += '<span class="lb">' + opts.label + '</span>';
+  if (opts.sub) html += '<span class="sub">' + opts.sub + '</span>';
+  b.innerHTML = html;
+  b.onclick = opts.onClick;
+  return b;
+}
+
+function renderTileChips() {
+  var box = $('#tileChips');
+  box.innerHTML = '';
+  var kind = state.tileTarget;
+  for (var i = 0; i < TILE_ORDER.length; i++) {
+    (function (p) {
+      var spec = kind === 'floor' ? p.floor : p.wall;
+      var on = state[kind] === p.key;
+      box.appendChild(chipEl({
+        label: p.name, sub: spec.w + '×' + spec.h, thumb: tileThumb(p), on: on,
+        onClick: function () {
+          state[kind] = p.key;
+          applyTiles();
+          renderTileChips();
+          toast((kind === 'floor' ? '바닥' : '벽') + ' · ' + p.name + ' ' + spec.w + '×' + spec.h);
+        }
+      }));
+    })(TILE[TILE_ORDER[i]]);
+  }
+  var segs = $$('#tileSeg button');
+  for (var j = 0; j < segs.length; j++) {
+    var isOn = segs[j].getAttribute('data-target') === kind;
+    segs[j].className = isOn ? 'on' : '';
+  }
+}
+
+function renderLightChips() {
+  var box = $('#lightChips');
+  box.innerHTML = '';
+  for (var i = 0; i < TEMP_ORDER.length; i++) {
+    (function (t) {
+      var c = '#' + new THREE.Color(t.color).getHexString();
+      box.appendChild(chipEl({
+        label: t.name, sub: t.k, dot: c, on: state.temp === t.key,
+        onClick: function () {
+          state.temp = t.key;
+          applyTemp();
+          renderLightChips();
+          toast('조명 · ' + t.name + ' ' + t.k);
+        }
+      }));
+    })(TEMPS[TEMP_ORDER[i]]);
+  }
+}
+
+function renderFaucetChips() {
+  var box = $('#faucetChips');
+  box.innerHTML = '';
+  var keys = ['nickel', 'black', 'chrome'];
+  for (var i = 0; i < keys.length; i++) {
+    (function (f) {
+      box.appendChild(chipEl({
+        label: f.name, sub: i === 0 ? '기본' : '', dot: f.css, on: state.faucet === f.key,
+        onClick: function () {
+          state.faucet = f.key;
+          applyFaucet();
+          renderFaucetChips();
+          toast('수전 · ' + f.name);
+        }
+      }));
+    })(FAUCETS[keys[i]]);
+  }
+}
+
+function renderCamChips() {
+  var box = $('#camChips');
+  box.innerHTML = '';
+  var order = ['all', 'vanity', 'shower', 'top'];
+  var glyph = { all: '▣', vanity: '◐', shower: '◍', top: '▦' };
+  for (var i = 0; i < order.length; i++) {
+    (function (c) {
+      box.appendChild(chipEl({
+        label: c.name, glyph: glyph[c.key], on: state.cam === c.key,
+        onClick: function () {
+          state.cam = c.key;
+          flyTo(c.pos, c.tgt, 950);
+          renderCamChips();
+        }
+      }));
+    })(CAMS[order[i]]);
+  }
+  // 자동 회전 토글
+  box.appendChild(chipEl({
+    label: '자동 회전', sub: state.autoRotate ? 'ON' : 'OFF', glyph: '↻', on: state.autoRotate,
+    onClick: function () {
+      state.autoRotate = !state.autoRotate;
+      controls.autoRotate = state.autoRotate;
+      renderCamChips();
+      toast('자동 회전 ' + (state.autoRotate ? '켜짐' : '꺼짐'));
+    }
+  }));
+}
+
+function renderStoreChips() {
+  var box = $('#storeChips');
+  box.innerHTML = '';
+  var modes = [{ k: 'flap', n: '플랩장' }, { k: 'slide', n: '슬라이드장' }];
+  for (var i = 0; i < modes.length; i++) {
+    (function (m) {
+      box.appendChild(chipEl({
+        label: m.n, sub: '상부장', glyph: m.k === 'flap' ? '△' : '⇄', on: state.storeMode === m.k,
+        onClick: function () {
+          state.storeMode = m.k;
+          updateCabinetVisibility();
+          renderStoreChips();
+          toast('상부장 · ' + m.n);
+        }
+      }));
+    })(modes[i]);
+  }
+  box.appendChild(chipEl({
+    label: state.storeOpen ? '문 닫기' : '문 열기', sub: state.storeOpen ? '열림' : '닫힘',
+    glyph: state.storeOpen ? '⊟' : '⊞', on: state.storeOpen,
+    onClick: function () {
+      state.storeOpen = !state.storeOpen;
+      renderStoreChips();
+    }
+  }));
+}
+
+function bindUI() {
+  var tabs = $$('.tabs .tab');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].onclick = function () {
+      var name = this.getAttribute('data-tab');
+      for (var k = 0; k < tabs.length; k++) tabs[k].className = 'tab' + (tabs[k] === this ? ' on' : '');
+      var panes = $$('.pane');
+      for (var p = 0; p < panes.length; p++) {
+        panes[p].className = 'pane' + (panes[p].getAttribute('data-pane') === name ? ' on' : '');
+      }
+      if (state.panelMin) togglePanel(false);
+    };
+  }
+  var segs = $$('#tileSeg button');
+  for (var s = 0; s < segs.length; s++) {
+    segs[s].onclick = function () {
+      state.tileTarget = this.getAttribute('data-target');
+      renderTileChips();
+    };
+  }
+  $('#grab').onclick = function () { togglePanel(!state.panelMin); };
+  $('#infoBtn').onclick = function () { $('#info').classList.add('on'); };
+  $('#infoClose').onclick = function () { $('#info').classList.remove('on'); };
+  $('#info').onclick = function (e) { if (e.target === this) this.classList.remove('on'); };
+}
+
+function togglePanel(min) {
+  state.panelMin = min;
+  $('#panel').classList.toggle('min', min);
+  var panes = $$('.pane');
+  for (var i = 0; i < panes.length; i++) {
+    if (min) panes[i].style.display = 'none';
+    else panes[i].style.display = '';
+  }
+  $$('.tabs')[0].style.display = min ? 'none' : '';
+  $('#hint').style.bottom = min ? 'calc(env(safe-area-inset-bottom) + 66px)' : '';
+}
+
+/* ============================================================
+   16. 렌더 루프
+   ============================================================ */
+var prevT = 0, started = false;
+
+function loop() {
+  requestAnimationFrame(loop);
+  var dt = Math.min(clock.getDelta(), 0.05);
+
+  // 카메라 이동
+  if (camTween) {
+    camTween.t += dt * 1000;
+    var k = Math.min(1, camTween.t / camTween.dur);
+    var e = easeInOut(k);
+    camera.position.lerpVectors(camTween.p0, camTween.p1, e);
+    controls.target.lerpVectors(camTween.t0, camTween.t1, e);
+    if (k >= 1) {
+      camTween = null;
+      controls.autoRotate = state.autoRotate;
+    }
+  }
+
+  // 수납장 애니메이션
+  if (cabinet.flap) {
+    var target = (state.storeOpen && state.storeMode === 'flap') ? -1.38 : 0;
+    var kk = 1 - Math.exp(-dt * 11);
+    cabinet.flap.rotation.x += (target - cabinet.flap.rotation.x) * kk;
+
+    var open = state.storeOpen && state.storeMode === 'slide';
+    var tx = open ? cabinet.slideBHome : cabinet.slideAHome;
+    cabinet.slideA.position.x += (tx - cabinet.slideA.position.x) * kk;
+    cabinet.slideA.position.z += ((open ? 0.052 : 0.022) - cabinet.slideA.position.z) * kk;
+  }
+
+  controls.update();
+
+  if (mirrorPending) {
+    mirrorPending = false;
+    updateMirror();
+  }
+
+  renderer.render(scene, camera);
+  window.__bath.frames++;
+
+  if (!started) {
+    started = true;
+    window.__bath.ready = true;
+    setTimeout(function () { $('#load').classList.add('off'); }, 120);
+    setTimeout(function () {
+      var h = $('#hint');
+      if (h) h.style.opacity = '0';
+    }, 6500);
+  }
+}
+
+/* ============================================================
+   17. 리사이즈 · 시작
+   ============================================================ */
+function onResize() {
+  if (!renderer) return;
+  var w = window.innerWidth, h = window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(w, h, false);
+}
+window.addEventListener('resize', onResize);
+window.addEventListener('orientationchange', function () { setTimeout(onResize, 240); });
+
+boot();
+
+bindUI();
+renderTileChips();
+renderLightChips();
+renderFaucetChips();
+renderCamChips();
+renderStoreChips();
+</script>
+</body>
+</html>
