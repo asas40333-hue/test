@@ -280,10 +280,10 @@ var FAUCETS = {
 };
 
 var CAMS = {
-  all:    { key: 'all',    name: '전체',     pos: [1.34, 1.80, 2.58], tgt: [-0.08, 0.98, -0.02] },
-  vanity: { key: 'vanity', name: '세면대',   pos: [0.54, 1.58, 1.02], tgt: [-0.62, 1.22, 0.72] },
-  shower: { key: 'shower', name: '샤워부스', pos: [0.08, 1.66, 0.62], tgt: [0.30, 1.10, -0.82] },
-  top:    { key: 'top',    name: '위에서',   pos: [0.98, 3.15, 1.38], tgt: [-0.05, 0.35, -0.25] }
+  all:    { key: 'all',    name: '전체',     pos: [1.16, 1.76, 2.16], tgt: [-0.05, 0.94, -0.04] },
+  vanity: { key: 'vanity', name: '세면대',   pos: [0.48, 1.52, 1.00], tgt: [-0.64, 1.20, 0.74] },
+  shower: { key: 'shower', name: '샤워부스', pos: [0.02, 1.62, 0.55], tgt: [0.30, 1.06, -0.84] },
+  top:    { key: 'top',    name: '위에서',   pos: [0.92, 3.05, 1.32], tgt: [-0.05, 0.35, -0.25] }
 };
 
 var state = {
@@ -387,7 +387,7 @@ function makeTileCanvas(p, tw, th) {
   }
 
   // 줄눈(메지) 4mm
-  var joint = Math.max(6, Math.round((4.0 / tw) * W));
+  var joint = Math.max(8, Math.round((5.0 / tw) * W));
   var half = joint / 2;
   g.fillStyle = p.grout;
   g.fillRect(0, 0, W, half);
@@ -396,8 +396,8 @@ function makeTileCanvas(p, tw, th) {
   g.fillRect(W - half, 0, half, H);
 
   // 타일 모서리 음영 + 하이라이트 (줄눈을 또렷하게)
-  g.strokeStyle = 'rgba(0,0,0,.26)';
-  g.lineWidth = Math.max(2, joint * 0.30);
+  g.strokeStyle = 'rgba(0,0,0,.34)';
+  g.lineWidth = Math.max(3, joint * 0.38);
   g.strokeRect(half + 1, half + 1, W - joint - 2, H - joint - 2);
   g.strokeStyle = 'rgba(255,255,255,.55)';
   g.lineWidth = Math.max(1.5, joint * 0.16);
@@ -479,7 +479,14 @@ function boot() {
   scene = new THREE.Scene();
 
   camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.03, 60);
-  camera.position.set(CAMS.all.pos[0] * 1.35, CAMS.all.pos[1] + 0.55, CAMS.all.pos[2] * 1.28);
+  var fit0 = portraitFit();
+  camera.fov = fit0.fov;
+  camera.position.set(
+    CAMS.all.tgt[0] + (CAMS.all.pos[0] - CAMS.all.tgt[0]) * 1.28,
+    CAMS.all.tgt[1] + (CAMS.all.pos[1] - CAMS.all.tgt[1]) * 1.28 + 0.25,
+    CAMS.all.tgt[2] + (CAMS.all.pos[2] - CAMS.all.tgt[2]) * 1.28
+  );
+  camera.updateProjectionMatrix();
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(CAMS.all.tgt[0], CAMS.all.tgt[1], CAMS.all.tgt[2]);
@@ -559,6 +566,7 @@ function initMaterials() {
   MAT.alu = new THREE.MeshStandardMaterial({ color: 0xc4c9cd, roughness: 0.38, metalness: 0.85, envMapIntensity: 1.0 });
   MAT.dark = new THREE.MeshStandardMaterial({ color: 0x2b2f34, roughness: 0.65, metalness: 0.25 });
   MAT.white = new THREE.MeshStandardMaterial({ color: 0xf4f4f2, roughness: 0.78, metalness: 0.0 });
+  MAT.frame = new THREE.MeshStandardMaterial({ color: 0xdcdad5, roughness: 0.6, metalness: 0.05 });
   MAT.glass = new THREE.MeshPhysicalMaterial({
     color: 0xdff0f2, transparent: true, opacity: 0.20, roughness: 0.04, metalness: 0.0,
     transmission: 0.0, side: THREE.DoubleSide, depthWrite: false, envMapIntensity: 1.5,
@@ -783,9 +791,9 @@ function buildFixtures() {
 /* ---------- 도어 ---------- */
 function buildDoor() {
   var w = DOOR.r - DOOR.l;
-  var frame = MAT.white;
-  // 상·하·좌·우 도어 프레임
-  var t = 0.045, d = 0.11;
+  var frame = MAT.frame;
+  // 상·하·좌·우 도어 프레임 (립게 · 벽면과 같은 높이)
+  var t = 0.032, d = 0.016;
   scene.add(box(w + t * 2, t, d, frame, (DOOR.l + DOOR.r) / 2, DOOR.h + t / 2, Z1));
   scene.add(box(t, DOOR.h, d, frame, DOOR.l - t / 2, DOOR.h / 2, Z1));
   scene.add(box(t, DOOR.h, d, frame, DOOR.r + t / 2, DOOR.h / 2, Z1));
@@ -1368,11 +1376,24 @@ function updateMirror() {
    14. 카메라 프리셋
    ============================================================ */
 var camTween = null;
+function portraitFit() {
+  var a = window.innerWidth / Math.max(1, window.innerHeight);
+  if (a >= 0.9) return { s: 1, fov: 48 };
+  return { s: Math.min(1.75, Math.pow(0.9 / a, 0.62)), fov: 56 };
+}
 function flyTo(pos, tgt, dur) {
+  var fit = portraitFit();
+  var p1 = new THREE.Vector3(pos[0], pos[1], pos[2]);
+  var t1 = new THREE.Vector3(tgt[0], tgt[1], tgt[2]);
+  p1.sub(t1).multiplyScalar(fit.s).add(t1);
+  if (camera.fov !== fit.fov) {
+    camera.fov = fit.fov;
+    camera.updateProjectionMatrix();
+  }
   camTween = {
     t: 0, dur: dur || 950,
-    p0: camera.position.clone(), p1: new THREE.Vector3(pos[0], pos[1], pos[2]),
-    t0: controls.target.clone(), t1: new THREE.Vector3(tgt[0], tgt[1], tgt[2])
+    p0: camera.position.clone(), p1: p1,
+    t0: controls.target.clone(), t1: t1
   };
   controls.autoRotate = false;
 }
@@ -1625,6 +1646,8 @@ function onResize() {
   if (!renderer) return;
   var w = window.innerWidth, h = window.innerHeight;
   camera.aspect = w / h;
+  var fit = portraitFit();
+  if (camera.fov !== fit.fov) camera.fov = fit.fov;
   camera.updateProjectionMatrix();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(w, h, false);
