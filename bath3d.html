@@ -242,25 +242,25 @@ var TILE = {
   insta: {
     key: 'insta', name: '인스타 화이트', note: '밝은 화이트',
     wall: { w: 300, h: 600 }, floor: { w: 300, h: 300 },
-    base: '#f3f3f1', a: '#e7e7e5', b: '#fcfcfb', grain: 7, grout: '#e5e5e3',
+    base: '#f3f3f1', a: '#e7e7e5', b: '#fcfcfb', grain: 7, grout: '#d3d3d0',
     rough: 0.40, speck: 0.05, vein: 0.02
   },
   sahara: {
     key: 'sahara', name: '사하라 화이트', note: '따뜻한 베이지',
     wall: { w: 300, h: 600 }, floor: { w: 300, h: 600 },
-    base: '#f1ebdf', a: '#e5dbca', b: '#fbf7ef', grain: 10, grout: '#ddd3c1',
+    base: '#f1ebdf', a: '#e5dbca', b: '#fbf7ef', grain: 10, grout: '#d4c8b3',
     rough: 0.45, speck: 0.10, vein: 0.06
   },
   jangin: {
     key: 'jangin', name: '장인 3360', note: '웜그레이 스톤',
     wall: { w: 600, h: 600 }, floor: { w: 600, h: 600 },
-    base: '#b6b0a8', a: '#a29b92', b: '#cac4bc', grain: 13, grout: '#9c958c',
+    base: '#b6b0a8', a: '#a29b92', b: '#cac4bc', grain: 13, grout: '#8b847b',
     rough: 0.50, speck: 0.14, vein: 0.10
   },
   epic: {
     key: 'epic', name: '에픽 6603', note: '미디엄 그레이',
     wall: { w: 600, h: 600 }, floor: { w: 600, h: 600 },
-    base: '#75797e', a: '#62666b', b: '#898d92', grain: 13, grout: '#5e6267',
+    base: '#75797e', a: '#62666b', b: '#898d92', grain: 13, grout: '#4e5257',
     rough: 0.42, speck: 0.16, vein: 0.12
   }
 };
@@ -280,7 +280,7 @@ var FAUCETS = {
 };
 
 var CAMS = {
-  all:    { key: 'all',    name: '전체',     pos: [2.02, 1.78, 2.38], tgt: [-0.05, 0.92, -0.15] },
+  all:    { key: 'all',    name: '전체',     pos: [1.34, 1.80, 2.58], tgt: [-0.08, 0.98, -0.02] },
   vanity: { key: 'vanity', name: '세면대',   pos: [0.54, 1.58, 1.02], tgt: [-0.62, 1.22, 0.72] },
   shower: { key: 'shower', name: '샤워부스', pos: [0.08, 1.66, 0.62], tgt: [0.30, 1.10, -0.82] },
   top:    { key: 'top',    name: '위에서',   pos: [0.98, 3.15, 1.38], tgt: [-0.05, 0.35, -0.25] }
@@ -310,12 +310,20 @@ function hashSeed(str) {
   return h >>> 0;
 }
 
-var tileCanvasCache = {};
+var tileCanvasCache = new Map();
+function cacheGet(k) { return tileCanvasCache.get(k); }
+function cacheSet(k, v) {
+  tileCanvasCache.set(k, v);
+  while (tileCanvasCache.size > 4) {
+    var first = tileCanvasCache.keys().next().value;
+    tileCanvasCache.delete(first);
+  }
+}
 
 function makeTileCanvas(p, tw, th) {
-  var K = 512 / 300;
-  var W = Math.round(tw * K / 2) * 2;
-  var H = Math.round(th * K / 2) * 2;
+  var W, H;
+  if (tw <= 300) { W = 768; H = Math.round(768 * th / tw / 2) * 2; }
+  else { W = 1024; H = Math.round(1024 * th / tw / 2) * 2; }
   var cv = document.createElement('canvas');
   cv.width = W; cv.height = H;
   var g = cv.getContext('2d');
@@ -325,14 +333,14 @@ function makeTileCanvas(p, tw, th) {
   g.fillRect(0, 0, W, H);
 
   // 큰 얼룩(스톤 결)
-  var blotches = Math.round(16 + p.vein * 90);
+  var blotches = Math.round(22 + p.vein * 110);
   for (var i = 0; i < blotches; i++) {
-    var cx = rnd() * W, cy = rnd() * H, r = (0.10 + rnd() * 0.30) * Math.min(W, H);
+    var cx = rnd() * W, cy = rnd() * H, r = (0.04 + rnd() * 0.13) * Math.min(W, H);
     var grd = g.createRadialGradient(cx, cy, 0, cx, cy, r);
     var warm = rnd() > 0.5;
     grd.addColorStop(0, warm ? p.a : p.b);
     grd.addColorStop(1, 'rgba(0,0,0,0)');
-    g.globalAlpha = 0.10 + rnd() * 0.14;
+    g.globalAlpha = 0.05 + rnd() * 0.09;
     g.fillStyle = grd;
     g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill();
   }
@@ -378,8 +386,8 @@ function makeTileCanvas(p, tw, th) {
     g.globalAlpha = 1;
   }
 
-  // 줄눈(메지) 3mm
-  var joint = Math.max(4, Math.round((3.0 / tw) * W));
+  // 줄눈(메지) 4mm
+  var joint = Math.max(6, Math.round((4.0 / tw) * W));
   var half = joint / 2;
   g.fillStyle = p.grout;
   g.fillRect(0, 0, W, half);
@@ -387,24 +395,25 @@ function makeTileCanvas(p, tw, th) {
   g.fillRect(0, 0, half, H);
   g.fillRect(W - half, 0, half, H);
 
-  // 타일 모서리 음영 + 하이라이트
-  g.strokeStyle = 'rgba(0,0,0,.16)';
-  g.lineWidth = 1.4;
-  g.strokeRect(half + 0.8, half + 0.8, W - joint - 1.6, H - joint - 1.6);
-  g.strokeStyle = 'rgba(255,255,255,.42)';
-  g.lineWidth = 1;
-  g.strokeRect(half + 2.4, half + 2.4, W - joint - 4.8, H - joint - 4.8);
+  // 타일 모서리 음영 + 하이라이트 (줄눈을 또렷하게)
+  g.strokeStyle = 'rgba(0,0,0,.26)';
+  g.lineWidth = Math.max(2, joint * 0.30);
+  g.strokeRect(half + 1, half + 1, W - joint - 2, H - joint - 2);
+  g.strokeStyle = 'rgba(255,255,255,.55)';
+  g.lineWidth = Math.max(1.5, joint * 0.16);
+  g.strokeRect(half + joint * 0.20, half + joint * 0.20, W - joint * 1.4, H - joint * 1.4);
 
   return cv;
 }
 
 function tileCanvas(p, kind) {
   var key = p.key + '|' + kind;
-  if (!tileCanvasCache[key]) {
-    var s = kind === 'floor' ? p.floor : p.wall;
-    tileCanvasCache[key] = makeTileCanvas(p, s.w, s.h);
-  }
-  return tileCanvasCache[key];
+  var hit = cacheGet(key);
+  if (hit) return hit;
+  var s = kind === 'floor' ? p.floor : p.wall;
+  var cv = makeTileCanvas(p, s.w, s.h);
+  cacheSet(key, cv);
+  return cv;
 }
 
 // 칩 썸네일(타일 한 장 + 줄눈)
@@ -572,36 +581,51 @@ function initMaterials() {
    ============================================================ */
 var wallSurfaces = [];
 var floorSurface = null;
+var wallMat = null, floorMat = null;
 
 function makeSurfaceMaterial() {
   return new THREE.MeshStandardMaterial({
-    color: 0xffffff, roughness: 0.4, metalness: 0.0, envMapIntensity: 0.65,
-    side: THREE.FrontSide, bumpScale: 0.014
+    color: 0xffffff, roughness: 0.4, metalness: 0.0, envMapIntensity: 0.6,
+    side: THREE.FrontSide, bumpScale: 0.02
   });
 }
 
 function addWall(w, h, pos, rotY) {
-  var mat = makeSurfaceMaterial();
-  var mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+  var geo = new THREE.PlaneGeometry(w, h);
+  var mesh = new THREE.Mesh(geo, wallMat);
   mesh.position.set(pos[0], pos[1], pos[2]);
   mesh.rotation.y = rotY;
   mesh.receiveShadow = true;
   mesh.userData.w = w;
   mesh.userData.h = h;
+  mesh.userData.baseUV = Float32Array.from(geo.attributes.uv.array);
   scene.add(mesh);
   wallSurfaces.push({ mesh: mesh, w: w, h: h });
   return mesh;
 }
 
+function setUVScale(mesh, w, h, tw, th) {
+  var uv = mesh.geometry.attributes.uv;
+  var base = mesh.userData.baseUV;
+  if (!base) return;
+  for (var i = 0; i < uv.count; i++) {
+    uv.array[i * 2] = base[i * 2] * (w / tw);
+    uv.array[i * 2 + 1] = base[i * 2 + 1] * (h / th);
+  }
+  uv.needsUpdate = true;
+}
+
 function buildRoom() {
   initMaterials();
+  wallMat = makeSurfaceMaterial();
+  floorMat = makeSurfaceMaterial();
+  floorMat.roughness = 0.5;
 
   // 바닥
-  var fmat = makeSurfaceMaterial();
-  fmat.roughness = 0.46;
-  floorSurface = new THREE.Mesh(new THREE.PlaneGeometry(RW, RD), fmat);
+  floorSurface = new THREE.Mesh(new THREE.PlaneGeometry(RW, RD), floorMat);
   floorSurface.rotation.x = -Math.PI / 2;
   floorSurface.receiveShadow = true;
+  floorSurface.userData.baseUV = Float32Array.from(floorSurface.geometry.attributes.uv.array);
   scene.add(floorSurface);
 
   // 벽 (안쪽 면이 보이도록: 바깥에서 보면 잘려 보이는 도면형 연출)
@@ -769,27 +793,8 @@ function buildDoor() {
   var thr = box(w + 0.04, 0.018, 0.13, MAT.alu, (DOOR.l + DOOR.r) / 2, 0.009, Z1);
   scene.add(thr);
 
-  // 문짝 (열린 상태)
-  var hinge = new THREE.Group();
-  hinge.position.set(DOOR.r - 0.02, 0, Z1 + 0.005);
-  hinge.rotation.y = 1.62;
-  var leafW = w - 0.03;
-  var leaf = new THREE.Mesh(new THREE.BoxGeometry(leafW, DOOR.h - 0.02, 0.035), MAT.white);
-  leaf.position.set(-leafW / 2, (DOOR.h - 0.02) / 2, 0);
-  leaf.castShadow = true;
-  hinge.add(leaf);
-  // 무광 유리창
-  var gl = new THREE.Mesh(new THREE.BoxGeometry(leafW - 0.15, DOOR.h - 0.62, 0.038), MAT.frosted);
-  gl.position.set(-leafW / 2, DOOR.h * 0.55, 0);
-  hinge.add(gl);
-  // 손잡이
-  var hb = cyl(0.011, 0.011, 0.12, 12, MAT.alu, -leafW + 0.09, 1.02, 0.045);
-  hb.rotation.x = Math.PI / 2;
-  hinge.add(hb);
-  var hb2 = cyl(0.011, 0.011, 0.12, 12, MAT.alu, -leafW + 0.09, 1.02, -0.045);
-  hb2.rotation.x = Math.PI / 2;
-  hinge.add(hb2);
-  scene.add(hinge);
+  // 벽마감 몰딩 (안쪽)
+  scene.add(box(w + t * 2, 0.02, 0.03, MAT.white, (DOOR.l + DOOR.r) / 2, DOOR.h + t, Z1 - 0.055));
 }
 
 /* ---------- 세면대 · 거울 · 상부장 ---------- */
@@ -1270,13 +1275,13 @@ function buildCeilingAccessories() {
 /* ============================================================
    10. 타일 적용
    ============================================================ */
-function textureFor(p, kind, rx, ry) {
+function textureFor(p, kind) {
   var cv = tileCanvas(p, kind);
   var t = new THREE.CanvasTexture(cv);
   t.colorSpace = THREE.SRGBColorSpace;
   t.wrapS = THREE.RepeatWrapping;
   t.wrapT = THREE.RepeatWrapping;
-  t.repeat.set(rx, ry);
+  t.repeat.set(1, 1);
   t.anisotropy = maxAniso;
   t.needsUpdate = true;
   return t;
@@ -1286,28 +1291,32 @@ function applyTiles() {
   var wp = TILE[state.wall];
   var fp = TILE[state.floor];
 
+  var wtex = textureFor(wp, 'wall');
+  var oldW = wallMat.map;
+  wallMat.map = wtex;
+  wallMat.bumpMap = wtex;
+  wallMat.bumpScale = 0.02;
+  wallMat.roughness = wp.rough;
+  wallMat.color.setHex(0xffffff);
+  wallMat.needsUpdate = true;
+  if (oldW && oldW !== wtex) oldW.dispose();
+
+  var tw = wp.wall.w / 1000, th = wp.wall.h / 1000;
   for (var i = 0; i < wallSurfaces.length; i++) {
     var s = wallSurfaces[i];
-    var old = s.mesh.material.map;
-    var tex = textureFor(wp, 'wall', s.w / (wp.wall.w / 1000), s.h / (wp.wall.h / 1000));
-    s.mesh.material.map = tex;
-    s.mesh.material.bumpMap = tex;
-    s.mesh.material.bumpScale = 0.016;
-    s.mesh.material.roughness = wp.rough;
-    s.mesh.material.color.setHex(0xffffff);
-    s.mesh.material.needsUpdate = true;
-    if (old) old.dispose();
+    setUVScale(s.mesh, s.w, s.h, tw, th);
   }
 
-  var oldF = floorSurface.material.map;
-  var ftex = textureFor(fp, 'floor', RW / (fp.floor.w / 1000), RD / (fp.floor.h / 1000));
-  floorSurface.material.map = ftex;
-  floorSurface.material.bumpMap = ftex;
-  floorSurface.material.bumpScale = 0.018;
-  floorSurface.material.roughness = fp.rough + 0.06;
-  floorSurface.material.color.setHex(0xffffff);
-  floorSurface.material.needsUpdate = true;
-  if (oldF) oldF.dispose();
+  var ftex = textureFor(fp, 'floor');
+  var oldF = floorMat.map;
+  floorMat.map = ftex;
+  floorMat.bumpMap = ftex;
+  floorMat.bumpScale = 0.022;
+  floorMat.roughness = fp.rough + 0.08;
+  floorMat.color.setHex(0xffffff);
+  floorMat.needsUpdate = true;
+  if (oldF && oldF !== ftex) oldF.dispose();
+  setUVScale(floorSurface, RW, RD, fp.floor.w / 1000, fp.floor.h / 1000);
 
   updateReadout();
   scheduleMirror();
