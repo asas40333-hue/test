@@ -1395,6 +1395,14 @@
       toast("반장님 " + form.foreman + " 불러왔습니다");
     });
 
+    /* 현장 입력 → 문구에 바로 반영 */
+    [["fSiteName","siteName"],["fAddr","addr"],["fDoor","door"]].forEach(function(pair){
+      $(pair[0]).addEventListener("input", function(e){
+        form[pair[1]] = e.target.value;
+        updatePreview(); saveDraft();
+      });
+    });
+
     /* 연락처 자동 하이픈 */
     [["fPhone","phone"],["fMgr","mgr"]].forEach(function(pair){
       $(pair[0]).addEventListener("input", function(e){
