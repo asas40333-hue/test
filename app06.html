@@ -708,7 +708,7 @@
     } else {
       state.sites = SITE_DEFAULT.map(function(s){ return {id:s.id, name:s.name, addr:s.addr, door:s.door, mgr:s.mgr}; });
       state.extraCautions = [];
-      seedSamples(false);
+      state.items = [];
     }
     if (!state.sites.length) state.sites = SITE_DEFAULT.slice();
   }
@@ -950,7 +950,7 @@
     var h = "";
     if (!list.length){
       h = '<div class="empty"><b>작업지시가 없습니다</b>' +
-        (state.items.length ? "필터를 ‘전체’로 바꿔 보세요." : "‘작업지시’ 탭에서 첫 지시를 만들어 보세요. 예시 4건도 넣어 볼 수 있습니다.") + '</div>';
+        (state.items.length ? "필터를 ‘전체’로 바꿔 보세요." : "‘작업지시’ 탭에서 첫 지시를 만들면 됩니다. 둘러보려면 ‘정산’ 탭의 ‘예시 4건 불러오기’를 눌러 보세요.") + '</div>';
     } else {
       list.forEach(function(it){
         var c = calcMoney(it);
