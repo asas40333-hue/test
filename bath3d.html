@@ -590,7 +590,7 @@ function initMaterials() {
    ============================================================ */
 var wallSurfaces = [];
 var floorSurface = null;
-var wallMat = null, floorMat = null;
+var wallMat = null, floorMat = null, ghostMat = null, ghostPanel = null;
 
 function makeSurfaceMaterial() {
   return new THREE.MeshStandardMaterial({
@@ -643,14 +643,15 @@ function buildRoom() {
   addWall(RD, RH, [X1, RH / 2, 0], -Math.PI / 2);      // 우벽  (-x)
 
   // 우벽 고스트 패널: 바깥에서 볼 때 벽이 사라져 액세서리가 떠 보이지 않도록
-  var ghostMat = new THREE.MeshStandardMaterial({
-    color: 0xf2f2f0, roughness: 0.92, metalness: 0.0,
-    transparent: true, opacity: 0.34, side: THREE.FrontSide, depthWrite: false
+  ghostMat = new THREE.MeshStandardMaterial({
+    color: 0xffffff, roughness: 0.55, metalness: 0.0,
+    transparent: true, opacity: 0.42, side: THREE.FrontSide, depthWrite: false, envMapIntensity: 0.3
   });
-  var ghost = new THREE.Mesh(new THREE.PlaneGeometry(RD, RH), ghostMat);
-  ghost.position.set(X1 + 0.003, RH / 2, 0);
-  ghost.rotation.y = Math.PI / 2;
-  scene.add(ghost);
+  ghostPanel = new THREE.Mesh(new THREE.PlaneGeometry(RD, RH), ghostMat);
+  ghostPanel.position.set(X1 + 0.004, RH / 2, 0);
+  ghostPanel.rotation.y = Math.PI / 2;
+  ghostPanel.userData.baseUV = Float32Array.from(ghostPanel.geometry.attributes.uv.array);
+  scene.add(ghostPanel);
 
   // 앞벽 — 도어 개구부
   var wL = DOOR.l - X0;              // 0.68
@@ -1318,6 +1319,11 @@ function applyTiles() {
   for (var i = 0; i < wallSurfaces.length; i++) {
     var s = wallSurfaces[i];
     setUVScale(s.mesh, s.w, s.h, tw, th);
+  }
+  if (ghostPanel) {
+    ghostMat.map = wtex;
+    ghostMat.needsUpdate = true;
+    setUVScale(ghostPanel, RD, RH, tw, th);
   }
 
   var ftex = textureFor(fp, 'floor');
