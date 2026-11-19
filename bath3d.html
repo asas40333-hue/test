@@ -471,7 +471,7 @@ function boot() {
   renderer.setSize(window.innerWidth, window.innerHeight, false);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.02;
+  renderer.toneMappingExposure = 0.94;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   maxAniso = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
@@ -702,7 +702,7 @@ function buildCeiling() {
    ============================================================ */
 var hemi, spotA, spotB, ledLight, fanLight;
 function buildLights() {
-  hemi = new THREE.HemisphereLight(0xdfe9f5, 0x3a4048, 0.55);
+  hemi = new THREE.HemisphereLight(0xdfe9f5, 0x3a4048, 0.38);
   scene.add(hemi);
 
   spotA = new THREE.SpotLight(0xffffff, 18, 6.5, Math.PI * 0.40, 0.62, 1.6);
@@ -750,7 +750,7 @@ function applyTemp() {
   MAT.ledWarm.emissive.copy(c);
   for (var i = 0; i < downlights.length; i++) downlights[i].material.emissive.copy(c);
   hemi.color.setHex(0xdfe9f5).lerp(c, 0.18);
-  hemi.intensity = 0.42 + t.intensity * 0.004;
+  hemi.intensity = 0.30 + t.intensity * 0.004;
   if (MAT.ledStrip) MAT.ledStrip.emissive.copy(c);
   scheduleMirror();
 }
@@ -792,17 +792,10 @@ function buildFixtures() {
 function buildDoor() {
   var w = DOOR.r - DOOR.l;
   var frame = MAT.frame;
-  // 상·하·좌·우 도어 프레임 (립게 · 벽면과 같은 높이)
+  // 문턱만 남기고 프레임은 생략(문 없는 개구부 연출)
   var t = 0.032, d = 0.016;
-  scene.add(box(w + t * 2, t, d, frame, (DOOR.l + DOOR.r) / 2, DOOR.h + t / 2, Z1));
-  scene.add(box(t, DOOR.h, d, frame, DOOR.l - t / 2, DOOR.h / 2, Z1));
-  scene.add(box(t, DOOR.h, d, frame, DOOR.r + t / 2, DOOR.h / 2, Z1));
-  // 문턱
   var thr = box(w + 0.04, 0.018, 0.13, MAT.alu, (DOOR.l + DOOR.r) / 2, 0.009, Z1);
   scene.add(thr);
-
-  // 벽마감 몰딩 (안쪽)
-  scene.add(box(w + t * 2, 0.02, 0.03, MAT.white, (DOOR.l + DOOR.r) / 2, DOOR.h + t, Z1 - 0.055));
 }
 
 /* ---------- 세면대 · 거울 · 상부장 ---------- */
