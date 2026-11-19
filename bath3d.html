@@ -200,6 +200,18 @@
   }
 }
 </script>
+<script>
+  // three.js 로딩 실패 시 안내 (CDN 차단·오프라인)
+  setTimeout(function () {
+    if (!window.__bath || !window.__bath.frames) {
+      var f = document.getElementById('fatal');
+      if (f) {
+        f.style.display = 'block';
+        f.textContent = '3D 라이브러리(three.js)를 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 새로고침해 주세요.';
+      }
+    }
+  }, 12000);
+</script>
 
 <script type="module">
 import * as THREE from 'three';
