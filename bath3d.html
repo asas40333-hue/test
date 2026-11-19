@@ -281,8 +281,8 @@ var FAUCETS = {
 
 var CAMS = {
   all:    { key: 'all',    name: '전체',     pos: [1.16, 1.76, 2.16], tgt: [-0.05, 0.94, -0.04] },
-  vanity: { key: 'vanity', name: '세면대',   pos: [0.48, 1.52, 1.00], tgt: [-0.64, 1.20, 0.74] },
-  shower: { key: 'shower', name: '샤워부스', pos: [0.02, 1.62, 0.55], tgt: [0.30, 1.06, -0.84] },
+  vanity: { key: 'vanity', name: '세면대',   pos: [0.66, 1.54, 2.02], tgt: [-0.58, 1.38, 0.78] },
+  shower: { key: 'shower', name: '샤워부스', pos: [0.36, 1.70, 1.10], tgt: [0.28, 1.14, -0.82] },
   top:    { key: 'top',    name: '위에서',   pos: [0.92, 3.05, 1.32], tgt: [-0.05, 0.35, -0.25] }
 };
 
@@ -564,6 +564,7 @@ function initMaterials() {
   MAT.faucet = new THREE.MeshStandardMaterial({ color: 0xb9bec3, roughness: 0.44, metalness: 0.86, envMapIntensity: 1.15 });
   MAT.gold = new THREE.MeshStandardMaterial({ color: 0xd2ab63, roughness: 0.28, metalness: 1.0, envMapIntensity: 1.2 });
   MAT.alu = new THREE.MeshStandardMaterial({ color: 0xc4c9cd, roughness: 0.38, metalness: 0.85, envMapIntensity: 1.0 });
+  MAT.accent = new THREE.MeshStandardMaterial({ color: 0xc0c4c7, roughness: 0.34, metalness: 0.88, envMapIntensity: 1.0 });
   MAT.dark = new THREE.MeshStandardMaterial({ color: 0x2b2f34, roughness: 0.65, metalness: 0.25 });
   MAT.white = new THREE.MeshStandardMaterial({ color: 0xf4f4f2, roughness: 0.78, metalness: 0.0 });
   MAT.frame = new THREE.MeshStandardMaterial({ color: 0xdcdad5, roughness: 0.6, metalness: 0.05 });
@@ -1084,10 +1085,10 @@ function buildShower() {
   door.castShadow = false;
   hinge.add(door);
   // 도어 손잡이
-  var hb = cyl(0.010, 0.010, 0.34, 12, MAT.faucet, -doorW + 0.075, 1.28, 0.045);
+  var hb = cyl(0.010, 0.010, 0.34, 12, MAT.accent, -doorW + 0.075, 1.28, 0.045);
   hinge.add(hb);
-  hinge.add(cyl(0.009, 0.009, 0.05, 10, MAT.faucet, -doorW + 0.075, 1.42, 0.023));
-  hinge.add(cyl(0.009, 0.009, 0.05, 10, MAT.faucet, -doorW + 0.075, 1.14, 0.023));
+  hinge.add(cyl(0.009, 0.009, 0.05, 10, MAT.accent, -doorW + 0.075, 1.42, 0.023));
+  hinge.add(cyl(0.009, 0.009, 0.05, 10, MAT.accent, -doorW + 0.075, 1.14, 0.023));
   hinge.children[2].rotation.x = Math.PI / 2;
   hinge.children[3].rotation.x = Math.PI / 2;
   scene.add(hinge);
@@ -1241,11 +1242,11 @@ function buildCeilingAccessories() {
   tb.rotation.y = -Math.PI / 2;
   scene.add(tb);
   var barLen = 0.60;
-  var bar = cyl(0.009, 0.009, barLen, 14, MAT.faucet, 0, 0, 0.055);
+  var bar = cyl(0.009, 0.009, barLen, 14, MAT.accent, 0, 0, 0.055);
   bar.rotation.z = Math.PI / 2;
   tb.add(bar);
-  tb.add(box(0.028, 0.028, 0.055, MAT.faucet, -barLen / 2, 0, 0.028));
-  tb.add(box(0.028, 0.028, 0.055, MAT.faucet, barLen / 2, 0, 0.028));
+  tb.add(box(0.028, 0.028, 0.055, MAT.accent, -barLen / 2, 0, 0.028));
+  tb.add(box(0.028, 0.028, 0.055, MAT.accent, barLen / 2, 0, 0.028));
 
   // 걸린 수건
   var towel = new THREE.Group();
@@ -1261,8 +1262,8 @@ function buildCeilingAccessories() {
   ph.position.set(X0, 0.72, 0.26);
   ph.rotation.y = Math.PI / 2;
   scene.add(ph);
-  ph.add(box(0.15, 0.11, 0.012, MAT.faucet, 0, 0, 0.006));
-  var arm2 = cyl(0.008, 0.008, 0.09, 10, MAT.faucet, 0, 0.02, 0.05);
+  ph.add(box(0.15, 0.11, 0.012, MAT.accent, 0, 0, 0.006));
+  var arm2 = cyl(0.008, 0.008, 0.09, 10, MAT.accent, 0, 0.02, 0.05);
   arm2.rotation.x = Math.PI / 2;
   ph.add(arm2);
   var roll = cyl(0.055, 0.055, 0.10, 22, MAT.towel, 0, 0.02, 0.095);
