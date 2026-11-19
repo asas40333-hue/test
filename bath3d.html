@@ -642,6 +642,16 @@ function buildRoom() {
   addWall(RD, RH, [X0, RH / 2, 0], Math.PI / 2);       // 좌벽  (+x)
   addWall(RD, RH, [X1, RH / 2, 0], -Math.PI / 2);      // 우벽  (-x)
 
+  // 우벽 고스트 패널: 바깥에서 볼 때 벽이 사라져 액세서리가 떠 보이지 않도록
+  var ghostMat = new THREE.MeshStandardMaterial({
+    color: 0xf2f2f0, roughness: 0.92, metalness: 0.0,
+    transparent: true, opacity: 0.34, side: THREE.FrontSide, depthWrite: false
+  });
+  var ghost = new THREE.Mesh(new THREE.PlaneGeometry(RD, RH), ghostMat);
+  ghost.position.set(X1 + 0.003, RH / 2, 0);
+  ghost.rotation.y = Math.PI / 2;
+  scene.add(ghost);
+
   // 앞벽 — 도어 개구부
   var wL = DOOR.l - X0;              // 0.68
   var wR = X1 - DOOR.r;              // 0.18
