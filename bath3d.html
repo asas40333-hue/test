@@ -268,8 +268,8 @@ var TILE_ORDER = ['insta', 'sahara', 'jangin', 'epic'];
 
 var TEMPS = {
   warm:    { key: 'warm',    name: '전구색',  k: '3000K', color: 0xffb877, intensity: 20 },
-  neutral: { key: 'neutral', name: '주백색',  k: '4000K', color: 0xffe0c0, intensity: 17 },
-  cool:    { key: 'cool',    name: '주광색',  k: '5700K', color: 0xe8f1ff, intensity: 15 }
+  neutral: { key: 'neutral', name: '주백색',  k: '4000K', color: 0xfff0e2, intensity: 18 },
+  cool:    { key: 'cool',    name: '주광색',  k: '5700K', color: 0xe9f2ff, intensity: 16 }
 };
 var TEMP_ORDER = ['warm', 'neutral', 'cool'];
 
@@ -280,10 +280,10 @@ var FAUCETS = {
 };
 
 var CAMS = {
-  all:    { key: 'all',    name: '전체',     pos: [1.16, 1.76, 2.16], tgt: [-0.05, 0.94, -0.04] },
-  vanity: { key: 'vanity', name: '세면대',   pos: [0.62, 1.60, 2.25], tgt: [-0.50, 1.34, 0.55] },
-  shower: { key: 'shower', name: '샤워부스', pos: [-0.28, 1.74, 1.18], tgt: [0.26, 1.18, -0.86] },
-  top:    { key: 'top',    name: '위에서',   pos: [0.02, 3.02, 1.28], tgt: [-0.02, 0.30, -0.28] }
+  all:    { key: 'all',    name: '전체',     pos: [1.16, 1.76, 2.16], tgt: [-0.05, 0.94, -0.04], fov: 50 },
+  vanity: { key: 'vanity', name: '세면대',   pos: [0.62, 1.60, 2.25], tgt: [-0.50, 1.34, 0.55], fov: 54 },
+  shower: { key: 'shower', name: '샤워부스', pos: [0.10, 1.72, 0.62], tgt: [0.14, 1.12, -0.95], fov: 62 },
+  top:    { key: 'top',    name: '위에서',   pos: [0.02, 3.02, 1.28], tgt: [-0.02, 0.30, -0.28], fov: 48 }
 };
 
 var state = {
@@ -516,7 +516,7 @@ function boot() {
 
   requestAnimationFrame(loop);
   setTimeout(function () {
-    flyTo(CAMS.all.pos, CAMS.all.tgt, 1500);
+    flyTo(CAMS.all.pos, CAMS.all.tgt, 1500, CAMS.all.fov);
   }, 120);
 }
 
@@ -1386,13 +1386,15 @@ function portraitFit() {
   if (a >= 0.9) return { s: 1, fov: 48 };
   return { s: Math.min(1.75, Math.pow(0.9 / a, 0.62)), fov: 56 };
 }
-function flyTo(pos, tgt, dur) {
+function flyTo(pos, tgt, dur, fov) {
   var fit = portraitFit();
   var p1 = new THREE.Vector3(pos[0], pos[1], pos[2]);
   var t1 = new THREE.Vector3(tgt[0], tgt[1], tgt[2]);
   p1.sub(t1).multiplyScalar(fit.s).add(t1);
-  if (camera.fov !== fit.fov) {
-    camera.fov = fit.fov;
+  var useFov = fit.fov;
+  if (fov && fit.s === 1) useFov = fov;
+  if (camera.fov !== useFov) {
+    camera.fov = useFov;
     camera.updateProjectionMatrix();
   }
   camTween = {
@@ -1506,7 +1508,7 @@ function renderCamChips() {
         label: c.name, glyph: glyph[c.key], on: state.cam === c.key,
         onClick: function () {
           state.cam = c.key;
-          flyTo(c.pos, c.tgt, 950);
+          flyTo(c.pos, c.tgt, 950, c.fov);
           renderCamChips();
         }
       }));
