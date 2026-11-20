@@ -1230,6 +1230,9 @@
   }
   function saveItem(){
     if (!validate()) return;
+    /* 입력 단계에서 옛 호칭이 들어와도 저장값은 ‘팀장’으로 맞춘다 */
+    form.foreman = normForeman(form.foreman);
+    $("fForeman").value = form.foreman;
     var data = {
       siteId:form.siteId || "",
       siteName:form.siteName.trim(),
