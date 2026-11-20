@@ -676,6 +676,7 @@ const DELETED_KEY = 'syh_deleted_ids_v1';   // 사용자가 직접 지운 기본
 const BACKUP_KEY  = 'syh_last_backup_v1';   // 마지막으로 백업 파일을 내려받은 시각(ms)
 const FIRST_KEY   = 'syh_first_record_v1';  // 첫 기록을 남긴 시각(ms)
 const NOTE_KEY    = 'syh_backup_note_v1';   // 백업 안내를 '나중에'로 접어 둔 시각(ms)
+const MIGRATE_KEY = 'syh_migrate_v1';       // 이미 저장된 기본 글에 적용한 보정 번호
 const BACKUP_DAYS = 30;
 const WEEK = ['일','월','화','수','목','금','토'];
 const MAX_PHOTOS = 6;
@@ -946,7 +947,26 @@ function load(){
     });
     if(changed) localStorage.setItem(STORE_KEY, JSON.stringify(arr));
   }catch(e){}
+  migrateSample(arr);
   return arr;
+}
+/* 이미 저장된 기본 글을 새 문안·사진으로 옮긴다.
+   사용자가 직접 고친 글(문안이 다른 글)은 그대로 둔다. */
+function migrateSample(arr){
+  if(Number(lsGet(MIGRATE_KEY) || 0) >= 1) return;
+  const fresh = SAMPLE.find(d => d && d.id === 's-omnibook-20261120');
+  let touched = false;
+  if(fresh) arr.forEach(e => {
+    if(!e || e.id !== fresh.id) return;
+    if(String(e.body || '').indexOf('오전 실측을 마치고 한빛아파트 주차장에 차를 세웠다') !== 0) return;
+    e.body = fresh.body;
+    e.photos = fresh.photos.slice();
+    touched = true;
+  });
+  try{
+    if(touched) localStorage.setItem(STORE_KEY, JSON.stringify(arr));
+    localStorage.setItem(MIGRATE_KEY, '1');
+  }catch(e){}
 }
 function save(list){
   try{
