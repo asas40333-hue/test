@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#2b1d14">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>30초 반장님 작업지시 · 외주정산 | 메종플러스</title>
+<title>30초 팀장님 작업지시 · 외주정산 | 메종플러스</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <style>
   :root{
@@ -276,7 +276,7 @@
 <header>
   <div class="hbar">
     <div class="brand-logo">M+</div>
-    <div class="brand-title">반장님 작업지시 · 외주정산</div>
+    <div class="brand-title">팀장님 작업지시 · 외주정산</div>
     <div class="h-tag">06호</div>
   </div>
   <div class="sumline" id="sumLine">
@@ -335,7 +335,7 @@
     <section class="card">
       <div class="card-head">
         <div class="step">2</div>
-        <h2>공종 · 반장님</h2>
+        <h2>공종 · 팀장님</h2>
         <div class="hint">칩은 여러 개 OK</div>
       </div>
       <div class="field">
@@ -355,8 +355,8 @@
       <div class="field">
         <div class="frow2">
           <div class="grow">
-            <label class="flabel" for="fForeman">반장님 성함</label>
-            <input type="text" id="fForeman" placeholder="예: 김반장" maxlength="16" autocomplete="off">
+            <label class="flabel" for="fForeman">팀장님 성함</label>
+            <input type="text" id="fForeman" placeholder="예: 김팀장" maxlength="16" autocomplete="off">
           </div>
           <div class="narrow" style="width:160px">
             <label class="flabel" for="fPhone">연락처</label>
@@ -364,6 +364,7 @@
           </div>
         </div>
         <div class="chips" id="recentForemen" style="margin-top:5px"></div>
+        <div class="muted" style="font-size:10.3px;padding:3px 0 0">가구·싱크 도급은 ‘사장님’으로 적어도 됩니다</div>
       </div>
     </section>
 
@@ -424,7 +425,7 @@
       </div>
     </section>
 
-    <button type="button" class="btn-primary" id="kakaoBtn">📋 반장님 카톡 작업지시 복사</button>
+    <button type="button" class="btn-primary" id="kakaoBtn">📋 팀장님 카톡 작업지시 복사</button>
     <button type="button" class="link-btn" id="prevToggle" style="display:block;margin:6px auto 0">👀 보낼 문구 미리보기</button>
     <div class="prev hide" id="prevBox"><pre id="prevText"></pre></div>
 
@@ -433,7 +434,7 @@
       <button type="button" class="btn-line hide" id="cancelBtn" style="width:100%;margin-top:6px">수정 취소</button>
     </div>
 
-    <div class="brandline">메종플러스 · 30초 반장님 작업지시 · 외주정산 (1일 1앱 06호)<br>만든이 모네</div>
+    <div class="brandline">메종플러스 · 30초 팀장님 작업지시 · 외주정산 (1일 1앱 06호)<br>만든이 모네</div>
   </section>
 
   <!-- ══ 탭 2 · 지시내역 ══ -->
@@ -499,7 +500,7 @@
       </div>
     </section>
 
-    <div class="brandline">메종플러스 · 30초 반장님 작업지시 · 외주정산 (1일 1앱 06호)<br>만든이 모네</div>
+    <div class="brandline">메종플러스 · 30초 팀장님 작업지시 · 외주정산 (1일 1앱 06호)<br>만든이 모네</div>
   </section>
 
 </main>
@@ -557,6 +558,10 @@
     return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){
       return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];
     });
+  }
+  /* 예전 저장값의 옛 호칭(\uBC18\uC7A5)을 ‘팀장’으로 맞춘다 — 이름 뒤에 붙은 호칭만 교체 */
+  function normForeman(v){
+    return String(v == null ? "" : v).trim().replace(/\s*\uBC18\uC7A5님?$/, "팀장").replace(/\s+/g, " ").trim();
   }
   function pad(n){ return (n < 10 ? "0" : "") + n; }
   function todayISO(){
@@ -694,7 +699,7 @@
           mgr:String(it.mgr||""),
           trades:(Object.prototype.toString.call(it.trades) === "[object Array]") ? it.trades.slice() : [],
           date:cleanDate(it.date),
-          foreman:String(it.foreman||""),
+          foreman:normForeman(it.foreman),
           phone:fmtPhone(it.phone),
           work:String(it.work||""),
           cautions:(Object.prototype.toString.call(it.cautions) === "[object Array]") ? it.cautions.map(String) : [],
@@ -724,6 +729,7 @@
       ["siteId","siteName","addr","door","mgr","date","foreman","phone","work"].forEach(function(k){
         if (typeof d[k] === "string") form[k] = d[k];
       });
+      form.foreman = normForeman(form.foreman);
       form.phone = fmtPhone(form.phone);
       form.mgr = fmtPhone(form.mgr);
       if (Object.prototype.toString.call(d.trades) === "[object Array]") form.trades = d.trades.slice();
@@ -741,22 +747,22 @@
     var s1 = state.sites[0], s2 = state.sites[1] || state.sites[0];
     state.items = [
       {id:uid(), siteId:s1.id, siteName:s1.name, addr:s1.addr, door:s1.door, mgr:s1.mgr,
-       trades:["wood","furn"], date:t, foreman:"김반장", phone:"010-2345-6789",
+       trades:["wood","furn"], date:t, foreman:"김팀장", phone:"010-2345-6789",
        work:"안방 붙박이장 1800×2400 실측 완료\n문틀 3곳 몰딩 교체, 걸레받이 12m",
        cautions:["주차 등록 필요","엘베 보양 엄수","작업 후 사진 전송"],
        amount:120000, kind:"daily", tax:"free", pay:"wait", created:now-3000},
       {id:uid(), siteId:s1.id, siteName:s1.name, addr:s1.addr, door:s1.door, mgr:s1.mgr,
-       trades:["tile"], date:addDays(t,-2), foreman:"박반장", phone:"010-3456-7890",
+       trades:["tile"], date:addDays(t,-2), foreman:"박팀장", phone:"010-3456-7890",
        work:"욕실 벽타일 300×600 시공, 줄눈 마감\n바닥 600×600 3.2㎡",
        cautions:["층간 누수 확인","작업 후 사진 전송"],
        amount:900000, kind:"contract", tax:"biz_excl", pay:"done", created:now-2000},
       {id:uid(), siteId:s2.id, siteName:s2.name, addr:s2.addr, door:s2.door, mgr:s2.mgr,
-       trades:["elec"], date:addDays(t,2), foreman:"이반장", phone:"010-4567-8901",
+       trades:["elec"], date:addDays(t,2), foreman:"이팀장", phone:"010-4567-8901",
        work:"거실·주방 등기구 8개 교체, 콘센트 4구 추가",
        cautions:["전원 차단 후 작업","소음 09~17시"],
        amount:350000, kind:"contract", tax:"cash", pay:"wait", created:now-1000},
       {id:uid(), siteId:s2.id, siteName:s2.name, addr:s2.addr, door:s2.door, mgr:s2.mgr,
-       trades:["paper","clean"], date:addDays(t,-5), foreman:"최반장", phone:"010-5678-9012",
+       trades:["paper","clean"], date:addDays(t,-5), foreman:"최팀장", phone:"010-5678-9012",
        work:"도배 3.5L 2회, 장판 1.8T 22평\n준공청소 포함",
        cautions:["폐기물 자루 정리"],
        amount:1100000, kind:"contract", tax:"biz_incl", pay:"done", created:now-500}
@@ -831,7 +837,7 @@
     list = list.slice(0, 6);
     var h = "";
     if (list.length){
-      h += '<span style="font-size:10.3px;font-weight:800;color:#b3a493;letter-spacing:-.2px;align-self:center">최근 반장님</span>';
+      h += '<span style="font-size:10.3px;font-weight:800;color:#b3a493;letter-spacing:-.2px;align-self:center">최근 팀장님</span>';
       list.forEach(function(it){
         h += '<button type="button" class="chip" data-fore="' + esc(it.foreman) + '" data-forephone="' + esc(it.phone) + '"' +
           ' style="font-size:11px;padding:3px 8px">' + esc(it.foreman) + '</button>';
@@ -873,7 +879,7 @@
     L.push("작업일 ▸ " + (o.date ? dmd(o.date) : "미정"));
     var tl = tradeLabels(o.trades);
     if (tl.length) L.push("공종 ▸ " + tl.join(" · "));
-    if (o.foreman) L.push("반장님 ▸ " + o.foreman + (o.phone ? " " + o.phone : ""));
+    if (o.foreman) L.push("팀장님 ▸ " + o.foreman + (o.phone ? " " + o.phone : ""));
     if (o.work && String(o.work).trim()){
       L.push("");
       L.push("■ 작업 내용");
@@ -1077,7 +1083,7 @@
       '<col style="width:9%"><col style="width:19%"><col style="width:12%"><col style="width:10%">' +
       '<col style="width:11%"><col style="width:7%"><col style="width:9%"><col style="width:8%">' +
       '<col style="width:9%"><col style="width:6%"></colgroup>' +
-      '<tr><th>작업일</th><th>현장</th><th>공종</th><th>반장님</th><th class="r">총액</th>' +
+      '<tr><th>작업일</th><th>현장</th><th>공종</th><th>팀장님</th><th class="r">총액</th>' +
       '<th class="c">세무</th><th class="r">부가세</th><th class="r">원천</th><th class="r">실지급</th><th class="c">상태</th></tr>';
     if (!all.length){
       h += '<tr><td colspan="10" class="c">기록 없음</td></tr>';
@@ -1122,7 +1128,7 @@
     });
     h += '</table></div>';
     h += '<div><table><colgroup><col style="width:52%"><col style="width:48%"></colgroup>' +
-      '<tr><th>반장님</th><th class="r">미지급 실지급액</th></tr>';
+      '<tr><th>팀장님</th><th class="r">미지급 실지급액</th></tr>';
     if (!wait.length){
       h += '<tr><td colspan="2">미지급 없음 — 모두 지급 완료</td></tr>';
     } else {
@@ -1141,7 +1147,7 @@
     }
     h += '</table></div></div>';
 
-    h += '<div class="p-foot">이 문서는 메종플러스 ‘30초 반장님 작업지시 · 외주정산’에서 출력했습니다. ' +
+    h += '<div class="p-foot">이 문서는 메종플러스 ‘30초 팀장님 작업지시 · 외주정산’에서 출력했습니다. ' +
       '부가세는 사업자 구분(별도·포함), 원천징수는 프리랜서 3.3%(소득세 3% + 지방소득세 0.3%) 기준으로 계산했습니다. ' +
       '실지급액은 세금·부가세를 반영해 실제로 지급할 금액입니다.</div>';
     return h;
@@ -1380,7 +1386,7 @@
       toast("작업일 " + dmd(v));
     });
 
-    /* 반장님 */
+    /* 팀장님 */
     $("fForeman").addEventListener("input", function(e){
       form.foreman = e.target.value;
       updatePreview(); saveDraft();
@@ -1392,7 +1398,7 @@
       $("fForeman").value = form.foreman;
       $("fPhone").value = form.phone;
       updatePreview(); saveDraft();
-      toast("반장님 " + form.foreman + " 불러왔습니다");
+      toast("팀장님 " + form.foreman + " 불러왔습니다");
     });
 
     /* 현장 입력 → 문구에 바로 반영 */
