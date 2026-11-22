@@ -917,12 +917,28 @@ function viewTips(site){
    화면: 케어 캘린더 + 후기·소개
    ========================================================= */
 function viewCare(site){
+  var isAdmin = (MODE === 'admin');
   var ms = milestones(site);
-  var h = '<div class="sec-title">케어 일정 <span class="sub">준공일 ' + fmtShort(site.endDate) + ' 기준 자동 계산</span></div>';
+  var h = '<div class="sec-title">' + (isAdmin ? '케어 일정' : '우리 집 케어 일정') + ' <span class="sub">준공일 ' + fmtShort(site.endDate) + ' 기준</span></div>';
+  if(!isAdmin){
+    h += '<div class="note" style="margin-bottom:14px">준공 후 3개월·1년·3년에 맞춰 담당자가 먼저 연락드리고, 그때그때 필요한 점검을 도와드립니다. 따로 신청하지 않으셔도 됩니다.</div>';
+  }
   h += ms.map(function(m){
     var st = msState(m.date);
-    var msg = careMessage(m.key, site);
     var id = 'care-' + m.key;
+    var body = '';
+    if(isAdmin){
+      var msg = careMessage(m.key, site);
+      body = '<div class="ms-desc muted" style="margin-top:4px">보내는 곳: ' + esc(site.customerName ? customerCall(site) : '고객님') + (site.customerPhone ? ' · ' + esc(site.customerPhone) : ' · 연락처 미등록') + '</div>' +
+        '<div style="margin-top:10px"><button class="mini" data-act="toggle-msg" data-msg="' + id + '">✉️ 안내 문구 보기</button></div>' +
+        '<div id="' + id + '-wrap" style="display:none;margin-top:10px">' +
+          '<textarea class="msg-box" id="' + id + '">' + esc(msg) + '</textarea>' +
+          '<div class="btn-row" style="margin-top:8px">' +
+            '<button class="btn btn-primary btn-sm" data-act="copy" data-src="' + id + '">📋 문구 복사</button>' +
+            '<button class="btn btn-line btn-sm" data-act="sms" data-src="' + id + '">💬 문자 앱 열기</button>' +
+          '</div>' +
+        '</div>';
+    }
     return '<div class="ms ' + (st.cls === 'done' ? 'done' : '') + '">' +
       '<div class="dot">' + (st.cls === 'done' ? '✓' : '') + '</div>' +
       '<div class="ms-card">' +
@@ -931,38 +947,36 @@ function viewCare(site){
           '<div class="ms-date">' + fmtDate(m.date) + '</div>' +
         '</div><span class="tag ' + st.cls + '">' + esc(st.label) + '</span></div>' +
         '<div class="ms-desc">' + esc(m.desc) + '</div>' +
-        '<div class="ms-desc muted" style="margin-top:4px">보내는 곳: ' + esc(site.customerName ? customerCall(site) : '고객님') + (site.customerPhone ? ' · ' + esc(site.customerPhone) : ' · 연락처 미등록') + '</div>' +
-        '<div style="margin-top:10px"><button class="mini" data-act="toggle-msg" data-msg="' + id + '">✉️ 안내 문구 보기</button></div>' +
-        '<div id="' + id + '-wrap" style="display:none;margin-top:10px">' +
-          '<textarea class="msg-box" id="' + id + '">' + esc(msg) + '</textarea>' +
-          '<div class="btn-row" style="margin-top:8px">' +
-            '<button class="btn btn-primary btn-sm" data-act="copy" data-src="' + id + '">📋 문구 복사</button>' +
-            '<button class="btn btn-line btn-sm" data-act="sms" data-src="' + id + '">💬 문자 앱 열기</button>' +
-          '</div>' +
-        '</div>' +
+        body +
       '</div></div>';
   }).join('');
 
-  h += '<div class="sec-title">후기 · 소개 요청</div>';
-  var rev = careMessage('review', site);
-  var ref = reviewMessage(site);
-  h += '<div class="card">' +
-    '<div style="font-size:15.5px;font-weight:800;color:var(--navy);margin-bottom:4px">⭐ 후기 요청 문자</div>' +
-    '<div class="small muted" style="margin-bottom:9px">준공 2주 뒤(' + fmtShort(addDays(site.endDate, 14)) + ') 보내는 문구입니다.</div>' +
-    '<textarea class="msg-box" id="msg-review">' + esc(rev) + '</textarea>' +
-    '<div class="btn-row" style="margin-top:8px">' +
-      '<button class="btn btn-primary btn-sm" data-act="copy" data-src="msg-review">📋 문구 복사</button>' +
-      '<button class="btn btn-line btn-sm" data-act="sms" data-src="msg-review">💬 문자 앱 열기</button>' +
-    '</div></div>';
-  h += '<div class="card">' +
-    '<div style="font-size:15.5px;font-weight:800;color:var(--navy);margin-bottom:4px">🤝 소개 감사 문자</div>' +
-    '<div class="small muted" style="margin-bottom:9px">소개해 주신 분께 보내는 감사 문구입니다.</div>' +
-    '<textarea class="msg-box" id="msg-refer">' + esc(ref) + '</textarea>' +
-    '<div class="btn-row" style="margin-top:8px">' +
-      '<button class="btn btn-primary btn-sm" data-act="copy" data-src="msg-refer">📋 문구 복사</button>' +
-      '<button class="btn btn-line btn-sm" data-act="sms" data-src="msg-refer">💬 문자 앱 열기</button>' +
-    '</div></div>';
-  h += '<div class="foot-note">문구에는 고객명·주소·보증 날짜가 자동으로 들어갑니다. 관리 → 집 정보에서 고객명을 넣으면 더 자연스러워집니다.</div>';
+  if(isAdmin){
+    h += '<div class="sec-title">후기 · 소개 요청</div>';
+    var rev = careMessage('review', site);
+    var ref = reviewMessage(site);
+    h += '<div class="card">' +
+      '<div style="font-size:15.5px;font-weight:800;color:var(--navy);margin-bottom:4px">⭐ 후기 요청 문자</div>' +
+      '<div class="small muted" style="margin-bottom:9px">준공 2주 뒤(' + fmtShort(addDays(site.endDate, 14)) + ') 보내는 문구입니다.</div>' +
+      '<textarea class="msg-box" id="msg-review">' + esc(rev) + '</textarea>' +
+      '<div class="btn-row" style="margin-top:8px">' +
+        '<button class="btn btn-primary btn-sm" data-act="copy" data-src="msg-review">📋 문구 복사</button>' +
+        '<button class="btn btn-line btn-sm" data-act="sms" data-src="msg-review">💬 문자 앱 열기</button>' +
+      '</div></div>';
+    h += '<div class="card">' +
+      '<div style="font-size:15.5px;font-weight:800;color:var(--navy);margin-bottom:4px">🤝 소개 감사 문자</div>' +
+      '<div class="small muted" style="margin-bottom:9px">소개해 주신 분께 보내는 감사 문구입니다.</div>' +
+      '<textarea class="msg-box" id="msg-refer">' + esc(ref) + '</textarea>' +
+      '<div class="btn-row" style="margin-top:8px">' +
+        '<button class="btn btn-primary btn-sm" data-act="copy" data-src="msg-refer">📋 문구 복사</button>' +
+        '<button class="btn btn-line btn-sm" data-act="sms" data-src="msg-refer">💬 문자 앱 열기</button>' +
+      '</div></div>';
+    h += '<div class="foot-note">문구에는 고객명·주소·보증 날짜가 자동으로 들어갑니다. 집 정보에서 고객명을 넣으면 더 자연스러워집니다.</div>';
+  } else {
+    h += '<div class="card small" style="color:#4a4d55;line-height:1.75">' +
+      '날짜가 되면 담당자가 직접 연락드리니 따로 챙기지 않으셔도 됩니다. 그 전에 불편한 곳이 생기면 <b>AS 접수</b>로 언제든 알려 주세요.' +
+      '</div>';
+  }
   return h;
 }
 
