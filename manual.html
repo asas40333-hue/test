@@ -688,7 +688,7 @@ function render(){
     return;
   }
   if(TAB === 'home') v.innerHTML = (MODE === 'admin' ? viewHomeAdmin(site) : viewHome(site));
-  else if(TAB === 'materials') v.innerHTML = viewMaterials(site);
+  else if(TAB === 'materials'){ v.innerHTML = viewMaterials(site); applyMatFilter(site); }
   else if(TAB === 'tips') v.innerHTML = viewTips(site);
   else if(TAB === 'care') v.innerHTML = viewCare(site);
   else if(TAB === 'as') v.innerHTML = viewAS(site);
@@ -851,22 +851,21 @@ function viewMaterials(site){
 
   h += '<div class="mat-status small muted" id="matCount" style="margin:0 2px 8px">' + list.length + '개 표시</div>';
 
-  if(list.length){
-    h += list.map(function(m){
-      return '<div class="mat" data-mid="' + esc(m.id) + '">' +
+  h += mats.map(function(m){
+      var blob = [m.name, m.brand, m.spec, m.color, m.place, m.cat].join(' ').toLowerCase();
+      return '<div class="mat" data-mid="' + esc(m.id) + '" data-cat="' + esc(m.cat) + '" data-blob="' + esc(blob) + '">' +
         '<div class="sw" style="background:' + esc(m.hex || '#eee') + '"></div>' +
         '<div class="m-body">' +
           '<div class="m-cat">' + esc(m.cat) + '</div>' +
           '<div class="m-name">' + esc(m.name) + '</div>' +
           (m.brand ? '<div class="m-line"><b>' + esc(m.brand) + '</b></div>' : '') +
           (m.spec ? '<div class="m-line">' + esc(m.spec) + '</div>' : '') +
-          (m.color ? '<div class="m-line muted">색상 · ' + esc(m.color) + '</div>' : '') +
+          (m.color && m.color !== '-' ? '<div class="m-line muted">색상 · ' + esc(m.color) + '</div>' : '') +
           (m.place ? '<div class="m-place">📍 ' + esc(m.place) + '</div>' : '') +
         '</div>' +
         (MODE === 'admin' ? '<button class="del-btn" data-act="del-mat" data-id="' + esc(m.id) + '">삭제</button>' : '') +
       '</div>';
     }).join('');
-  }
 
   h += '<div class="card empty" id="matEmpty" style="display:' + (list.length ? 'none' : '') + '">조건에 맞는 자재가 없습니다.<br>검색어를 지우거나 다른 공종을 골라 보세요.</div>';
 
@@ -1218,7 +1217,7 @@ document.addEventListener('input', function(e){
   if(t.id === 'matQ'){
     MAT_Q = t.value;
     var s2 = currentSite();
-    if(s2) renderMatListOnly(s2);
+    if(s2) applyMatFilter(s2);
     return;
   }
   if(t.id === 'newName' || t.id === 'newBrand' || t.id === 'newSpec' || t.id === 'newColor' || t.id === 'newPlace'){
@@ -1252,21 +1251,16 @@ document.addEventListener('change', function(e){
   }
 });
 
-function renderMatListOnly(site){
+function applyMatFilter(site){
   var v = document.getElementById('view');
   if(!v || TAB !== 'materials') return;
   var cards = Array.prototype.slice.call(v.querySelectorAll('.mat'));
   var q = MAT_Q.trim().toLowerCase();
   var shown = 0;
-  var mats = site.materials || [];
   cards.forEach(function(card){
-    var id = card.getAttribute('data-mid');
-    var m = mats.filter(function(x){ return x.id === id; })[0];
-    if(!m) return;
-    var ok = (MAT_CAT === '전체' || m.cat === MAT_CAT);
+    var ok = (MAT_CAT === '전체' || card.getAttribute('data-cat') === MAT_CAT);
     if(ok && q){
-      var blob = [m.name, m.brand, m.spec, m.color, m.place, m.cat].join(' ').toLowerCase();
-      ok = blob.indexOf(q) >= 0;
+      ok = (card.getAttribute('data-blob') || '').indexOf(q) >= 0;
     }
     card.style.display = ok ? '' : 'none';
     if(ok) shown++;
