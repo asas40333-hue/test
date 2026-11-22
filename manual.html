@@ -587,6 +587,13 @@ function customerCall(site){
 function siteLabel(site){
   return site.title || '우리 집';
 }
+function waGwa(s){
+  var t = String(s || '').trim();
+  if(!t) return '와';
+  var c = t.charCodeAt(t.length - 1);
+  if(c < 0xAC00 || c > 0xD7A3) return '와';
+  return ((c - 0xAC00) % 28 === 0) ? '와' : '과';
+}
 function careMessage(key, site){
   var w = warranty(site);
   var head = '안녕하세요, ' + (site.managerTitle || '메종플러스') + ' ' + (site.managerName || '') + '입니다.';
@@ -618,7 +625,7 @@ function careMessage(key, site){
 }
 function reviewMessage(site){
   return '안녕하세요, ' + (site.managerTitle || '메종플러스') + ' ' + (site.managerName || '') + '입니다.\n' +
-    '지인분께 저희를 소개해 주셔서 고맙습니다. 소개해 주신 집도 ' + siteLabel(site) + '과 같은 마음으로 정성껏 하겠습니다.\n\n' +
+    '지인분께 저희를 소개해 주셔서 고맙습니다. 소개해 주신 집도 ' + siteLabel(site) + waGwa(siteLabel(site)) + ' 같은 마음으로 정성껏 하겠습니다.\n\n' +
     '혹시 주변에 인테리어를 생각하시는 분이 있으면 편하게 제 번호를 전해 주세요. 방문 상담과 견적은 무료입니다.\n\n' +
     signature(site);
 }
@@ -639,8 +646,15 @@ function renderHeader(){
   var btn = document.getElementById('btnMode');
   if(window.__CUSTOMER_FILE__){ btn.style.display = 'none'; return; }
   btn.style.display = '';
-  btn.textContent = MODE === 'admin' ? '👁 고객용 보기' : '⚙️ 관리';
-  btn.className = 'ghost-btn' + (MODE === 'admin' ? ' on' : '');
+  if(MODE === 'admin'){
+    btn.setAttribute('data-act', 'mode-customer');
+    btn.textContent = '👁 고객용 보기';
+    btn.className = 'ghost-btn on';
+  } else {
+    btn.setAttribute('data-act', 'open-manage');
+    btn.textContent = '⚙️ 관리';
+    btn.className = 'ghost-btn';
+  }
 }
 function renderSiteBar(){
   var site = currentSite();
@@ -918,7 +932,7 @@ function viewCare(site){
           '<div class="ms-date">' + fmtDate(m.date) + '</div>' +
         '</div><span class="tag ' + st.cls + '">' + esc(st.label) + '</span></div>' +
         '<div class="ms-desc">' + esc(m.desc) + '</div>' +
-        '<div class="ms-desc muted" style="margin-top:4px">보내는 곳: ' + esc(site.customerName || '고객님') + (site.customerPhone ? ' · ' + esc(site.customerPhone) : ' · 연락처 미등록') + '</div>' +
+        '<div class="ms-desc muted" style="margin-top:4px">보내는 곳: ' + esc(site.customerName ? customerCall(site) : '고객님') + (site.customerPhone ? ' · ' + esc(site.customerPhone) : ' · 연락처 미등록') + '</div>' +
         '<div style="margin-top:10px"><button class="mini" data-act="toggle-msg" data-msg="' + id + '">✉️ 안내 문구 보기</button></div>' +
         '<div id="' + id + '-wrap" style="display:none;margin-top:10px">' +
           '<textarea class="msg-box" id="' + id + '">' + esc(msg) + '</textarea>' +
@@ -1084,6 +1098,12 @@ document.addEventListener('click', function(e){
     return;
   }
   if(act === 'open-manage'){ openSheet(); return; }
+  if(act === 'mode-customer'){
+    MODE = 'customer'; saveMode(); AS_RESULT = '';
+    if(sheetOpen) closeSheet();
+    render(); toast('고객용 화면입니다.');
+    return;
+  }
   if(act === 'close-sheet'){ closeSheet(); return; }
   if(act === 'mode'){
     MODE = el.getAttribute('data-mode');
