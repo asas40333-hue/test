@@ -179,7 +179,7 @@
   /* ---------- bottom nav ---------- */
   .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:70;background:rgba(255,253,249,.97);
     border-top:1px solid var(--line);display:flex;padding:6px 4px calc(6px + env(safe-area-inset-bottom));
-    backdrop-filter:blur(8px);}
+    backdrop-filter:blur(8px);max-width:760px;margin:0 auto;}
   .nav-btn{flex:1;border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;
     padding:6px 2px;cursor:pointer;color:var(--muted);}
   .nav-btn .n-ic{font-size:20px;line-height:1.2;filter:grayscale(.3);}
@@ -234,6 +234,7 @@
     <div class="brand-title">우리 집 <span>설명서</span></div>
   </div>
   <div class="top-actions">
+    <button class="ghost-btn" id="btnView" data-act="mode-customer" style="display:none">👁 고객용</button>
     <button class="ghost-btn" id="btnMode" data-act="open-manage">⚙️ 관리</button>
   </div>
 </header>
@@ -644,17 +645,15 @@ function asMessage(req, site){
    ========================================================= */
 function renderHeader(){
   var btn = document.getElementById('btnMode');
-  if(window.__CUSTOMER_FILE__){ btn.style.display = 'none'; return; }
-  btn.style.display = '';
-  if(MODE === 'admin'){
-    btn.setAttribute('data-act', 'mode-customer');
-    btn.textContent = '👁 고객용 보기';
-    btn.className = 'ghost-btn on';
-  } else {
-    btn.setAttribute('data-act', 'open-manage');
-    btn.textContent = '⚙️ 관리';
-    btn.className = 'ghost-btn';
+  var vbtn = document.getElementById('btnView');
+  if(window.__CUSTOMER_FILE__){
+    btn.style.display = 'none';
+    if(vbtn) vbtn.style.display = 'none';
+    return;
   }
+  btn.style.display = '';
+  btn.className = 'ghost-btn' + (MODE === 'admin' ? ' on' : '');
+  if(vbtn) vbtn.style.display = (MODE === 'admin') ? '' : 'none';
 }
 function renderSiteBar(){
   var site = currentSite();
