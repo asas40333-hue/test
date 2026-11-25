@@ -2075,7 +2075,18 @@
       const end = utcDate(SITE_END.y, SITE_END.m, SITE_END.d);
       const leftToStart = daysFrom(today, start);   // 착공까지 남은 일수
       const leftToEnd = daysFrom(today, end);       // 완공까지 남은 일수
-      const workDay = 1 - leftToStart;              // 공사 일차 (착공일 = 1일차)
+      // 공사 일차: 착공일(1일차)부터 오늘까지 평일만 셈 (주말 제외, 공정표·현장일지와 같은 기준)
+      function countWorkdays(from, to) {
+        let n = 0;
+        for (let t = from; t <= to; t += MS_PER_DAY) {
+          const dow = new Date(t).getUTCDay();
+          if (dow !== 0 && dow !== 6) n++;
+        }
+        return n;
+      }
+      const workDay = countWorkdays(start, today);
+      const todayDow = new Date(today).getUTCDay();
+      const isWeekend = todayDow === 0 || todayDow === 6;
 
       let ddayText, stageText, headlineText, percent;
 
@@ -2090,12 +2101,13 @@
         headlineText = '준공 완료';
         percent = 100;
       } else {
-        const totalDays = daysFrom(start, end) + 1;
+        const totalDays = countWorkdays(start, end);
         percent = Math.min(100, Math.max(0, Math.round((workDay / totalDays) * 100)));
-        ddayText = (leftToStart === 0 ? 'D-Day · 공사 1일차' : '공사 ' + workDay + '일차')
+        const dayLabel = isWeekend ? '주말 휴무 · ' + workDay + '일차까지 진행' : '공사 ' + workDay + '일차';
+        ddayText = (leftToStart === 0 ? 'D-Day · 공사 1일차' : dayLabel)
                  + ' · 완공 ' + (leftToEnd === 0 ? 'D-Day' : 'D-' + leftToEnd);
-        stageText = leftToEnd === 0 ? '최종 준공 검수 · 인수인계' : '공사 진행 중';
-        headlineText = '공사 ' + workDay + '일차 · 공정률 ' + percent + '%';
+        stageText = leftToEnd === 0 ? '최종 준공 검수 · 인수인계' : (isWeekend ? '주말 휴무' : '공사 진행 중');
+        headlineText = dayLabel + ' · 공정률 ' + percent + '%';
       }
 
       return { ddayText: ddayText, stageText: stageText, headlineText: headlineText, percent: percent };
