@@ -1262,7 +1262,7 @@
             }
           } else {
             classes.push('off');
-            inner += '<div class="cal-off-text">' + (dateStr > CAL_LAST ? '공사 종료' : '휴무') + '</div>';
+            inner += '<div class="cal-off-text">' + (dateStr > CAL_LAST ? '종료' : '휴무') + '</div>';
           }
 
           html += '<div class="' + classes.join(' ') + '" style="' + style + '" onclick="openCalDetail(\'' + dateStr + '\')">' + inner + '</div>';
