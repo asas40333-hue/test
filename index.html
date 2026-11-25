@@ -2330,6 +2330,12 @@
         titleEl.textContent = plan.title;
         let body = '';
         plan.notes.forEach(function (text) {
+          // 다른 날짜의 진행 기록(✔ 11.19 …)은 그 날짜를 눌렀을 때만 보여 줍니다
+          const dayHit = text.match(/^✔\s*(\d{1,2})\.(\d{1,2})/);
+          if (dayHit) {
+            const noteDate = '2026-' + String(dayHit[1]).padStart(2, '0') + '-' + String(dayHit[2]).padStart(2, '0');
+            if (noteDate !== dateStr) return;
+          }
           const warn = text.indexOf('※') === 0 || text.indexOf('소음') > -1 || text.indexOf('⚠') > -1;
           body += '<div class="cal-note' + (warn ? ' warn' : '') + '">' + text + '</div>';
         });
