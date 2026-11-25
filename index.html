@@ -467,6 +467,150 @@
     .timeline-title { font-size: 14px; font-weight: 700; margin-top: 2px; }
     .timeline-notice { font-size: 12px; color: #dc2626; margin-top: 3px; font-weight: 500; }
 
+    /* 3-1. 공정일정 : 리스트 보기 / 달력 보기 */
+    .view-toggle {
+      display: flex;
+      gap: 6px;
+      background: #eef2f7;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 12px;
+    }
+    .view-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      border-radius: 9px;
+      padding: 9px 0;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all .18s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .view-btn.active { background: var(--primary); color: #fff; box-shadow: 0 2px 6px rgba(30, 58, 138, .22); }
+    .view-btn:active { transform: scale(.985); }
+
+    #schedule-list-view[hidden], #schedule-calendar-view[hidden] { display: none; }
+
+    .cal-card { padding: 12px 10px 10px; }
+    .cal-range {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-muted);
+      letter-spacing: -0.2px;
+      margin-bottom: 8px;
+      padding: 0 2px;
+      word-break: keep-all;
+    }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+    .cal-dow { text-align: center; font-size: 10px; font-weight: 800; color: var(--text-muted); padding: 2px 0 4px; }
+    .cal-dow.sat { color: #2563eb; }
+    .cal-dow.sun { color: #dc2626; }
+    .cal-cell {
+      position: relative;
+      min-height: 66px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 4px 3px 3px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow: hidden;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cal-cell:active { opacity: .82; }
+    .cal-cell.off { background: #f8fafc; border-style: dashed; }
+    .cal-cell.today { box-shadow: 0 0 0 2px rgba(59, 130, 246, .55); }
+    .cal-cell.today::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #dc2626;
+    }
+    .cal-day { font-size: 10.5px; font-weight: 800; color: var(--text-main); line-height: 1.1; letter-spacing: -0.3px; }
+    .cal-cell.sat .cal-day { color: #2563eb; }
+    .cal-cell.sun .cal-day { color: #dc2626; }
+    .cal-chip {
+      align-self: flex-start;
+      font-size: 7px;
+      font-weight: 800;
+      line-height: 1.35;
+      padding: 0 3px;
+      border-radius: 3px;
+      background: #0f172a;
+      color: #fff;
+      letter-spacing: -0.2px;
+    }
+    .cal-work {
+      font-size: 8.5px;
+      font-weight: 700;
+      line-height: 1.26;
+      letter-spacing: -0.35px;
+      word-break: keep-all;
+      color: var(--text-main);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .cal-off-text { font-size: 8.5px; font-weight: 600; color: #94a3b8; letter-spacing: -0.3px; }
+    .cal-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-top: 10px;
+      padding: 8px 10px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      word-break: keep-all;
+    }
+    .cal-detail-box { position: relative; padding: 22px 20px 26px; }
+    .cal-detail-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      border: none;
+      background: transparent;
+      font-size: 17px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+    }
+    .cal-detail-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-right: 26px; flex-wrap: wrap; }
+    .cal-detail-date { font-size: 13px; font-weight: 800; color: var(--text-muted); }
+    .cal-detail-badge { font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 20px; background: #eff6ff; color: #1d4ed8; white-space: nowrap; }
+    .cal-detail-badge.done { background: #f1f5f9; color: #475569; }
+    .cal-detail-badge.off { background: #f1f5f9; color: #64748b; }
+    .cal-detail-title { font-size: 18px; font-weight: 900; line-height: 1.35; letter-spacing: -0.5px; word-break: keep-all; margin-bottom: 12px; }
+    .cal-note {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      padding: 9px 11px;
+      background: #f8fafc;
+      border-left: 3px solid var(--border);
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 7px;
+      word-break: keep-all;
+    }
+    .cal-note.warn { color: #b91c1c; background: #fef2f2; border-left-color: #f87171; font-weight: 600; }
+
     /* 4. 공사 대금 정산 탭 */
     .amount-box {
       background: #f8fafc;
@@ -1607,6 +1751,13 @@
       <span class="section-desc">실시간 일정 반영</span>
     </div>
 
+    <!-- 리스트 보기 / 달력 보기 전환 -->
+    <div class="view-toggle" role="group" aria-label="공정일정 보기 방식">
+      <button type="button" id="view-btn-list" class="view-btn active" onclick="setScheduleView('list')" aria-pressed="true">📋 리스트 보기</button>
+      <button type="button" id="view-btn-calendar" class="view-btn" onclick="setScheduleView('calendar')" aria-pressed="false">📅 달력 보기</button>
+    </div>
+
+    <div id="schedule-list-view">
     <div class="card">
       <div class="timeline">
         <div class="timeline-step" data-start="2026-11-16" data-end="2026-11-16">
@@ -1707,6 +1858,19 @@
         </div>
       </div>
     </div>
+    </div>
+
+    <!-- 달력 보기 -->
+    <div id="schedule-calendar-view" hidden>
+      <div class="card cal-card">
+        <div class="cal-range">
+          <span>2026.11.16(월) ~ 12.13(일) · 4주</span>
+          <span>총 19일 · 주말 휴무</span>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="cal-hint">날짜 칸을 톡 누르면 그날의 공정 내용과 주의사항이 크게 표시됩니다. 빨간 점은 오늘 날짜입니다.</div>
+      </div>
+    </div>
   </div>
 
   <!-- 4. 계약 · 정산 안내 탭 -->
@@ -1797,6 +1961,19 @@
       <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;">
         금액·일정과 관련해 궁금하신 점은 메종플러스 대표님께 편하게 연락 주시면 바로 확인해 드립니다.
       </p>
+    </div>
+  </div>
+
+  <!-- 공정일정 달력: 날짜 상세 패널 -->
+  <div id="cal-detail" class="modal-overlay" onclick="if(event.target.id==='cal-detail')closeCalDetail()">
+    <div class="modal-box cal-detail-box" role="dialog" aria-modal="true" aria-labelledby="cal-detail-date">
+      <button type="button" class="cal-detail-close" onclick="closeCalDetail()" aria-label="닫기">✕</button>
+      <div class="cal-detail-head">
+        <div class="cal-detail-date" id="cal-detail-date"></div>
+        <span class="cal-detail-badge" id="cal-detail-badge"></span>
+      </div>
+      <div class="cal-detail-title" id="cal-detail-title"></div>
+      <div id="cal-detail-notes"></div>
     </div>
   </div>
 
@@ -1935,6 +2112,232 @@
       document.getElementById('photo-modal').classList.remove('open');
       document.body.style.overflow = '';
     }
+
+    /* ───────── 공정일정 : 리스트 보기 / 달력 보기 ───────── */
+    const CAL_FIRST = utcDate(2026, 11, 16);   // 달력 첫 칸 (월요일)
+    const CAL_WEEKS = 4;                       // 2026-11-16(월) ~ 12-13(일)
+    const CAL_LAST = '2026-12-10';             // 완공·인수인계일
+    const DOW_KR = ['일', '월', '화', '수', '목', '금', '토'];
+
+    // 달력 칸 색 (공정 종류별)
+    const CAL_TONE = {
+      green:  { bg: '#ecfdf5', bd: '#a7f3d0', tx: '#047857', chip: '#047857' },
+      red:    { bg: '#fef2f2', bd: '#fecaca', tx: '#b91c1c', chip: '#dc2626' },
+      amber:  { bg: '#fffbeb', bd: '#fde68a', tx: '#b45309', chip: '#b45309' },
+      blue:   { bg: '#eff6ff', bd: '#bfdbfe', tx: '#1d4ed8', chip: '#1d4ed8' },
+      sky:    { bg: '#f0f9ff', bd: '#bae6fd', tx: '#0369a1', chip: '#0369a1' },
+      violet: { bg: '#f5f3ff', bd: '#ddd6fe', tx: '#6d28d9', chip: '#6d28d9' },
+      teal:   { bg: '#f0fdfa', bd: '#99f6e4', tx: '#0f766e', chip: '#0f766e' },
+      orange: { bg: '#fff7ed', bd: '#fed7aa', tx: '#c2410c', chip: '#c2410c' },
+      yellow: { bg: '#fefce8', bd: '#fde68a', tx: '#a16207', chip: '#a16207' },
+      indigo: { bg: '#eef2ff', bd: '#c7d2fe', tx: '#4338ca', chip: '#4338ca' },
+      slate:  { bg: '#f1f5f9', bd: '#cbd5e1', tx: '#334155', chip: '#334155' },
+      cyan:   { bg: '#ecfeff', bd: '#a5f3fc', tx: '#0e7490', chip: '#0e7490' },
+      gold:   { bg: '#fef3c7', bd: '#f59e0b', tx: '#92400e', chip: '#b45309' }
+    };
+
+    // 달력 칸에 넣을 짧은 공정명 (타임라인·협력업체 공정표와 같은 내용)
+    const CAL_SHORT = {
+      '2026-11-16': { lines: ['가구 철거'], tone: 'green', tag: '착공' },
+      '2026-11-17': { lines: ['욕실 철거', '1차 방수'], tone: 'red', tag: '소음' },
+      '2026-11-18': { lines: ['욕실 2차 방수', '샷시·전기'], tone: 'red', tag: '소음' },
+      '2026-11-19': { lines: ['목공', '(천장·문틀)'], tone: 'amber' },
+      '2026-11-20': { lines: ['목공', '가구 실측'], tone: 'amber', tag: '실측' },
+      '2026-11-23': { lines: ['타일 시공', '(욕실·현관)'], tone: 'blue' },
+      '2026-11-24': { lines: ['타일 시공', '(주방·벽)'], tone: 'blue' },
+      '2026-11-25': { lines: ['타일 메지', '양생'], tone: 'blue' },
+      '2026-11-26': { lines: ['욕실 기구', '필름 시공'], tone: 'sky' },
+      '2026-11-27': { lines: ['발코니', '수성칠'], tone: 'violet' },
+      '2026-11-30': { lines: ['도배 공사', '(밑작업)'], tone: 'teal' },
+      '2026-12-01': { lines: ['도배 공사', '(정배)'], tone: 'teal' },
+      '2026-12-02': { lines: ['싱크대', '주방 가구'], tone: 'orange', tag: '가구' },
+      '2026-12-03': { lines: ['조명·전기', '기구 시공'], tone: 'yellow' },
+      '2026-12-04': { lines: ['장판 시공'], tone: 'indigo' },
+      '2026-12-07': { lines: ['방문·중문', '시공'], tone: 'slate' },
+      '2026-12-08': { lines: ['마감 점검', '잔손보기'], tone: 'slate' },
+      '2026-12-09': { lines: ['입주청소'], tone: 'cyan' },
+      '2026-12-10': { lines: ['준공 검수', '인수인계'], tone: 'gold', tag: '완공' }
+    };
+
+    function isoFromUtc(t) {
+      const d = new Date(t);
+      const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(d.getUTCDate()).padStart(2, '0');
+      return d.getUTCFullYear() + '-' + m + '-' + day;
+    }
+
+    function koreanDate(dateStr) {
+      const p = dateStr.split('-').map(Number);
+      const dow = new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay();
+      return p[1] + '월 ' + p[2] + '일 (' + DOW_KR[dow] + ')';
+    }
+
+    // 착공일(11/16)을 1일차로 세는 공사 일차 (주말 제외)
+    function workdayNumber(dateStr) {
+      const target = utcFromText(dateStr);
+      let n = 0;
+      for (let t = CAL_FIRST; t <= target; t += MS_PER_DAY) {
+        const dow = new Date(t).getUTCDay();
+        if (dow !== 0 && dow !== 6) n++;
+      }
+      return n;
+    }
+
+    // 타임라인의 실제 내용을 그대로 읽어 달력 상세에 사용 (내용이 두 곳으로 갈라지지 않게)
+    let CAL_PLAN = [];
+    function buildCalPlan() {
+      CAL_PLAN = [];
+      document.querySelectorAll('#tab-schedule .timeline-step').forEach(function (step) {
+        const start = step.dataset.start;
+        if (!start) return;
+        const titleEl = step.querySelector('.timeline-title');
+        const notes = [];
+        step.querySelectorAll('div').forEach(function (el) {
+          if (el.classList.contains('timeline-date') || el.classList.contains('timeline-title') || el.classList.contains('timeline-dot')) return;
+          if (el.children.length) return;
+          const text = el.textContent.replace(/\s+/g, ' ').trim();
+          if (text) notes.push(text);
+        });
+        CAL_PLAN.push({
+          start: start,
+          end: step.dataset.end || start,
+          title: titleEl ? titleEl.textContent.replace(/\s+/g, ' ').trim() : '',
+          notes: notes
+        });
+      });
+    }
+
+    function planOf(dateStr) {
+      for (let i = 0; i < CAL_PLAN.length; i++) {
+        if (dateStr >= CAL_PLAN[i].start && dateStr <= CAL_PLAN[i].end) return CAL_PLAN[i];
+      }
+      return null;
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById('cal-grid');
+      if (!grid) return;
+      buildCalPlan();
+      const today = isoFromUtc(seoulToday());
+      const dowLabels = ['월', '화', '수', '목', '금', '토', '일'];
+      let html = '';
+      dowLabels.forEach(function (label, i) {
+        html += '<div class="cal-dow' + (i === 5 ? ' sat' : (i === 6 ? ' sun' : '')) + '">' + label + '</div>';
+      });
+
+      for (let w = 0; w < CAL_WEEKS; w++) {
+        for (let d = 0; d < 7; d++) {
+          const t = CAL_FIRST + (w * 7 + d) * MS_PER_DAY;
+          const dateStr = isoFromUtc(t);
+          const dt = new Date(t);
+          const dow = dt.getUTCDay();
+          const dayNum = dt.getUTCDate();
+          const monthNum = dt.getUTCMonth() + 1;
+          const plan = planOf(dateStr);
+          const short = CAL_SHORT[dateStr];
+          const classes = ['cal-cell'];
+          if (dow === 6) classes.push('sat');
+          if (dow === 0) classes.push('sun');
+          if (dateStr === today) classes.push('today');
+          const dayLabel = (dayNum === 1 || t === CAL_FIRST) ? monthNum + '/' + dayNum : String(dayNum);
+
+          let style = '';
+          let inner = '<div class="cal-day">' + dayLabel + '</div>';
+
+          if (plan) {
+            const tone = CAL_TONE[short && CAL_TONE[short.tone] ? short.tone : 'slate'];
+            style = 'background:' + tone.bg + ';border-color:' + tone.bd + ';';
+            inner = '<div class="cal-day" style="color:' + tone.tx + ';">' + dayLabel + '</div>';
+            if (short && short.tag) inner += '<span class="cal-chip" style="background:' + tone.chip + ';">' + short.tag + '</span>';
+            inner += '<div class="cal-work" style="color:' + tone.tx + ';">' + (short ? short.lines.join('<br>') : plan.title) + '</div>';
+          } else {
+            classes.push('off');
+            inner += '<div class="cal-off-text">' + (dateStr > CAL_LAST ? '공사 종료' : '휴무') + '</div>';
+          }
+
+          html += '<div class="' + classes.join(' ') + '" style="' + style + '" onclick="openCalDetail(\'' + dateStr + '\')">' + inner + '</div>';
+        }
+      }
+      grid.innerHTML = html;
+    }
+
+    function setScheduleView(view) {
+      const isCal = view === 'calendar';
+      const listView = document.getElementById('schedule-list-view');
+      const calView = document.getElementById('schedule-calendar-view');
+      if (!listView || !calView) return;
+      listView.hidden = isCal;
+      calView.hidden = !isCal;
+      const btnList = document.getElementById('view-btn-list');
+      const btnCal = document.getElementById('view-btn-calendar');
+      if (btnList) { btnList.classList.toggle('active', !isCal); btnList.setAttribute('aria-pressed', String(!isCal)); }
+      if (btnCal) { btnCal.classList.toggle('active', isCal); btnCal.setAttribute('aria-pressed', String(isCal)); }
+      if (isCal) renderCalendar();
+    }
+
+    function openCalDetail(dateStr) {
+      const box = document.getElementById('cal-detail');
+      if (!box) return;
+      if (!CAL_PLAN.length) buildCalPlan();
+      const plan = planOf(dateStr);
+      const todayStr = isoFromUtc(seoulToday());
+      const dateEl = document.getElementById('cal-detail-date');
+      const badgeEl = document.getElementById('cal-detail-badge');
+      const titleEl = document.getElementById('cal-detail-title');
+      const notesEl = document.getElementById('cal-detail-notes');
+
+      badgeEl.className = 'cal-detail-badge';
+      dateEl.textContent = koreanDate(dateStr);
+
+      if (plan) {
+        const dayNo = workdayNumber(dateStr);
+        dateEl.textContent = koreanDate(dateStr) + ' · ' + dayNo + '일차';
+        if (dateStr === todayStr) {
+          badgeEl.textContent = '오늘';
+        } else if (dateStr < todayStr) {
+          badgeEl.textContent = '지난 공정';
+          badgeEl.classList.add('done');
+        } else {
+          badgeEl.textContent = '예정';
+        }
+        titleEl.textContent = plan.title;
+        let body = '';
+        plan.notes.forEach(function (text) {
+          const warn = text.indexOf('※') === 0 || text.indexOf('소음') > -1 || text.indexOf('⚠') > -1;
+          body += '<div class="cal-note' + (warn ? ' warn' : '') + '">' + text + '</div>';
+        });
+        if (!plan.notes.length) body += '<div class="cal-note">세부 작업 내용은 현장 상황에 따라 조정될 수 있습니다.</div>';
+        body += '<div class="cal-note">※ 현장 상황에 따라 하루 이틀 앞뒤로 조정될 수 있으며, 변경되면 이 화면에 바로 반영됩니다.</div>';
+        notesEl.innerHTML = body;
+      } else {
+        const dow = new Date(utcFromText(dateStr)).getUTCDay();
+        badgeEl.textContent = dateStr > CAL_LAST ? '공사 종료' : '휴무';
+        badgeEl.classList.add('off');
+        titleEl.textContent = '예정된 공정이 없습니다';
+        let msg;
+        if (dateStr > CAL_LAST) {
+          msg = '12월 10일(목) 준공 검수·인수인계로 공사를 마칩니다.';
+        } else if (dow === 0 || dow === 6) {
+          msg = '주말 휴무일입니다. 소음이 나는 작업은 평일 09:00~18:00에만 진행합니다.';
+        } else {
+          msg = '이 날은 예정된 공정이 없습니다.';
+        }
+        notesEl.innerHTML = '<div class="cal-note">' + msg + '</div>';
+      }
+
+      box.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCalDetail() {
+      const box = document.getElementById('cal-detail');
+      if (box) box.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeCalDetail();
+    });
 
     document.addEventListener('DOMContentLoaded', function () {
       updateProgress();
