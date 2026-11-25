@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>메종플러스 고객 현장 공유 시스템</title>
+
+  <!-- 카카오톡 링크 미리보기 (카톡은 스크립트를 읽지 않으므로 여기는 직접 고칩니다) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="[메종플러스] [OO아파트 OOO동 OOOO호 (OO평형)] 실시간 현장 리포트">
+  <meta property="og:description" content="입주자 고객님을 위한 실시간 공정 진행률, 현장 사진 일지 및 공정 일정 안내">
+  <meta property="og:image" content="https://asas40333-hue.github.io/test/[현장폴더]/og-client.png">
+  <meta property="og:url" content="https://asas40333-hue.github.io/test/[현장폴더]/">
+
+  <!-- 스마트폰 홈 화면 바로가기 아이콘 (회사 공통 아이콘은 한 칸 위 폴더) -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="메종플러스">
+  <meta name="theme-color" content="#1e3a8a">
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #3b82f6;
+      --accent: #10b981;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 14px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 24px; }
+
+    /* 헤더 */
+    .app-header {
+      background: var(--card-bg);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title { font-size: 13px; font-weight: 700; color: var(--primary); letter-spacing: -0.3px; }
+    .project-name { font-size: 17px; font-weight: 800; color: var(--text); margin-top: 2px; }
+    /* 상단 프로그레스 카드 */
+    .status-card {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #fff;
+      margin: 16px;
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+    }
+    .status-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .status-stage { font-size: 13.5px; font-weight: 600; opacity: 0.9; word-break: keep-all; }
+    .status-dday { background: rgba(255, 255, 255, 0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .status-percent { font-size: 26px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.6px; line-height: 1.25; word-break: keep-all; }
+    .progress-bar-bg { background: rgba(255, 255, 255, 0.25); height: 8px; border-radius: 4px; overflow: hidden; }
+    .progress-bar-fill { background: #34d399; height: 100%; width: 45%; border-radius: 4px; transition: width 0.3s ease; }
+    .status-sub { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; opacity: 0.85; }
+
+    /* 탭 메뉴 */
+    .nav-tabs {
+      display: flex;
+      background: var(--card-bg);
+      padding: 4px;
+      margin: 0 16px 16px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .nav-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-tab.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(30, 58, 138, 0.25);
+    }
+
+    /* 공통 컨테이너 */
+    .tab-content { display: none; padding: 0 16px; }
+    .tab-content.active { display: block; }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .section-desc { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+
+    /* 카드 */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    /* 4. 계약·정산 탭 : 대금 일정·입금 현황 */
+    .pay-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+    .pay-row:last-of-type { border-bottom: none; }
+    .pay-kind { flex: 1; min-width: 0; }
+    .pay-label { font-size: 13px; font-weight: 800; color: var(--text-main); }
+    .pay-ratio { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-left: 4px; }
+    .pay-amount { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .pay-status { flex-shrink: 0; text-align: right; }
+    .pay-chip { display: inline-block; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+    .pay-chip.done { background: #ecfdf5; color: #047857; }
+    .pay-chip.partial { background: #fffbeb; color: #b45309; }
+    .pay-chip.todo { background: #f1f5f9; color: #64748b; }
+    .pay-detail { font-size: 11px; color: var(--text-muted); margin-top: 3px; word-break: keep-all; }
+    .pay-date { font-weight: 800; color: #475569; }
+    .pay-sum { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-top: 12px; }
+    .pay-sum-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 12.5px; color: var(--text-muted); padding: 3px 0; }
+    .pay-sum-line b { font-size: 13.5px; color: var(--text-main); }
+    .pay-note { font-size: 11.5px; color: var(--text-muted); line-height: 1.6; margin-top: 10px; word-break: keep-all; }
+
+    /* 1. 현장 일지 탭 */
+    .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .photo-item {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      background: #e2e8f0;
+    }
+    .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-badge {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+    /* 착공 1일차 갤러리 */
+    .photo-item.tap { cursor: pointer; }
+    .day1-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .day1-hero .photo-item { aspect-ratio: 4 / 3; }
+    .day1-gallery { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 8px; }
+    .day1-gallery[hidden] { display: none; }
+    .day1-gallery .photo-item { aspect-ratio: 1; }
+    .day1-gallery .photo-badge { font-size: 9.5px; padding: 2px 4px; left: 3px; bottom: 3px; letter-spacing: -0.2px; }
+    /* 2일차 갤러리 (세로 사진 원본 비율 유지) */
+    .day2-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; max-width: 480px; }
+    .day2-grid .photo-item { aspect-ratio: 3 / 4; }
+    .gallery-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      margin-top: 10px;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f1f5f9;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .gallery-toggle:active { background: #e2e8f0; }
+    .check-item { display: flex; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+    .check-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .check-num {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fef2f2;
+      color: #dc2626;
+      font-size: 11.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .check-title { font-size: 13px; font-weight: 800; color: var(--text-main); word-break: keep-all; }
+    .check-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-top: 3px; word-break: keep-all; }
+
+    .log-item {
+      border-left: 3px solid var(--primary-light);
+      padding-left: 12px;
+      margin-bottom: 14px;
+    }
+    .log-date { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .log-work { font-size: 14px; font-weight: 700; margin-top: 2px; }
+
+    /* 2. 자재 스펙북 탭 */
+    .spec-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .spec-item:last-child { border-bottom: none; }
+    .spec-thumb {
+      width: 54px;
+      height: 54px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    .spec-info { flex: 1; }
+    .spec-cat { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .spec-name { font-size: 14px; font-weight: 700; margin-top: 1px; }
+    .spec-model { font-size: 12px; color: var(--text-muted); }
+    .spec-status {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .spec-status.confirmed { background: #ecfdf5; color: #059669; }
+    .spec-status.changed { background: #fef3c7; color: #d97706; }
+    .spec-status.recommended { background: #fef3c7; color: #b45309; }
+
+    /* 자재 스펙 — 실속형 풀세트 카드 */
+    .spec-notice {
+      display: flex;
+      gap: 9px;
+      word-break: keep-all;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: #92400e;
+      letter-spacing: -0.2px;
+    }
+    .spec-notice b { color: #78350f; }
+    .spec-notice-icon { font-size: 15px; line-height: 1.2; }
+    .spec-legend {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 13px;
+      margin-bottom: 16px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .spec-legend-item { display: flex; align-items: center; gap: 5px; }
+    .spec-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+    .spec-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .spec-card-head .spec-status { flex-shrink: 0; white-space: nowrap; }
+    .spec-cat-en {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary-light);
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+    .spec-card-title { font-size: 16px; font-weight: 800; color: var(--text); margin-top: 2px; letter-spacing: -0.4px; }
+    .spec-list { display: flex; flex-direction: column; gap: 8px; }
+    .spec-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+    .spec-thumb {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+    }
+    .spec-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .spec-thumb.photo { cursor: zoom-in; }
+    .spec-thumb.icon { display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .spec-body { flex: 1; min-width: 0; }
+    .spec-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.35; letter-spacing: -0.3px; }
+    .spec-desc { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+    .spec-desc b { color: #334155; font-weight: 700; }
+    .spec-subhead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .spec-card-note {
+      margin-top: 12px;
+      word-break: keep-all;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .spec-footnote {
+      background: #f8fafc;
+      word-break: keep-all;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 2px 0 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+    .spec-footnote b { color: #334155; }
+
+    /* 자재 스펙 — 확정 사양 사진 그리드 */
+    .spec-confirm-banner {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: #065f46;
+      letter-spacing: -0.2px;
+      word-break: keep-all;
+    }
+    .spec-confirm-banner b { color: #047857; }
+    .spec-confirm-banner .spec-notice-icon { font-size: 15px; }
+    .spec-sec-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.2px;
+      margin: 14px 0 8px;
+    }
+    .spec-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; max-width: 480px; }
+    .spec-cell {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: zoom-in;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .spec-cell:active { opacity: .88; }
+    .spec-cell .ph { position: relative; background: #f1f5f9; }
+    .spec-cell img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+    .spec-cell .tag {
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      background: rgba(15, 23, 42, 0.62);
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+    .spec-cell .cap { padding: 8px 9px 9px; }
+    .spec-cell .cap b {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+    }
+    .spec-cell .cap em {
+      display: block;
+      font-style: normal;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-top: 3px;
+    }
+    .photo-modal-box { padding: 0; background: #0f172a; border-radius: 16px 16px 0 0; overflow: hidden; }
+    .photo-modal-box img { width: 100%; max-height: 62vh; object-fit: contain; display: block; background: #0f172a; }
+    .photo-modal-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      padding: 12px 14px;
+    }
+    .photo-modal-caption { font-size: 12.5px; font-weight: 700; color: var(--text); line-height: 1.4; }
+
+    /* 3. 일정표 탭 */
+    .timeline { position: relative; padding-left: 20px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-step { position: relative; margin-bottom: 18px; }
+    .timeline-dot {
+      position: absolute;
+      left: -20px;
+      top: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      border: 3px solid #fff;
+    }
+    .timeline-step.done .timeline-dot { background: var(--accent); }
+    .timeline-step.current .timeline-dot { background: var(--primary-light); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+    .timeline-date { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .timeline-title { font-size: 14px; font-weight: 700; margin-top: 2px; }
+    .timeline-notice { font-size: 12px; color: #dc2626; margin-top: 3px; font-weight: 500; }
+
+    /* 3-1. 공정일정 : 리스트 보기 / 달력 보기 */
+    .view-toggle {
+      display: flex;
+      gap: 6px;
+      background: #eef2f7;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 12px;
+    }
+    .view-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      border-radius: 9px;
+      padding: 9px 0;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all .18s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .view-btn.active { background: var(--primary); color: #fff; box-shadow: 0 2px 6px rgba(30, 58, 138, .22); }
+    .view-btn:active { transform: scale(.985); }
+
+    #schedule-list-view[hidden], #schedule-calendar-view[hidden] { display: none; }
+
+    .cal-card { padding: 12px 10px 10px; }
+    .cal-range {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-muted);
+      letter-spacing: -0.2px;
+      margin-bottom: 8px;
+      padding: 0 2px;
+      word-break: keep-all;
+    }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+    .cal-dow { text-align: center; font-size: 10px; font-weight: 800; color: var(--text-muted); padding: 2px 0 4px; }
+    .cal-dow.sat { color: #2563eb; }
+    .cal-dow.sun { color: #dc2626; }
+    .cal-cell {
+      position: relative;
+      min-height: 66px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 4px 3px 3px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow: hidden;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cal-cell:active { opacity: .82; }
+    .cal-cell.off { background: #f8fafc; border-style: dashed; }
+    .cal-cell.today { box-shadow: 0 0 0 2px rgba(59, 130, 246, .55); }
+    .cal-cell.today::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #dc2626;
+    }
+    .cal-day { font-size: 10.5px; font-weight: 800; color: var(--text-main); line-height: 1.1; letter-spacing: -0.3px; }
+    .cal-cell.sat .cal-day { color: #2563eb; }
+    .cal-cell.sun .cal-day { color: #dc2626; }
+    .cal-chip {
+      align-self: flex-start;
+      font-size: 7px;
+      font-weight: 800;
+      line-height: 1.35;
+      padding: 0 3px;
+      border-radius: 3px;
+      background: #0f172a;
+      color: #fff;
+      letter-spacing: -0.2px;
+    }
+    .cal-work {
+      font-size: 8.5px;
+      font-weight: 700;
+      line-height: 1.26;
+      letter-spacing: -0.35px;
+      word-break: keep-all;
+      color: var(--text-main);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .cal-sub {
+      display: none;
+      font-size: 9.5px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+      word-break: keep-all;
+    }
+    .cal-off-text { font-size: 8.5px; font-weight: 600; color: #94a3b8; letter-spacing: -0.3px; }
+
+    /* 조금 넓은 화면(태블릿·PC)에서는 칸을 키우고 설명을 함께 보여 줍니다 */
+    @media (min-width: 481px) {
+      .cal-cell { min-height: 76px; padding: 6px 6px 5px; }
+      .cal-day { font-size: 12px; }
+      .cal-chip { font-size: 8.5px; padding: 1px 4px; }
+      .cal-work { font-size: 10.5px; -webkit-line-clamp: 2; }
+      .cal-sub { display: block; }
+      .cal-off-text { font-size: 10px; }
+      .cal-dow { font-size: 11px; }
+      .cal-range { font-size: 12px; }
+      .cal-hint { font-size: 12px; }
+    }
+    .cal-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-top: 10px;
+      padding: 8px 10px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      word-break: keep-all;
+    }
+    .cal-detail-box { position: relative; padding: 22px 20px 26px; }
+    .cal-detail-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      border: none;
+      background: transparent;
+      font-size: 17px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+    }
+    .cal-detail-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-right: 26px; flex-wrap: wrap; }
+    .cal-detail-date { font-size: 13px; font-weight: 800; color: var(--text-muted); }
+    .cal-detail-badge { font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 20px; background: #eff6ff; color: #1d4ed8; white-space: nowrap; }
+    .cal-detail-badge.done { background: #f1f5f9; color: #475569; }
+    .cal-detail-badge.off { background: #f1f5f9; color: #64748b; }
+    .cal-detail-title { font-size: 18px; font-weight: 900; line-height: 1.35; letter-spacing: -0.5px; word-break: keep-all; margin-bottom: 12px; }
+    .cal-note {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      padding: 9px 11px;
+      background: #f8fafc;
+      border-left: 3px solid var(--border);
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 7px;
+      word-break: keep-all;
+    }
+    .cal-note.warn { color: #b91c1c; background: #fef2f2; border-left-color: #f87171; font-weight: 600; }
+
+    /* 4. 공사 대금 정산 탭 */
+    .amount-box {
+      background: #f8fafc;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      border: 1px dashed var(--border);
+    }
+    .amount-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+    .amount-row.total {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--primary);
+    }
+    .payment-step {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f8fafc;
+      margin-bottom: 8px;
+    }
+    .payment-step.paid { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .payment-step.pending { background: #fffbeb; border: 1px solid #fde68a; }
+    .pay-tag { font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+    .pay-tag.paid { background: #dcfce7; color: #15803d; }
+    .pay-tag.pending { background: #fef3c7; color: #b45309; }
+
+    /* 모달 팝업 스타일 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 30px;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slideUp 0.25s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-size: 17px; font-weight: 800; color: var(--text-main); }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+    }
+    /* 템플릿 추가: 공정표 메모 줄 (한빛 화면의 인라인 스타일과 같은 모양) */
+    .timeline-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+    .timeline-meet { font-size: 13px; font-weight: 700; color: var(--primary-light); margin-top: 4px; }
+  </style>
+</head>
+<body data-page="client">
+
+  <!-- 헤더 (현장명은 site.js 의 name 이 자동으로 들어갑니다) -->
+  <header class="app-header">
+    <div>
+      <div class="brand-title" data-site="brand">메종플러스 인테리어</div>
+      <div class="project-name" data-site="name">[현장명]</div>
+    </div>
+  </header>
+
+  <!-- 상단 진행률 카드 (모두 자동 계산) -->
+  <div class="status-card">
+    <div class="status-top">
+      <span class="status-stage" id="status-stage">현재 상태: <strong>-</strong></span>
+      <span class="status-dday" id="status-dday">-</span>
+    </div>
+    <div class="status-percent" id="status-percent">-</div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+    </div>
+    <div class="status-sub">
+      <span>착공일: <span data-site="start"></span></span>
+      <span>완공 인도: <span data-site="end"></span></span>
+    </div>
+  </div>
+
+  <!-- 탭 내비게이션 -->
+  <nav class="nav-tabs">
+    <div class="nav-tab active" onclick="switchTab('log', this)">📸 현장일지</div>
+    <div class="nav-tab" onclick="switchTab('spec', this)">🧱 자재스펙</div>
+    <div class="nav-tab" onclick="switchTab('schedule', this)">📅 공정일정</div>
+    <div class="nav-tab" onclick="switchTab('payment', this)">📄 계약·정산</div>
+  </nav>
+
+  <!-- ═══════════ 1. 현장 일지 탭 ═══════════
+       새 날짜 카드는 이 줄 바로 아래(맨 위)에 추가합니다. 최신이 위.
+       사진: images/현장약칭_day06_01.jpg 처럼 이름 짓고 긴 쪽 1200px 로 줄여 넣습니다.
+       'N일차'는 달력 상세창과 같은 기준(site.js 의 dayBase)으로 적습니다. -->
+  <div id="tab-log" class="tab-content active">
+    <div class="section-title">
+      현장 일지
+      <span class="section-desc">메종플러스 대표가 직접 기록합니다</span>
+    </div>
+
+    <!-- [예시] 공사 중 날짜 카드 (사진 2장 단위로 추가) -->
+    <div class="card" style="border-left: 4px solid var(--accent);">
+      <div class="log-item" style="border-left-color: var(--accent);">
+        <div class="log-date">[2026.12.22 (화)] · [2일차]</div>
+        <div class="log-work">[공정명] · [작업 내용 한 줄 요약]</div>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-top: 6px; word-break: keep-all;">
+        [오늘 진행한 작업을 고객님이 이해하기 쉬운 말로 3~5문장 적습니다. 다음 공정 날짜도 함께 안내합니다.]
+        원본 사진은 현장 아카이브(구글 드라이브)에 함께 보관합니다.
+      </p>
+      <div class="day2-grid">
+        <div class="photo-item tap" onclick="openSpecPhoto('images/sample.svg','01 · [사진 설명]')">
+          <img src="images/sample.svg" alt="[사진 설명]">
+        </div>
+        <div class="photo-item tap" onclick="openSpecPhoto('images/sample.svg','02 · [사진 설명]')">
+          <img src="images/sample.svg" alt="[사진 설명]" loading="lazy">
+        </div>
+      </div>
+      <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 8px; text-align: right;">📷 사진 터치 시 확대</div>
+    </div>
+
+    <!-- [예시] 착공 1일차: 대표 사진(day1-hero) + 접힌 전체 사진(day1-gallery). 버튼 장수는 자동 -->
+    <div class="card" style="border-left: 4px solid var(--accent);">
+      <div class="log-item" style="border-left-color: var(--accent);">
+        <div class="log-date">[2026.12.21 (월)] · 착공 1일차</div>
+        <div class="log-work">[가구 철거 착수 · 현황 사진 기록]</div>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-top: 6px; word-break: keep-all;">
+        [착공 첫날 작업과 철거 전 현황 기록 안내]
+      </p>
+      <div class="day1-hero">
+        <div class="photo-item tap" onclick="openSpecPhoto('images/sample.svg','01 · [현관 (철거 전 현황)]')">
+          <img src="images/sample.svg" alt="[현관]">
+          <div class="photo-badge">01 [현관]</div>
+        </div>
+        <div class="photo-item tap" onclick="openSpecPhoto('images/sample.svg','02 · [거실 (철거 전 현황)]')">
+          <img src="images/sample.svg" alt="[거실]">
+          <div class="photo-badge">02 [거실]</div>
+        </div>
+      </div>
+      <button class="gallery-toggle" data-day1 onclick="toggleDay1(this)">전체 사진 펼쳐보기</button>
+      <div class="day1-gallery" id="day1-gallery" hidden>
+        <div class="photo-item tap" onclick="openSpecPhoto('images/sample.svg','03 · [주방]')">
+          <img src="images/sample.svg" alt="[주방]" loading="lazy">
+          <div class="photo-badge">03 [주방]</div>
+        </div>
+        <div class="photo-item tap" onclick="openSpecPhoto('images/sample.svg','04 · [욕실]')">
+          <img src="images/sample.svg" alt="[욕실]" loading="lazy">
+          <div class="photo-badge">04 [욕실]</div>
+        </div>
+      </div>
+      <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 8px; text-align: right;">📷 사진 터치 시 확대</div>
+    </div>
+
+    <!-- [예시] 현장 점검 메모 (철거 중 발견한 확인 사항) -->
+    <div class="card">
+      <div class="log-item">
+        <div class="log-date">현장 점검 메모 · [2026.12.21 (월)]</div>
+        <div class="log-work">철거 중 확인된 체크 포인트 [N]곳</div>
+      </div>
+      <div style="margin-top: 4px;">
+        <div class="check-item">
+          <div class="check-num">1</div>
+          <div>
+            <div class="check-title">[위치] · [증상]</div>
+            <div class="check-desc">[어떤 상태인지, 어떻게 확인·보수할지]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- [예시] 사진 없는 준비 기록 -->
+    <div class="card">
+      <div class="log-item">
+        <div class="log-date">[2026.12.18 (금)]</div>
+        <div class="log-work">[보관이사 · 샷시 사전 실측 등 착공 전 준비]</div>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">[준비 내용]</p>
+    </div>
+
+    <div class="card" style="text-align: center; padding: 26px 20px;">
+      <div style="font-size: 26px; margin-bottom: 8px;">📷</div>
+      <div style="font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">현장 사진은 날짜별로 계속 쌓입니다</div>
+      <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">철거·샷시·타일·도장 등 공정이 진행될 때마다<br>날짜별 사진과 작업 내용을 이 일지에 올려 드립니다.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 2. 자재 스펙 탭 ═══════════
+       공종마다 카드 하나. 사진 카드(spec-grid)와 목록(spec-list) 두 가지 모양을 골라 씁니다.
+       상태 꼬리표: confirmed(확정) / recommended(트렌드 추천·협의) / changed(변경) -->
+  <div id="tab-spec" class="tab-content">
+    <div style="background: linear-gradient(135deg, #1e3a8a, #2563eb); border-radius: 14px; padding: 16px; margin-bottom: 20px; color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);">
+      <div style="font-size: 16px; font-weight: 800; line-height: 1.35; margin-bottom: 6px;">메종플러스 실전 자재 도감 (화보집)</div>
+      <p style="font-size: 12px; color: #e0e7ff; margin-bottom: 12px; line-height: 1.4;">현장 경험 30년 대표님이 자주 쓰는 핵심 자재 실물 사진과 스펙 모음</p>
+      <div style="display: flex; gap: 8px;">
+        <a href="../catalog.html" style="flex: 1; background: white; color: #1e3a8a; font-weight: 800; font-size: 13px; padding: 9px; border-radius: 8px; text-align: center; text-decoration: none;">📱 모바일 도감 열기</a>
+      </div>
+    </div>
+
+    <div class="spec-notice">
+      <div class="spec-notice-icon">💡</div>
+      <div>※ <b>'트렌드 추천(협의)'</b> 품목은 <b>실속형 표준 세팅</b>이며, 고객 미팅 시 원하시는 색상·모델로 <b>즉시 변경 반영</b>됩니다.</div>
+    </div>
+
+    <div class="section-title">
+      선정 및 확정 자재 스펙
+      <span class="section-desc" data-site="name">[현장명]</span>
+    </div>
+
+    <div class="spec-legend">
+      <div class="spec-legend-item"><span class="spec-dot" style="background:#10b981;"></span>확정 사양 [N]개 공종</div>
+      <div class="spec-legend-item"><span class="spec-dot" style="background:#f59e0b;"></span>트렌드 추천(협의) [N]개 공종</div>
+      <div class="spec-legend-item" style="margin-left:auto; font-weight:500; color:#94a3b8;">📷 사진 터치 시 확대</div>
+    </div>
+
+    <!-- [예시] 사진 카드형 공종 -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">BATHROOM</div>
+          <div class="spec-card-title">[욕실 자재 사양]</div>
+        </div>
+        <span class="spec-status confirmed">[12/22] 확정</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell" onclick="openSpecPhoto('images/sample.svg','[브랜드 모델명 · 설명]')">
+          <div class="ph"><span class="tag">[위치]</span><img src="images/sample.svg" alt="[모델명]" loading="lazy"></div>
+          <div class="cap"><b>[품목 · 모델명]</b><em>[브랜드 · 특징]</em></div>
+        </div>
+        <div class="spec-cell" onclick="openSpecPhoto('images/sample.svg','[브랜드 모델명 · 설명]')">
+          <div class="ph"><span class="tag">[위치]</span><img src="images/sample.svg" alt="[모델명]" loading="lazy"></div>
+          <div class="cap"><b>[품목 · 모델명]</b><em>[브랜드 · 특징]</em></div>
+        </div>
+      </div>
+      <div class="spec-sec-label">[🧴 소분류]</div>
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb icon" style="background:linear-gradient(135deg,#f8fafc,#e2e8f0);">📐</div>
+          <div class="spec-body">
+            <div class="spec-name">[품목명 — 모델]</div>
+            <div class="spec-desc">[규격 · 수량 · 설치 위치]</div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-card-note">※ [시공 방법이나 협의 중인 사항 안내]</div>
+    </div>
+
+    <!-- [예시] 목록형 공종 (협의 중) -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="spec-card-head">
+        <div>
+          <div class="spec-cat-en">KITCHEN</div>
+          <div class="spec-card-title">[주방 자재 사양]</div>
+        </div>
+        <span class="spec-status recommended">트렌드 추천(협의)</span>
+      </div>
+      <div class="spec-list">
+        <div class="spec-row">
+          <div class="spec-thumb photo" onclick="openSpecPhoto('images/sample.svg','[브랜드 모델명]')"><img src="images/sample.svg" alt="[모델명]"></div>
+          <div class="spec-body">
+            <div class="spec-name">[품목명 — 모델]</div>
+            <div class="spec-desc">[색상 · 규격]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 3. 공정 일정 탭 ═══════════
+       여기는 고치지 않습니다. 일정은 site.js 의 SCHEDULE 에서 한 번만 고치면
+       리스트·달력·협력업체 화면에 모두 반영됩니다. -->
+  <div id="tab-schedule" class="tab-content">
+    <div class="section-title">
+      전체 공정 스케줄
+      <span class="section-desc">실시간 일정 반영</span>
+    </div>
+
+    <div class="view-toggle" role="group" aria-label="공정일정 보기 방식">
+      <button type="button" id="view-btn-list" class="view-btn active" onclick="setScheduleView('list')" aria-pressed="true">📋 리스트 보기</button>
+      <button type="button" id="view-btn-calendar" class="view-btn" onclick="setScheduleView('calendar')" aria-pressed="false">📅 달력 보기</button>
+    </div>
+
+    <div id="schedule-list-view">
+      <div class="card">
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </div>
+
+    <div id="schedule-calendar-view" hidden>
+      <div class="card cal-card">
+        <div class="cal-range">
+          <span data-site="calRange"></span>
+          <span data-site="calTotal"></span>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="cal-hint">날짜 칸을 톡 누르면 그날의 공정 내용과 주의사항이 크게 표시됩니다.<br>빨간 칸은 소음 주의 공정, 금색 칸은 완공일, 점선 칸은 휴무입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 4. 계약 · 정산 탭 ═══════════
+       금액은 아래 PAYMENT 에만 적습니다(합계·남은 금액 자동 계산).
+       금액 표시는 착공 전에 고객님 동의를 받고 넣습니다. 동의가 없으면 show: false. -->
+  <div id="tab-payment" class="tab-content">
+    <div class="section-title">
+      계약 및 정산 안내
+      <span class="section-desc">계약서 기준으로 안내드립니다</span>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="width: 38px; height: 38px; border-radius: 10px; background: #eff6ff; display: flex; align-items: center; justify-content: center; font-size: 19px;">📄</div>
+        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">계약서 · 상세 견적서</div>
+      </div>
+      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;">
+        공사 범위와 자재 사양이 확정된 최종 계약서와 상세 견적서는 대면 미팅 또는 문자로 전달드립니다.
+        이 화면에는 계약서와 동일한 내용만 반영하며, 임의로 금액을 표시하지 않습니다.
+      </p>
+    </div>
+
+    <div class="card" id="pay-card">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="width: 38px; height: 38px; border-radius: 10px; background: #ecfdf5; display: flex; align-items: center; justify-content: center; font-size: 19px;">💳</div>
+        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">대금 일정 · 입금 현황</div>
+      </div>
+      <div id="pay-body"></div>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="width: 38px; height: 38px; border-radius: 10px; background: #fffbeb; display: flex; align-items: center; justify-content: center; font-size: 19px;">☎️</div>
+        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">정산 문의</div>
+      </div>
+      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;">
+        금액·일정과 관련해 궁금하신 점은 메종플러스 대표님께 편하게 연락 주시면 바로 확인해 드립니다.
+      </p>
+    </div>
+  </div>
+
+  <!-- 공정일정 달력: 날짜 상세 패널 -->
+  <div id="cal-detail" class="modal-overlay" onclick="if(event.target.id==='cal-detail')closeCalDetail()">
+    <div class="modal-box cal-detail-box" role="dialog" aria-modal="true" aria-labelledby="cal-detail-date">
+      <button type="button" class="cal-detail-close" onclick="closeCalDetail()" aria-label="닫기">✕</button>
+      <div class="cal-detail-head">
+        <div class="cal-detail-date" id="cal-detail-date"></div>
+        <span class="cal-detail-badge" id="cal-detail-badge"></span>
+      </div>
+      <div class="cal-detail-title" id="cal-detail-title"></div>
+      <div id="cal-detail-notes"></div>
+    </div>
+  </div>
+
+  <!-- 사진 확대 모달 -->
+  <div id="photo-modal" class="modal-overlay" onclick="if(event.target.id==='photo-modal')closeSpecPhoto()">
+    <div class="modal-box photo-modal-box">
+      <img id="photo-modal-img" src="" alt="">
+      <div class="photo-modal-bar">
+        <div id="photo-modal-caption" class="photo-modal-caption"></div>
+        <button class="modal-close" onclick="closeSpecPhoto()">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ───────── 계약 · 정산 (고객용 화면에만 있는 정보) ─────────
+       total   : 총 계약금액(원)        vat : 부가세 안내 문구
+       steps   : 회차별 { label, ratio(%), due(입금 예정 시점), paid: [{ date, amount }] }
+       note    : 아래 안내 문구 (없으면 '') */
+    window.PAYMENT = {
+      show: true,
+      total: 40000000,
+      vat: '(부가세 별도)',
+      steps: [
+        { label: '계약금',    ratio: 10, due: '계약 시',       paid: [{ date: '2026.12.10', amount: 4000000 }] },
+        { label: '1차 중도금', ratio: 30, due: '착공 시',       paid: [] },
+        { label: '2차 중도금', ratio: 30, due: '목공 완료 후',  paid: [] },
+        { label: '잔금',      ratio: 30, due: '준공 검수 후',  paid: [] }
+      ],
+      note: '공정 변경으로 금액이 조정될 경우에는 반영 전에 먼저 말씀드립니다.'
+    };
+
+    (function renderPayment() {
+      var P = window.PAYMENT, card = document.getElementById('pay-card'), box = document.getElementById('pay-body');
+      if (!P || !P.show) { if (card) card.hidden = true; return; }
+      var won = function (n) { return Math.round(n).toLocaleString('ko-KR') + '원'; };
+      var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+      var paidAll = 0;
+      var html = '<div style="font-size: 12.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 6px; word-break: keep-all;">총 계약금액 <b style="color: var(--text-main);">' +
+        won(P.total) + '</b> ' + esc(P.vat || '') + ' · 계약서 기준 <b style="color: var(--text-main);">' +
+        P.steps.map(function (s) { return s.ratio; }).join(' / ') + '</b></div>';
+      P.steps.forEach(function (s) {
+        var amount = P.total * s.ratio / 100;
+        var paid = (s.paid || []).reduce(function (a, p) { return a + p.amount; }, 0);
+        paidAll += paid;
+        var chip, detail = '';
+        if (paid >= amount) chip = '<span class="pay-chip done">✅ 입금 완료</span>';
+        else if (paid > 0) chip = '<span class="pay-chip partial">일부 입금</span>';
+        else chip = '<span class="pay-chip todo">입금 예정</span>';
+        if (paid > 0) detail = '<div class="pay-detail">' + won(paid) + ' 입금<br><span class="pay-date">' +
+          s.paid.map(function (p) { return esc(p.date) + ' ' + won(p.amount); }).join('<br>') + '</span></div>';
+        else if (s.due) detail = '<div class="pay-detail">' + esc(s.due) + '</div>';
+        html += '<div class="pay-row"><div class="pay-kind"><div class="pay-label">' + esc(s.label) +
+          '<span class="pay-ratio">' + s.ratio + '%</span></div><div class="pay-amount">' + won(amount) + '</div></div>' +
+          '<div class="pay-status">' + chip + detail + '</div></div>';
+      });
+      html += '<div class="pay-sum"><div class="pay-sum-line"><span>누적 입금액</span><b>' + won(paidAll) + ' · ' +
+        (paidAll / P.total * 100).toFixed(1) + '%</b></div><div class="pay-sum-line"><span>남은 금액</span><b>' +
+        won(P.total - paidAll) + '</b></div></div>';
+      if (P.note) html += '<p class="pay-note">' + esc(P.note) + '</p>';
+      box.innerHTML = html;
+    })();
+  </script>
+  <script src="site.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
