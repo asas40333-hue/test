@@ -1,123 +1,28 @@
 /* ════════════════════════════════════════════════════════════════
    ③ 화면 동작 파일 (app.js) — 고치지 않습니다.
 
-   site.js(회사 정보·색상)와 data.js(현장 정보)를 읽어서
-   고객용(index.html)·협력업체용(partner.html) 화면을 자동으로 그립니다.
-   - 상단 진행률 (D-day · 공사 일차 · 공정률)
-   - 현장 일지 · 자재 스펙 · 계약 정산 (추가·변경 금액 자동 합산)
-   - 공정표 리스트 · 달력 · 날짜 상세창
-   - 출입 정보 · 공사 전 사진 · 특이사항 · 정보 복사
-   확인용: 주소 끝에 ?today=2027-01-05 를 붙이면 그 날짜 기준으로 화면을 볼 수 있습니다.
+   site.js(회사 설정)와 data.js(현장 데이터)를 읽어 아래를 자동으로 만듭니다.
+   - 회사 이름·로고·색상·연락처 (고객용·협력업체용 화면 전체)
+   - 상단 진행률 카드 (D-day · 공사 일차 · 공정률)
+   - 현장일지 카드, 자재스펙 카드, 계약·정산(추가·변경 견적 포함)
+   - 공정표 리스트·달력·날짜 상세창 (고객용·협력업체용)
+   - 협력업체용 출입·도어락·주차 안내, 작업 수칙, 공사 전 사진, 특이사항
+   - 사진 확대, 펼쳐보기 버튼
+   확인용: 주소 끝에 ?today=2026-12-01 을 붙이면 그 날짜 기준으로 화면을 볼 수 있습니다.
    ════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
   var BRAND = window.BRAND || {};
-  var COLOR = BRAND.color || {};
   var SITE = window.SITE || {};
+  var SCHEDULE = (window.SCHEDULE || []).slice().sort(function (a, b) { return a.start < b.start ? -1 : 1; });
   var PAGE = document.body.getAttribute('data-page') === 'partner' ? 'partner' : 'client';
   var DAY = 24 * 60 * 60 * 1000;
   var DOW = ['일', '월', '화', '수', '목', '금', '토'];
-
-  /* ───────── 기본 도구 ───────── */
-  function toUtc(iso) { var p = iso.split('-').map(Number); return Date.UTC(p[0], p[1] - 1, p[2]); }
-  function toIso(t) {
-    var d = new Date(t);
-    return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + String(d.getUTCDate()).padStart(2, '0');
-  }
-  function dowOf(iso) { return new Date(toUtc(iso)).getUTCDay(); }
-  function md(iso) { var p = iso.split('-'); return p[1] + '.' + p[2] + '(' + DOW[dowOf(iso)] + ')'; }
-  function ymd(iso) { var p = iso.split('-'); return p[0] + '.' + p[1] + '.' + p[2] + '(' + DOW[dowOf(iso)] + ')'; }
-  function korean(iso) { var p = iso.split('-').map(Number); return p[1] + '월 ' + p[2] + '일 (' + DOW[dowOf(iso)] + ')'; }
-  function koreanTight(iso) { var p = iso.split('-').map(Number); return p[1] + '월 ' + p[2] + '일(' + DOW[dowOf(iso)] + ')'; }
-  function addDays(iso, n) { return toIso(toUtc(iso) + n * DAY); }
-  function isIso(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
-  function digits(s) { return String(s || '').replace(/[^0-9+]/g, ''); }
-  function phoneText(s) { var d = digits(s); return d.replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, '$1-$2-$3'); }
-  function won(n) { return Math.round(n).toLocaleString('ko-KR') + '원'; }
-  function signedWon(n) { return (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(Math.round(n)).toLocaleString('ko-KR') + '원'; }
-  function dotDate(s) { return isIso(s) ? s.replace(/-/g, '.') : String(s || ''); }
-  function ceoLabel() { return (BRAND.ceoName || '') + ' ' + (BRAND.ceoTitle || '대표'); }
-
-  // 오늘 (한국 시간). ?today=YYYY-MM-DD 로 확인 가능
-  var TODAY_PARAM = (/[?&]today=(\d{4}-\d{2}-\d{2})/.exec(location.search) || [])[1];
-  function realToday() {
-    try {
-      var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
-      var pick = function (t) { var h = parts.find(function (p) { return p.type === t; }); return h ? h.value : ''; };
-      if (pick('year')) return pick('year') + '-' + pick('month') + '-' + pick('day');
-    } catch (e) { /* Intl 미지원 기기 */ }
-    var n = new Date();
-    return toIso(Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()));
-  }
-  function today() { return TODAY_PARAM || realToday(); }
-
-  /* ───────── 데모 모드: 모든 날짜를 '오늘' 기준으로 옮겨 늘 공사 중으로 보이게 ─────────
-     착공일이 '지난주 월요일'이 되도록 주 단위로 옮기므로 요일은 그대로 유지됩니다. */
-  (function demoShift() {
-    if (!SITE.demo || TODAY_PARAM || !isIso(SITE.start)) return;
-    var t = realToday(), mon = t;
-    while (dowOf(mon) !== 1) mon = addDays(mon, -1);
-    var target = addDays(mon, -7);
-    var weeks = Math.round((toUtc(target) - toUtc(SITE.start)) / DAY / 7);
-    var shift = weeks * 7;
-    if (!shift) return;
-    var origYear = SITE.start.slice(0, 4), origStart = SITE.start;
-    var walk = function (o) {
-      if (Array.isArray(o)) { for (var i = 0; i < o.length; i++) { if (isIso(o[i])) o[i] = addDays(o[i], shift); else if (o[i] && typeof o[i] === 'object') walk(o[i]); } return; }
-      Object.keys(o).forEach(function (k) {
-        if (isIso(o[k])) o[k] = addDays(o[k], shift);
-        else if (o[k] && typeof o[k] === 'object') walk(o[k]);
-      });
-    };
-    [window.SITE, window.SCHEDULE, window.LOGS, window.PAYMENT].forEach(function (o) { if (o) walk(o); });
-    // 메모 글자 속 '12월 9일(수)' 같은 날짜도 함께 옮깁니다
-    (window.SCHEDULE || []).forEach(function (s) {
-      ['notes', 'partnerNotes'].forEach(function (k) {
-        (s[k] || []).forEach(function (n, i) {
-          s[k][i] = n.replace(/(\d{1,2})월 (\d{1,2})일\((.)\)/g, function (all, m, d) {
-            var src = origYear + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-            if (src < origStart) src = (Number(origYear) + 1) + src.slice(4);   // 해를 넘기는 현장
-            var iso = addDays(src, shift);
-            var p = iso.split('-').map(Number);
-            return p[1] + '월 ' + p[2] + '일(' + DOW[dowOf(iso)] + ')';
-          });
-        });
-      });
-    });
-  })();
-
-  var SCHEDULE = (window.SCHEDULE || []).slice().sort(function (a, b) { return a.start < b.start ? -1 : 1; });
   var WORKDAYS = SITE.workDays || [1, 2, 3, 4, 5];
   var HOLIDAYS = SITE.holidays || [];
-
-  /* ───────── 회사 색상 · 이름 적용 ───────── */
-  (function applyBrand() {
-    var root = document.documentElement.style;
-    if (PAGE === 'client') {
-      if (COLOR.primary) root.setProperty('--primary', COLOR.primary);
-      if (COLOR.primaryLight) root.setProperty('--primary-light', COLOR.primaryLight);
-      if (COLOR.accent) root.setProperty('--accent', COLOR.accent);
-    } else {
-      if (COLOR.primary) root.setProperty('--brand', COLOR.primary);
-      if (COLOR.primaryLight) root.setProperty('--brand-light', COLOR.primaryLight);
-      if (COLOR.partnerAccent) { root.setProperty('--accent', COLOR.partnerAccent); root.setProperty('--accent-light', COLOR.partnerAccent); }
-    }
-    var theme = document.querySelector('meta[name="theme-color"]');
-    if (theme && PAGE === 'client' && COLOR.primary) theme.setAttribute('content', COLOR.primary);
-    var company = BRAND.company || '';
-    document.title = (company ? company + ' · ' : '') + (PAGE === 'partner' ? '협력업체 현장 가이드' : '현장 리포트') + (SITE.name ? ' · ' + SITE.name : '');
-    var apple = document.querySelector('meta[name="apple-mobile-web-app-title"]');
-    if (apple && company) apple.setAttribute('content', PAGE === 'partner' ? company + ' 협력' : company);
-    var foot = document.getElementById('brand-footer');
-    if (foot) foot.innerHTML = '<b>' + esc(company) + '</b>' + (BRAND.career ? ' · ' + esc(BRAND.career) : '') +
-      ' · ' + esc(ceoLabel()) + ' ' + esc(phoneText(BRAND.phone)) + (BRAND.footer ? '<br>' + esc(BRAND.footer) : '');
-  })();
+  var COLORS = BRAND.colors || {};
+  var CEO = (BRAND.ceoTitle || '대표') + '님';
 
   var CAL_TONE = {
     green:  { bg: '#ecfdf5', bd: '#a7f3d0', tx: '#047857', chip: '#047857' },
@@ -134,6 +39,46 @@
     cyan:   { bg: '#ecfeff', bd: '#a5f3fc', tx: '#0e7490', chip: '#0e7490' },
     gold:   { bg: '#fef3c7', bd: '#f59e0b', tx: '#92400e', chip: '#b45309' }
   };
+
+  /* ───────── 작은 도구 ───────── */
+  function toUtc(iso) { var p = iso.split('-').map(Number); return Date.UTC(p[0], p[1] - 1, p[2]); }
+  function toIso(t) {
+    var d = new Date(t);
+    return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + String(d.getUTCDate()).padStart(2, '0');
+  }
+  function dowOf(iso) { return new Date(toUtc(iso)).getUTCDay(); }
+  function md(iso) { var p = iso.split('-'); return p[1] + '.' + p[2] + '(' + DOW[dowOf(iso)] + ')'; }
+  function ymd(iso) { var p = iso.split('-'); return p[0] + '.' + p[1] + '.' + p[2] + '(' + DOW[dowOf(iso)] + ')'; }
+  function ymdSpaced(iso) { var p = iso.split('-'); return p[0] + '.' + p[1] + '.' + p[2] + ' (' + DOW[dowOf(iso)] + ')'; }
+  function korean(iso) { var p = iso.split('-').map(Number); return p[1] + '월 ' + p[2] + '일 (' + DOW[dowOf(iso)] + ')'; }
+  function koreanTight(iso) { var p = iso.split('-').map(Number); return p[1] + '월 ' + p[2] + '일(' + DOW[dowOf(iso)] + ')'; }
+  function addDays(iso, n) { return toIso(toUtc(iso) + n * DAY); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function escBr(s) { return esc(s).replace(/\n/g, '<br>'); }
+  function won(n) { return Math.round(n).toLocaleString('ko-KR') + '원'; }
+  function signedWon(n) { return (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(Math.round(n)).toLocaleString('ko-KR') + '원'; }
+  function phoneText(p) { return String(p || '').replace(/^(\d{3})(\d{3,4})(\d{4})$/, '$1-$2-$3'); }
+  function $(id) { return document.getElementById(id); }
+  function setText(id, v) { var el = $(id); if (el) el.textContent = v; }
+  function isIso(s) { return /^\d{4}-\d{2}-\d{2}$/.test(s || ''); }
+
+  // 오늘 날짜: ① 주소의 ?today= ② data.js 의 previewToday ③ 한국 시간 기준 실제 오늘
+  function urlToday() { var m = /[?&]today=(\d{4}-\d{2}-\d{2})/.exec(location.search); return m ? m[1] : ''; }
+  function today() {
+    if (urlToday()) return urlToday();
+    if (isIso(SITE.previewToday)) return SITE.previewToday;
+    try {
+      var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+      var pick = function (t) { var h = parts.find(function (p) { return p.type === t; }); return h ? h.value : ''; };
+      if (pick('year')) return pick('year') + '-' + pick('month') + '-' + pick('day');
+    } catch (e) { /* Intl 미지원 기기는 기기 날짜 사용 */ }
+    var n = new Date();
+    return toIso(Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()));
+  }
 
   function isHoliday(iso) { return HOLIDAYS.indexOf(iso) > -1; }
   function isWorkday(iso) { return WORKDAYS.indexOf(dowOf(iso)) > -1 && !isHoliday(iso); }
@@ -154,7 +99,6 @@
     if (iso < SITE.start) iso = (y + 1) + iso.slice(4);
     return iso;
   }
-
   function planOf(iso) {
     for (var i = 0; i < SCHEDULE.length; i++) if (iso >= SCHEDULE[i].start && iso <= SCHEDULE[i].end) return SCHEDULE[i];
     return null;
@@ -164,14 +108,59 @@
     return a === b ? a + '일차' : a + '~' + b + '일차';
   }
 
+  /* ───────── 회사 이름 · 색상 · 로고 ───────── */
+  function applyBrand() {
+    var root = document.documentElement.style;
+    if (PAGE === 'partner') {          // 협력업체 화면은 어두운 바탕이라 머리글·버튼에만 대표 색을 씁니다
+      if (COLORS.primary) root.setProperty('--brand', COLORS.primary);
+      if (COLORS.primaryLight) root.setProperty('--brand-light', COLORS.primaryLight);
+      if (COLORS.partnerAccent) root.setProperty('--accent', COLORS.partnerAccent);
+    } else {
+      if (COLORS.primary) root.setProperty('--primary', COLORS.primary);
+      if (COLORS.primaryLight) root.setProperty('--primary-light', COLORS.primaryLight);
+      if (COLORS.accent) root.setProperty('--accent', COLORS.accent);
+    }
+
+    var name = BRAND.name || '';
+    document.title = name + (PAGE === 'partner' ? ' 협력업체 현장 가이드' : ' 현장 리포트') + (SITE.name ? ' · ' + SITE.name : '');
+    var meta = function (n, v) { var el = document.querySelector('meta[name="' + n + '"]'); if (el && v) el.setAttribute('content', v); };
+    meta('theme-color', COLORS.primary);
+    meta('apple-mobile-web-app-title', BRAND.shortName || name);
+
+    document.querySelectorAll('[data-brand]').forEach(function (el) {
+      var k = el.getAttribute('data-brand');
+      var v = { name: name, slogan: BRAND.slogan, ceo: (BRAND.ceoName || '') + ' ' + (BRAND.ceoTitle || ''), ceoTitle: CEO,
+        phone: phoneText(BRAND.phone) }[k];
+      if (v != null) el.textContent = v;
+    });
+    document.querySelectorAll('[data-brand-logo]').forEach(function (el) {
+      el.innerHTML = BRAND.logoImage
+        ? '<img src="' + esc(BRAND.logoImage) + '" alt="' + esc(name) + ' 로고">'
+        : '<span>' + esc(BRAND.logoText || name.slice(0, 1)) + '</span>';
+    });
+    document.querySelectorAll('[data-brand-tel]').forEach(function (el) {
+      if (BRAND.phone) el.href = 'tel:' + BRAND.phone; else el.hidden = true;
+    });
+    document.querySelectorAll('[data-brand-kakao]').forEach(function (el) {
+      if (BRAND.kakaoUrl) el.href = BRAND.kakaoUrl; else el.hidden = true;
+    });
+
+    // 시연용 기준 날짜가 켜져 있으면 화면 맨 위에 작게 알립니다
+    if (isIso(SITE.previewToday) && !urlToday()) {
+      var bar = document.createElement('div');
+      bar.className = 'preview-bar';
+      bar.textContent = '🔎 시연 화면 · ' + ymd(SITE.previewToday) + ' 기준으로 표시 중';
+      document.body.insertBefore(bar, document.body.firstChild);
+    }
+  }
+
   /* ───────── 현장명·기간 글자 채우기 ───────── */
   function fillSiteText() {
     var calFirst = calStart(), calEnd = calLastDay();
     var weeks = Math.round((toUtc(calEnd) - toUtc(calFirst)) / DAY + 1) / 7;
     var offText = (WORKDAYS.indexOf(6) > -1 ? '일요일' : '주말') + (HOLIDAYS.length ? '·공휴일' : '') + ' 휴무';
-    var sameYear = calFirst.slice(0, 4) === calEnd.slice(0, 4);   // 해를 넘기면 끝 날짜에도 연도 표시
+    var sameYear = calFirst.slice(0, 4) === calEnd.slice(0, 4);
     var values = {
-      brand: BRAND.company,
       name: SITE.name,
       start: ymd(SITE.start),
       end: ymd(SITE.end),
@@ -187,6 +176,7 @@
 
   /* ───────── 상단 진행률 카드 (고객용) ───────── */
   function updateProgress() {
+    if (!$('status-percent')) return;
     var t = today();
     var leftToStart = Math.round((toUtc(SITE.start) - toUtc(t)) / DAY);
     var leftToEnd = Math.round((toUtc(SITE.end) - toUtc(t)) / DAY);
@@ -206,17 +196,17 @@
       percent = Math.min(100, Math.max(0, Math.round(n / TOTAL_DAYS * 100)));
       var dayText = isWorkday(t) || SITE.dayBase === 'calendar' ? '공사 ' + n + '일차' : '휴무일 · ' + n + '일차까지 진행';
       dday = dayText + ' · 완공 ' + (leftToEnd === 0 ? 'D-Day' : 'D-' + leftToEnd);
-      stage = leftToEnd === 0 ? '최종 준공 검수 · 인수인계' : '공사 진행 중';
+      var plan = isWorkday(t) ? planOf(t) : null;
+      stage = leftToEnd === 0 ? '최종 준공 검수 · 인수인계' : plan ? plan.title : '공사 진행 중';
       headline = dayText + ' · 공정률 ' + percent + '%';
     }
     setText('status-dday', dday);
     setText('status-percent', headline);
-    var st = document.getElementById('status-stage');
-    if (st) st.innerHTML = '현재 상태: <strong>' + esc(stage) + '</strong>';
-    var bar = document.getElementById('progress-fill');
+    var st = $('status-stage');
+    if (st) st.innerHTML = '현재 공정: <strong>' + esc(stage) + '</strong>';
+    var bar = $('progress-fill');
     if (bar) bar.style.width = percent + '%';
   }
-  function setText(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
 
   /* ───────── 공정표 리스트 ───────── */
   function noteHtml(text, cls) {
@@ -225,7 +215,7 @@
   }
 
   function renderClientTimeline() {
-    var box = document.getElementById('timeline');
+    var box = $('timeline');
     if (!box) return;
     var t = today();
     box.innerHTML = SCHEDULE.map(function (s, i) {
@@ -243,7 +233,7 @@
   }
 
   function renderPartnerSchedule() {
-    var box = document.getElementById('partner-schedule');
+    var box = $('partner-schedule');
     if (!box) return;
     var t = today();
     box.innerHTML = SCHEDULE.map(function (s) {
@@ -257,7 +247,6 @@
         '<div class="schedule-date">' + esc(date) + '</div>' + tag + '</div>' +
         '<div class="schedule-work">' + esc(s.work || s.title) + '</div>';
       (s.partnerNotes || []).forEach(function (n) { html += noteHtml(n, 'schedule-note'); });
-      if (s.partnerHtml) html += s.partnerHtml;   // 직원이 직접 적는 추가 HTML
       return html + '</div>';
     }).join('');
   }
@@ -275,7 +264,7 @@
   }
 
   function renderCalendar() {
-    var grid = document.getElementById('cal-grid');
+    var grid = $('cal-grid');
     if (!grid) return;
     var t = today(), first = calStart(), last = calLastDay();
     var html = ['월', '화', '수', '목', '금', '토', '일'].map(function (l, i) {
@@ -309,13 +298,11 @@
   }
 
   function openCalDetail(iso) {
-    var box = document.getElementById('cal-detail');
+    var box = $('cal-detail');
     if (!box) return;
     var plan = planOf(iso), t = today();
-    var dateEl = document.getElementById('cal-detail-date');
-    var badge = document.getElementById('cal-detail-badge');
-    var titleEl = document.getElementById('cal-detail-title');
-    var notesEl = document.getElementById('cal-detail-notes');
+    var dateEl = $('cal-detail-date'), badge = $('cal-detail-badge');
+    var titleEl = $('cal-detail-title'), notesEl = $('cal-detail-notes');
     badge.className = 'cal-detail-badge';
     dateEl.textContent = korean(iso);
 
@@ -329,7 +316,7 @@
       if (PAGE === 'client' && plan.notice) notes = notes.concat([plan.notice]);
       var body = '';
       notes.forEach(function (text) {
-        // 진행 기록(✔ 1.5 …)은 그 날짜를 눌렀을 때만 보여 줍니다
+        // 진행 기록(✔ 11.25 …)은 그 날짜를 눌렀을 때만 보여 줍니다
         var hit = text.match(/^✔\s*(\d{1,2})\.(\d{1,2})/);
         if (hit && noteDate(hit[1], hit[2]) !== iso) return;
         var warn = text.indexOf('※') === 0 || text.indexOf('소음') > -1 || text.indexOf('⚠') > -1;
@@ -353,9 +340,8 @@
     box.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
-
   function closeCalDetail() {
-    var box = document.getElementById('cal-detail');
+    var box = $('cal-detail');
     if (box) box.classList.remove('open');
     document.body.style.overflow = '';
   }
@@ -363,61 +349,323 @@
   var VIEW_KEY = 'siteapp_' + (SITE.id || 'site') + '_' + PAGE + '_view';   // 현장·화면마다 따로 기억
   function setScheduleView(view) {
     var isCal = view === 'calendar';
-    var listView = document.getElementById('schedule-list-view');
-    var calView = document.getElementById('schedule-calendar-view');
+    var listView = $('schedule-list-view'), calView = $('schedule-calendar-view');
     if (!listView || !calView) return;
     listView.hidden = isCal;
     calView.hidden = !isCal;
     [['view-btn-list', !isCal], ['view-btn-calendar', isCal]].forEach(function (b) {
-      var el = document.getElementById(b[0]);
+      var el = $(b[0]);
       if (el) { el.classList.toggle('active', b[1]); el.setAttribute('aria-pressed', String(b[1])); }
     });
     if (isCal) renderCalendar();
     try { localStorage.setItem(VIEW_KEY, isCal ? 'calendar' : 'list'); } catch (e) { /* 저장이 막힌 브라우저 */ }
   }
 
-  /* ───────── 고객용: 탭 · 사진 확대 · 1일차 사진 펼치기 ───────── */
+  /* ───────── 고객용: 현장일지 ───────── */
+  function photoTile(p, badge) {
+    return '<div class="photo-item tap" data-zoom="' + esc(p.src) + '" data-cap="' + esc(p.cap || '') + '">' +
+      '<img src="' + esc(p.src) + '" alt="' + esc(p.cap || '현장 사진') + '" loading="lazy">' +
+      (badge ? '<div class="photo-badge">' + esc(p.cap || '') + '</div>' : '') + '</div>';
+  }
+  function logDayLabel(iso) {
+    if (iso < SITE.start) return '착공 전 준비';
+    if (iso > SITE.end) return '준공 후';
+    if (!isWorkday(iso) && SITE.dayBase !== 'calendar') return '휴무일';
+    return iso === SITE.start ? '착공 1일차' : dayNo(iso) + '일차';
+  }
+  function renderLogs() {
+    var box = $('log-list');
+    if (!box) return;
+    var logs = (window.LOGS || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+    box.innerHTML = logs.map(function (L) {
+      var photos = L.photos || [], checks = L.checks || [];
+      var strong = photos.length > 0;
+      var html = '<div class="card' + (strong ? ' log-card-photo' : '') + '">' +
+        '<div class="log-item"><div class="log-date">' + esc(ymdSpaced(L.date)) + ' · ' + esc(L.label || logDayLabel(L.date)) + '</div>' +
+        '<div class="log-work">' + esc(L.title) + '</div></div>';
+      if (L.text) html += '<p class="log-text">' + escBr(L.text) + '</p>';
+      if (photos.length && photos.length <= 4) {
+        html += '<div class="log-grid' + (photos.length === 1 ? ' single' : '') + '">' + photos.map(function (p) { return photoTile(p, false); }).join('') + '</div>';
+      } else if (photos.length > 4) {
+        html += '<div class="day1-hero">' + photos.slice(0, 2).map(function (p) { return photoTile(p, true); }).join('') + '</div>' +
+          '<button type="button" class="gallery-toggle" data-total="' + photos.length + '">전체 ' + photos.length + '장 펼쳐보기 (' + (photos.length - 2) + '장 더)</button>' +
+          '<div class="day1-gallery" hidden>' + photos.slice(2).map(function (p) { return photoTile(p, true); }).join('') + '</div>';
+      }
+      if (photos.length) html += '<div class="log-hint">📷 사진 터치 시 확대</div>';
+      if (checks.length) {
+        html += '<div class="check-box"><div class="check-head">확인된 체크 포인트 ' + checks.length + '곳</div>' +
+          checks.map(function (c, i) {
+            return '<div class="check-item"><div class="check-num">' + (i + 1) + '</div><div>' +
+              '<div class="check-title">' + esc(c.title) + '</div><div class="check-desc">' + escBr(c.desc) + '</div></div></div>';
+          }).join('') + '</div>';
+      }
+      return html + '</div>';
+    }).join('');
+  }
+  function toggleGallery(btn) {
+    var box = btn.nextElementSibling;
+    if (!box) return;
+    var willOpen = box.hasAttribute('hidden');
+    if (willOpen) box.removeAttribute('hidden'); else box.setAttribute('hidden', '');
+    var total = Number(btn.getAttribute('data-total'));
+    btn.textContent = willOpen ? '전체 ' + total + '장 접기' : '전체 ' + total + '장 펼쳐보기 (' + (total - 2) + '장 더)';
+    if (!willOpen) { var card = btn.closest('.card'); if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+
+  /* ───────── 고객용: 자재스펙 ───────── */
+  var STATUS_TEXT = { confirmed: '확정', recommended: '추천(협의)', changed: '변경' };
+  function renderSpecs() {
+    var box = $('spec-list');
+    if (!box) return;
+    var S = window.SPECS || { groups: [] }, groups = S.groups || [];
+
+    var cat = BRAND.catalog || {};
+    var catBox = $('catalog-banner');
+    if (catBox) {
+      if (cat.show && cat.url) {
+        catBox.innerHTML = '<div class="catalog-title">' + esc((BRAND.name || '') + ' ' + (cat.title || '자재 도감')) + '</div>' +
+          '<p class="catalog-desc">' + esc(cat.desc || '') + '</p>' +
+          '<a class="catalog-btn" href="' + esc(cat.url) + '" target="_blank" rel="noopener">' + esc(cat.button || '자재 도감 열기') + '</a>';
+      } else catBox.hidden = true;
+    }
+    var noticeBox = $('spec-notice');
+    if (noticeBox) { if (S.notice) $('spec-notice-text').textContent = S.notice; else noticeBox.hidden = true; }
+
+    var count = function (st) { return groups.filter(function (g) { return g.status === st; }).length; };
+    var legend = '';
+    if (count('confirmed')) legend += '<div class="spec-legend-item"><span class="spec-dot" style="background:#10b981;"></span>확정 ' + count('confirmed') + '개 공종</div>';
+    if (count('recommended')) legend += '<div class="spec-legend-item"><span class="spec-dot" style="background:#f59e0b;"></span>추천(협의) ' + count('recommended') + '개 공종</div>';
+    if (count('changed')) legend += '<div class="spec-legend-item"><span class="spec-dot" style="background:#d97706;"></span>변경 ' + count('changed') + '개 공종</div>';
+    legend += '<div class="spec-legend-item" style="margin-left:auto; font-weight:500; color:#94a3b8;">📷 사진 터치 시 확대</div>';
+    var lg = $('spec-legend');
+    if (lg) lg.innerHTML = legend;
+
+    box.innerHTML = groups.map(function (g) {
+      var st = STATUS_TEXT[g.status] ? g.status : 'confirmed';
+      var html = '<div class="card" style="margin-bottom: 16px;"><div class="spec-card-head"><div>' +
+        (g.en ? '<div class="spec-cat-en">' + esc(g.en) + '</div>' : '') +
+        '<div class="spec-card-title">' + esc(g.title) + '</div></div>' +
+        '<span class="spec-status ' + st + '">' + esc(g.statusText || STATUS_TEXT[st]) + '</span></div>';
+      var photos = g.photos || [], items = g.items || [];
+      if (photos.length) {
+        html += '<div class="spec-grid">' + photos.map(function (p) {
+          var cap = (p.name || '') + (p.desc ? ' · ' + p.desc : '');
+          return '<div class="spec-cell" data-zoom="' + esc(p.src) + '" data-cap="' + esc(cap) + '">' +
+            '<div class="ph">' + (p.tag ? '<span class="tag">' + esc(p.tag) + '</span>' : '') +
+            '<img src="' + esc(p.src) + '" alt="' + esc(p.name || '') + '" loading="lazy"></div>' +
+            '<div class="cap"><b>' + esc(p.name) + '</b>' + (p.desc ? '<em>' + esc(p.desc) + '</em>' : '') + '</div></div>';
+        }).join('') + '</div>';
+      }
+      if (items.length) {
+        html += '<div class="spec-list"' + (photos.length ? ' style="margin-top:10px;"' : '') + '>' + items.map(function (it) {
+          var thumb = it.photo
+            ? '<div class="spec-thumb photo" data-zoom="' + esc(it.photo) + '" data-cap="' + esc(it.name || '') + '"><img src="' + esc(it.photo) + '" alt="' + esc(it.name || '') + '"></div>'
+            : '<div class="spec-thumb icon">' + esc(it.icon || '📐') + '</div>';
+          return '<div class="spec-row">' + thumb + '<div class="spec-body"><div class="spec-name">' + esc(it.name) + '</div>' +
+            (it.desc ? '<div class="spec-desc">' + esc(it.desc) + '</div>' : '') + '</div></div>';
+        }).join('') + '</div>';
+      }
+      if (g.note) html += '<div class="spec-card-note">' + esc(g.note) + '</div>';
+      return html + '</div>';
+    }).join('');
+  }
+
+  /* ───────── 고객용: 계약 · 정산 (추가·변경 견적 포함) ───────── */
+  function renderPayment() {
+    var card = $('pay-card'), box = $('pay-body');
+    if (!box) return;
+    var P = window.PAYMENT;
+    if (!P || !P.show) { if (card) card.hidden = true; return; }
+    var steps = P.steps || [], changes = P.changes || [];
+    var base = Number(P.total) || 0;
+    var changeSum = changes.reduce(function (a, c) { return a + (Number(c.amount) || 0); }, 0);
+    var grand = base + changeSum;
+    var ratioSum = steps.reduce(function (a, s) { return a + (Number(s.ratio) || 0); }, 0);
+
+    // 회차별 금액: 비율로 나누고, 끝전은 마지막 회차에 모읍니다. 추가·변경 금액은 changesWith 회차에 더합니다.
+    var withIdx = -1;
+    steps.forEach(function (s, i) { if (P.changesWith && s.label === P.changesWith) withIdx = i; });
+    if (changes.length && withIdx < 0 && P.changesWith !== '') withIdx = steps.length - 1;   // '' 이면 회차와 따로 정산
+    // 추가·변경 금액을 따로 받은 기록 (changesPaid). 합산 회차가 있으면 그 회차의 입금으로도 함께 보여 줍니다.
+    var changesPaid = P.changesPaid || [];
+    var changePaid = changesPaid.reduce(function (a, p) { return a + (Number(p.amount) || 0); }, 0);
+    var amounts = steps.map(function (s) { return Math.round(base * (Number(s.ratio) || 0) / 100); });
+    if (ratioSum === 100 && amounts.length) {
+      var sumBut = amounts.slice(0, -1).reduce(function (a, b) { return a + b; }, 0);
+      amounts[amounts.length - 1] = base - sumBut;
+    }
+
+    var html = '';
+    html += '<div class="amount-box">' +
+      '<div class="amount-row"><span>기본 계약금액</span><b>' + won(base) + '</b></div>';
+    if (changes.length) {
+      html += '<div class="amount-row"><span>추가·변경 견적 (' + changes.length + '건)</span><b class="' + (changeSum >= 0 ? 'plus' : 'minus') + '">' + signedWon(changeSum) + '</b></div>';
+    }
+    html += '<div class="amount-row total"><span>최종 공사금액</span><span>' + won(grand) + '</span></div>' +
+      (P.vat ? '<div class="amount-vat">' + esc(P.vat) + '</div>' : '') + '</div>';
+
+    if (ratioSum !== 100) html += '<div class="pay-warn">※ 회차 비율 합계가 ' + ratioSum + '% 입니다. data.js 의 ratio 합계를 100으로 맞춰 주세요.</div>';
+
+    html += '<div class="pay-sub-title">회차별 대금 · 입금 현황 <span>' + steps.map(function (s) { return s.ratio; }).join(' / ') + '</span></div>';
+    var paidAll = withIdx < 0 ? changePaid : 0;
+    steps.forEach(function (s, i) {
+      var amount = amounts[i] + (i === withIdx ? changeSum : 0);
+      var records = (s.paid || []).slice();
+      if (i === withIdx) records = records.concat(changesPaid.map(function (p) { return { date: p.date, amount: p.amount, extra: true }; }));
+      var paid = records.reduce(function (a, p) { return a + (Number(p.amount) || 0); }, 0);
+      paidAll += paid;
+      var chip, detail = '';
+      if (paid >= amount && amount > 0) chip = '<span class="pay-chip done">✅ 입금 완료</span>';
+      else if (paid > 0) chip = '<span class="pay-chip partial">일부 입금</span>';
+      else chip = '<span class="pay-chip todo">입금 예정</span>';
+      if (paid > 0) {
+        detail = '<div class="pay-detail">' + won(paid) + ' 입금' + (paid < amount ? ' · 남은 ' + won(amount - paid) : '') +
+          '<br><span class="pay-date">' + records.map(function (p) { return esc(p.date) + ' ' + won(p.amount) + (p.extra ? ' (추가·변경)' : ''); }).join('<br>') + '</span></div>';
+      } else if (s.due) detail = '<div class="pay-detail">' + esc(s.due) + '</div>';
+      var extra = i === withIdx && changeSum ? '<div class="pay-extra">기본 ' + won(amounts[i]) + ' ' + signedWon(changeSum) + ' (추가·변경)</div>' : '';
+      html += '<div class="pay-row"><div class="pay-kind"><div class="pay-label">' + esc(s.label) +
+        '<span class="pay-ratio">' + esc(s.ratio) + '%</span></div><div class="pay-amount">' + won(amount) + '</div>' + extra + '</div>' +
+        '<div class="pay-status">' + chip + detail + '</div></div>';
+    });
+
+    if (changes.length) {
+      html += '<div class="pay-sub-title" style="margin-top:14px;">추가·변경 견적 내역 <span>' + esc(withIdx >= 0 ? steps[withIdx].label + '과 함께 정산' : (P.changesDue || '따로 정산')) + '</span></div>';
+      changes.forEach(function (c) {
+        var amt = Number(c.amount) || 0;
+        html += '<div class="change-row"><div class="change-main"><div class="change-title">' + esc(c.title) + '</div>' +
+          '<div class="change-meta">' + esc(c.date || '') + (c.note ? ' · ' + esc(c.note) : '') + '</div></div>' +
+          '<div class="change-amt ' + (amt >= 0 ? 'plus' : 'minus') + '">' + signedWon(amt) + '</div></div>';
+      });
+      html += '<div class="change-row change-total"><div class="change-main"><div class="change-title">추가·변경 합계</div></div>' +
+        '<div class="change-amt ' + (changeSum >= 0 ? 'plus' : 'minus') + '">' + signedWon(changeSum) + '</div></div>';
+      if (changesPaid.length || withIdx < 0) {
+        var cChip = changeSum <= 0 ? '<span class="pay-chip todo">정산 반영</span>'
+          : changePaid >= changeSum ? '<span class="pay-chip done">✅ 입금 완료</span>'
+          : changePaid > 0 ? '<span class="pay-chip partial">일부 입금</span>' : '<span class="pay-chip todo">입금 예정</span>';
+        html += '<div class="change-row change-paid"><div class="change-main"><div class="change-title">추가·변경 입금 기록</div>' +
+          '<div class="change-meta">' + (changesPaid.length
+            ? changesPaid.map(function (p) { return esc(p.date) + ' ' + won(p.amount); }).join('<br>') + (changeSum > changePaid ? '<br>남은 추가금 ' + won(changeSum - changePaid) : '')
+            : esc(P.changesDue || '아직 입금 기록이 없습니다')) + '</div></div>' + cChip + '</div>';
+      }
+    }
+
+    html += '<div class="pay-sum"><div class="pay-sum-line"><span>누적 입금액</span><b>' + won(paidAll) + ' · ' +
+      (grand ? (paidAll / grand * 100).toFixed(1) : '0.0') + '%</b></div><div class="pay-sum-line"><span>남은 금액</span><b>' +
+      won(grand - paidAll) + '</b></div></div>';
+    if (P.note) html += '<p class="pay-note">' + esc(P.note) + '</p>';
+    box.innerHTML = html;
+  }
+
+  /* ───────── 사진 확대 (고객용) ───────── */
+  function openSpecPhoto(src, caption) {
+    var m = $('photo-modal');
+    if (!m) return;
+    $('photo-modal-img').src = src;
+    $('photo-modal-caption').textContent = caption || '';
+    m.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSpecPhoto() {
+    var m = $('photo-modal');
+    if (m) m.classList.remove('open');
+    document.body.style.overflow = '';
+  }
   function switchTab(name, el) {
     document.querySelectorAll('.nav-tab').forEach(function (t) { t.classList.remove('active'); });
     document.querySelectorAll('.tab-content').forEach(function (c) { c.classList.remove('active'); });
-    var target = document.getElementById('tab-' + name);
+    var target = $('tab-' + name);
     if (target) target.classList.add('active');
     if (el) el.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function openSpecPhoto(src, caption) {
-    var m = document.getElementById('photo-modal');
-    if (!m) return;
-    document.getElementById('photo-modal-img').src = src;
-    document.getElementById('photo-modal-caption').textContent = caption || '';
-    m.classList.add('open');
-    document.body.style.overflow = 'hidden';
+  /* ───────── 협력업체용: 출입 · 수칙 · 공사 전 사진 · 특이사항 ───────── */
+  function contact() {
+    var A = window.ACCESS || {};
+    return {
+      name: A.contactName || ((BRAND.name || '') + ' ' + (BRAND.ceoName || '') + ' ' + (BRAND.ceoTitle || '')).trim(),
+      short: A.contactName || ((BRAND.ceoName || '') + ' ' + (BRAND.ceoTitle || '')).trim(),
+      phone: A.phone || BRAND.phone || ''
+    };
   }
-  function closeSpecPhoto() {
-    var m = document.getElementById('photo-modal');
-    if (m) m.classList.remove('open');
-    document.body.style.overflow = '';
+  function renderAccess() {
+    var grid = $('access-grid');
+    if (!grid) return;
+    var A = window.ACCESS || {}, C = contact();
+    var door = A.doorCode ? A.doorCode : CEO + '이 문자로 따로 안내';
+    var item = function (title, val, cls, copy) {
+      if (!val) return '';
+      return '<div class="access-item full"' + (copy ? ' data-copy="' + esc(copy) + '" style="cursor:pointer;"' : '') + '>' +
+        '<div class="access-title">' + esc(title) + '</div><div class="access-val' + (cls ? ' ' + cls : '') + '">' + esc(val) + '</div></div>';
+    };
+    grid.innerHTML =
+      item('현장 주소 (탭하여 복사)', A.address, 'addr', A.address) +
+      item('1층 공동현관 출입', A.lobby, 'addr') +
+      item(A.doorCode ? '세대 현관 도어락 비밀번호 (탭하여 복사)' : '세대 현관 도어락 비밀번호', door, A.doorCode ? '' : 'addr', A.doorCode || '') +
+      item('🚗 주차 안내', A.parking, 'addr') +
+      '<div class="access-item full contact-row">' +
+      '<div><div class="access-title">현장 총괄</div><div class="contact-name">' + esc(C.name) + ' · ' + esc(phoneText(C.phone)) + '</div></div>' +
+      (C.phone ? '<a class="contact-call" href="tel:' + esc(C.phone) + '">📞 통화</a>' : '') + '</div>';
+
+    var rules = (A.rules || []).slice();
+    if (A.parking) rules.splice(Math.min(3, rules.length), 0, ['주차', A.parking]);
+    var rl = $('rule-list');
+    if (rl) rl.innerHTML = rules.map(function (r) { return '<li><strong>' + esc(r[0]) + ':</strong> ' + esc(r[1]) + '</li>'; }).join('');
+
+    var call = $('call-btn');
+    if (call) { call.href = 'tel:' + C.phone; call.textContent = '📞 ' + C.short + '님 통화'; }
+    if (A.doorCode && $('copy-btn')) $('copy-btn').textContent = '📋 주소·비번 복사';
+    grid.addEventListener('click', function (e) {
+      var el = e.target.closest('[data-copy]');
+      if (el && el.getAttribute('data-copy')) copyText(el.getAttribute('data-copy'));
+    });
   }
 
-  /* ───────── 협력업체용: 공사 전 사진 라이트박스 ───────── */
+  function renderPrePhotos() {
+    var hero = $('pre-grid');
+    if (!hero) return;
+    var P = window.PARTNER || {}, list = P.prePhotos || [], n = P.heroCount || 4;
+    var card = hero.closest('.photo-card');
+    if (!list.length && !(P.notes || []).length) { if (card) card.hidden = true; return; }
+    var tile = function (p, i, all) {
+      var num = String(i + 1).padStart(2, '0');
+      return '<div class="pre-item"' + (all ? ' data-photo="' + (i + 1) + '" data-cap="' + esc(p.cap || num + ' · ' + (p.label || '')) + '"' : '') +
+        ' data-open="' + (i + 1) + '"><img src="' + esc(p.src) + '" alt="' + esc(p.cap || p.label || '') + '"' + (all ? ' loading="lazy"' : '') + '>' +
+        '<div class="pre-badge">' + num + ' ' + esc(p.label || '') + '</div></div>';
+    };
+    hero.innerHTML = list.slice(0, n).map(function (p, i) { return tile(p, i, false); }).join('');
+    $('pre-all').innerHTML = list.map(function (p, i) { return tile(p, i, true); }).join('');
+    var toggle = $('pre-toggle');
+    if (toggle) toggle.hidden = list.length <= n;
+
+    var notes = P.notes || [], memo = $('memo-box');
+    if (memo) {
+      if (!notes.length) memo.hidden = true;
+      else memo.innerHTML = '<div class="memo-title">⚠️ 현장 특이사항 ' + notes.length + '곳 (작업 전 확인)</div>' +
+        notes.map(function (m, i) {
+          return '<div class="memo-item"><b>' + (i + 1) + '. ' + esc(m.title) + '</b>' + escBr(m.desc) +
+            (m.photo && list[m.photo - 1] ? '<br><button class="memo-link" data-open="' + m.photo + '">사진 ' + String(m.photo).padStart(2, '0') + ' 보기</button>' : '') + '</div>';
+        }).join('');
+    }
+  }
+
   var prePhotos = [], preIndex = 0;
   function collectPrePhotos() { prePhotos = Array.prototype.slice.call(document.querySelectorAll('#pre-all .pre-item')); }
   function renderPrePhoto() {
     var item = prePhotos[preIndex];
     if (!item) return;
-    var img = item.querySelector('img'), target = document.getElementById('pre-lb-img');
+    var img = item.querySelector('img'), target = $('pre-lb-img');
     target.src = img.getAttribute('src');
     target.alt = img.getAttribute('alt') || '';
-    document.getElementById('pre-lb-caption').textContent = item.getAttribute('data-cap') || '';
-    document.getElementById('pre-lb-count').textContent = (preIndex + 1) + ' / ' + prePhotos.length + ' · 좌우로 넘기기';
+    $('pre-lb-caption').textContent = item.getAttribute('data-cap') || '';
+    $('pre-lb-count').textContent = (preIndex + 1) + ' / ' + prePhotos.length + ' · 좌우로 넘기기';
   }
   function openPreLightbox(num) {
     collectPrePhotos();
     preIndex = 0;
     for (var i = 0; i < prePhotos.length; i++) if (prePhotos[i].getAttribute('data-photo') === String(num)) { preIndex = i; break; }
     renderPrePhoto();
-    document.getElementById('pre-lightbox').classList.add('open');
+    $('pre-lightbox').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
   function stepPrePhoto(delta) {
@@ -426,293 +674,72 @@
     renderPrePhoto();
   }
   function closePreLightbox() {
-    var lb = document.getElementById('pre-lightbox');
+    var lb = $('pre-lightbox');
     if (!lb) return;
     lb.classList.remove('open');
-    document.getElementById('pre-lb-img').removeAttribute('src');
+    $('pre-lb-img').removeAttribute('src');
     document.body.style.overflow = '';
   }
   function labelPre(open) {
     var n = document.querySelectorAll('#pre-all .pre-item').length;
-    var btn = document.getElementById('pre-toggle');
+    var btn = $('pre-toggle');
     if (btn) btn.textContent = open ? '전체 ' + n + '장 접기' : '전체 ' + n + '장 펼쳐보기';
-    var hint = document.getElementById('pre-hint');
-    if (hint) hint.textContent = '📷 사진을 누르면 크게 보기 · ‹ › 버튼으로 ' + n + '장 넘겨보기';
+    var hint = $('pre-hint');
+    if (hint) hint.textContent = n ? '📷 사진을 누르면 크게 보기 · ‹ › 버튼으로 ' + n + '장 넘겨보기' : '';
   }
   function togglePreGallery() {
-    var box = document.getElementById('pre-all');
+    var box = $('pre-all');
     var willOpen = box.hasAttribute('hidden');
     if (willOpen) box.removeAttribute('hidden'); else box.setAttribute('hidden', '');
     labelPre(willOpen);
     if (!willOpen) { var card = box.closest('.photo-card'); if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   }
 
-
-  /* ───────── 고객용: 현장 일지 ───────── */
-  function photoItem(p, idx, extraCls) {
-    var cap = String(idx).padStart(2, '0') + ' · ' + (p.caption || '');
-    return '<div class="photo-item tap' + (extraCls || '') + '" onclick="openSpecPhoto(this.dataset.src,this.dataset.cap)" data-src="' + esc(p.src) + '" data-cap="' + esc(cap) + '">' +
-      '<img src="' + esc(p.src) + '" alt="' + esc(p.caption || '') + '" loading="lazy">' +
-      '<div class="photo-badge">' + String(idx).padStart(2, '0') + ' ' + esc(p.caption || '') + '</div></div>';
-  }
-  function dayLabel(iso) {
-    if (iso < SITE.start) return '착공 전';
-    if (iso > SITE.end) return '완공 후';
-    if (!isWorkday(iso) && SITE.dayBase !== 'calendar') return '휴무일';
-    var n = dayNo(iso);
-    return n === 1 ? '착공 1일차' : n + '일차';
-  }
-  function renderLogs() {
-    var box = document.getElementById('log-list');
-    if (!box) return;
-    var desc = document.getElementById('log-desc');
-    if (desc) desc.textContent = (BRAND.company || '') + ' ' + (BRAND.ceoTitle || '대표') + '가 직접 기록합니다';
-    var t = today();
-    var logs = (window.LOGS || []).filter(function (l) { return isIso(l.date) && l.date <= t; })
-      .sort(function (a, b) { return a.date < b.date ? 1 : -1; });
-    if (!logs.length) {
-      box.innerHTML = '<div class="card"><div class="empty-note">아직 등록된 현장 일지가 없습니다.<br>' +
-        (t < SITE.start ? korean(SITE.start) + ' 착공 후 사진과 함께 기록이 올라옵니다.' : '곧 사진과 함께 기록이 올라옵니다.') + '</div></div>';
-      return;
-    }
-    box.innerHTML = logs.map(function (l, li) {
-      var photos = l.photos || [], html = '<div class="card log-card"><div class="log-item">' +
-        '<div class="log-date">' + esc(ymd(l.date)) + ' · ' + esc(dayLabel(l.date)) + '</div>' +
-        '<div class="log-work">' + esc(l.title || '') + '</div></div>';
-      if (l.text) html += '<p class="log-text">' + esc(l.text) + '</p>';
-      if (photos.length && photos.length <= 4) {
-        html += '<div class="log-grid">' + photos.map(function (p, i) { return photoItem(p, i + 1); }).join('') + '</div>';
-      } else if (photos.length > 4) {
-        html += '<div class="log-grid">' + photos.slice(0, 2).map(function (p, i) { return photoItem(p, i + 1); }).join('') + '</div>' +
-          '<button class="gallery-toggle" onclick="toggleLogMore(this)" data-total="' + photos.length + '" data-more="' + (photos.length - 2) + '">전체 ' + photos.length + '장 펼쳐보기 (' + (photos.length - 2) + '장 더)</button>' +
-          '<div class="log-more" hidden>' + photos.slice(2).map(function (p, i) { return photoItem(p, i + 3); }).join('') + '</div>';
-      }
-      if (photos.length) html += '<div class="log-hint">📷 사진 터치 시 확대</div>';
-      return html + '</div>';
-    }).join('');
-  }
-  function toggleLogMore(btn) {
-    var box = btn.nextElementSibling;
-    var open = box.hasAttribute('hidden');
-    if (open) box.removeAttribute('hidden'); else box.setAttribute('hidden', '');
-    btn.textContent = open ? '전체 ' + btn.dataset.total + '장 접기' : '전체 ' + btn.dataset.total + '장 펼쳐보기 (' + btn.dataset.more + '장 더)';
-    if (!open) { var card = btn.closest('.card'); if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  }
-
-  /* ───────── 고객용: 자재 스펙 · 자재 도감 배너 ───────── */
-  function renderSpecs() {
-    var list = document.getElementById('spec-list');
-    if (!list) return;
-    var cat = BRAND.catalog || {}, banner = document.getElementById('catalog-banner');
-    if (banner) banner.innerHTML = cat.show && cat.url && cat.url !== 'https://' ?
-      '<div class="catalog-banner"><div class="catalog-banner-title">' + esc(cat.title || '자재 도감') + '</div>' +
-      (cat.desc ? '<p>' + esc(cat.desc) + '</p>' : '') +
-      '<a href="' + esc(cat.url) + '" target="_blank" rel="noopener">📱 자재 도감 열기</a></div>' : '';
-    var S = window.SPECS || {}, groups = S.groups || [];
-    var notice = document.getElementById('spec-notice');
-    if (notice) notice.innerHTML = S.notice ? '<div class="spec-notice"><div class="spec-notice-icon">💡</div><div>' + esc(S.notice) + '</div></div>' : '';
-    var conf = groups.filter(function (g) { return g.status !== 'recommended'; }).length;
-    var legend = document.getElementById('spec-legend');
-    if (legend) legend.innerHTML = '<div class="spec-legend-item"><span class="spec-dot" style="background:#10b981;"></span>확정 사양 ' + conf + '개 공종</div>' +
-      '<div class="spec-legend-item"><span class="spec-dot" style="background:#f59e0b;"></span>추천(협의) ' + (groups.length - conf) + '개 공종</div>' +
-      '<div class="spec-legend-item" style="margin-left:auto; font-weight:500; color:#94a3b8;">📷 사진 터치 시 확대</div>';
-    if (!groups.length) { list.innerHTML = '<div class="card"><div class="empty-note">자재 사양은 미팅 후 이곳에 정리해 드립니다.</div></div>'; return; }
-    list.innerHTML = groups.map(function (g) {
-      var rec = g.status === 'recommended';
-      var html = '<div class="card" style="margin-bottom: 16px;"><div class="spec-card-head"><div>' +
-        (g.en ? '<div class="spec-cat-en">' + esc(g.en) + '</div>' : '') +
-        '<div class="spec-card-title">' + esc(g.title || '') + '</div></div>' +
-        '<span class="spec-status ' + (rec ? 'recommended' : 'confirmed') + '">' + esc(g.statusText || (rec ? '추천(협의)' : '확정')) + '</span></div>';
-      if ((g.photos || []).length) html += '<div class="spec-grid">' + g.photos.map(function (p) {
-        var cap = (p.name || '') + (p.desc ? ' · ' + p.desc : '');
-        return '<div class="spec-cell" onclick="openSpecPhoto(this.dataset.src,this.dataset.cap)" data-src="' + esc(p.src) + '" data-cap="' + esc(cap) + '">' +
-          '<div class="ph">' + (p.tag ? '<span class="tag">' + esc(p.tag) + '</span>' : '') + '<img src="' + esc(p.src) + '" alt="' + esc(p.name || '') + '" loading="lazy"></div>' +
-          '<div class="cap"><b>' + esc(p.name || '') + '</b>' + (p.desc ? '<em>' + esc(p.desc) + '</em>' : '') + '</div></div>';
-      }).join('') + '</div>';
-      if ((g.items || []).length) html += '<div class="spec-list" style="margin-top:' + ((g.photos || []).length ? '10px' : '0') + ';">' + g.items.map(function (it) {
-        var thumb = it.photo ?
-          '<div class="spec-thumb photo" onclick="openSpecPhoto(this.dataset.src,this.dataset.cap)" data-src="' + esc(it.photo) + '" data-cap="' + esc(it.name || '') + '"><img src="' + esc(it.photo) + '" alt="' + esc(it.name || '') + '"></div>' :
-          '<div class="spec-thumb icon" style="background:linear-gradient(135deg,#f8fafc,#e2e8f0);">' + esc(it.icon || '📦') + '</div>';
-        return '<div class="spec-row">' + thumb + '<div class="spec-body"><div class="spec-name">' + esc(it.name || '') + '</div>' +
-          (it.desc ? '<div class="spec-desc">' + esc(it.desc) + '</div>' : '') + '</div></div>';
-      }).join('') + '</div>';
-      if (g.note) html += '<div class="spec-card-note">' + esc(g.note) + '</div>';
-      return html + '</div>';
-    }).join('');
-  }
-
-  /* ───────── 고객용: 계약 · 정산 (추가·변경 자동 합산) ───────── */
-  function sumPaid(list, t) {
-    return (list || []).reduce(function (a, p) { return (isIso(p.date) && p.date > t) ? a : a + (Number(p.amount) || 0); }, 0);
-  }
-  function calcPayment(P, t) {
-    var total = Number(P.total) || 0;
-    var steps = (P.steps || []).map(function (s) {
-      var amount = s.amount != null ? Number(s.amount) : total * (Number(s.ratio) || 0) / 100;
-      var shown = (s.paid || []).filter(function (p) { return !(isIso(p.date) && p.date > t); });
-      return { s: s, amount: amount, paid: sumPaid(s.paid, t), shown: shown };
-    });
-    var changeSum = (P.changes || []).reduce(function (a, c) { return a + (Number(c.amount) || 0); }, 0);
-    var changePaid = sumPaid(P.changesPaid, t);
-    var final = total + changeSum;
-    var paidAll = steps.reduce(function (a, x) { return a + x.paid; }, 0) + changePaid;
-    return { total: total, steps: steps, changeSum: changeSum, changePaid: changePaid, final: final, paidAll: paidAll, left: final - paidAll };
-  }
-  function chip(paid, amount) {
-    if (amount > 0 && paid >= amount) return '<span class="pay-chip done">✅ 입금 완료</span>';
-    if (paid > 0) return '<span class="pay-chip partial">일부 입금</span>';
-    return '<span class="pay-chip todo">입금 예정</span>';
-  }
-  function renderPayment() {
-    var box = document.getElementById('pay-body');
-    if (!box) return;
-    var contact = document.getElementById('pay-contact');
-    if (contact) contact.innerHTML = '금액·일정과 관련해 궁금하신 점은 ' + esc(BRAND.company || '') + ' ' + esc(ceoLabel()) +
-      '(<a href="tel:' + esc(digits(BRAND.phone)) + '" style="color:var(--primary);font-weight:800;">' + esc(phoneText(BRAND.phone)) + '</a>)께 편하게 연락 주시면 바로 확인해 드립니다.';
-    var P = window.PAYMENT, card = document.getElementById('pay-card');
-    if (!P || !P.show) { if (card) card.hidden = true; return; }
-    var t = today(), c = calcPayment(P, t);
-    var html = '<div class="pay-total">' +
-      '<div class="pay-sum-line"><span>최초 계약금액</span><b>' + won(c.total) + '</b></div>';
-    if ((P.changes || []).length) html += '<div class="pay-sum-line"><span>추가·변경 합계</span><b class="' + (c.changeSum >= 0 ? 'chg-plus' : 'chg-minus') + '">' + signedWon(c.changeSum) + '</b></div>';
-    html += '<div class="pay-sum-line"><span>최종 공사금액 ' + esc(P.vat || '') + '</span><b>' + won(c.final) + '</b></div></div>';
-    html += '<div style="font-size:12px;color:var(--text-muted);margin:8px 0 2px;word-break:keep-all;">계약서 기준 대금 비율 <b style="color:var(--text-main);">' +
-      (P.steps || []).map(function (s) { return s.ratio != null ? s.ratio : '-'; }).join(' / ') + '</b></div>';
-    c.steps.forEach(function (x) {
-      var s = x.s, detail = '';
-      if (x.paid > 0) detail = '<div class="pay-detail">' + won(x.paid) + ' 입금<br><span class="pay-date">' +
-        x.shown.map(function (p) { return esc(dotDate(p.date)) + ' ' + won(p.amount); }).join('<br>') + '</span></div>';
-      else if (s.due) detail = '<div class="pay-detail">' + esc(s.due) + '</div>';
-      html += '<div class="pay-row"><div class="pay-kind"><div class="pay-label">' + esc(s.label) +
-        (s.ratio != null ? '<span class="pay-ratio">' + s.ratio + '%</span>' : '') + '</div><div class="pay-amount">' + won(x.amount) + '</div></div>' +
-        '<div class="pay-status">' + chip(x.paid, x.amount) + detail + '</div></div>';
-    });
-    if ((P.changes || []).length) {
-      var cd = c.changePaid > 0 ? '<div class="pay-detail">' + won(c.changePaid) + ' 입금</div>' : (P.changesDue ? '<div class="pay-detail">' + esc(P.changesDue) + '</div>' : '');
-      html += '<div class="pay-row" style="display:block;"><div style="display:flex;gap:10px;align-items:center;"><div class="pay-kind"><div class="pay-label">추가·변경 공사</div>' +
-        '<div class="pay-amount">' + signedWon(c.changeSum) + ' (' + P.changes.length + '건)</div></div>' +
-        '<div class="pay-status">' + (c.changeSum > 0 ? chip(c.changePaid, c.changeSum) : '<span class="pay-chip todo">정산 반영</span>') + cd + '</div></div>' +
-        '<div class="chg-list">' + P.changes.map(function (ch) {
-          var a = Number(ch.amount) || 0;
-          return '<div class="chg-row"><span>' + (ch.date ? '<span class="pay-date">' + esc(dotDate(ch.date).slice(5)) + '</span> ' : '') + esc(ch.title || '') + '</span>' +
-            '<b class="' + (a >= 0 ? 'chg-plus' : 'chg-minus') + '">' + signedWon(a) + '</b></div>';
-        }).join('') + '</div></div>';
-    }
-    html += '<div class="pay-sum"><div class="pay-sum-line"><span>누적 입금액</span><b>' + won(c.paidAll) + ' · ' +
-      (c.final ? (c.paidAll / c.final * 100).toFixed(1) : '0.0') + '%</b></div><div class="pay-sum-line"><span>남은 금액</span><b>' +
-      won(c.left) + '</b></div></div>';
-    if (P.note) html += '<p class="pay-note">' + esc(P.note) + '</p>';
-    box.innerHTML = html;
-  }
-
-  function renderHeaderCall() {
-    var a = document.getElementById('header-call');
-    if (!a) return;
-    if (!digits(BRAND.phone)) { a.hidden = true; return; }
-    a.href = 'tel:' + digits(BRAND.phone);
-  }
-
-  /* ───────── 협력업체용: 출입 정보 · 수칙 · 공사 전 사진 · 특이사항 ───────── */
-  function renderAccess() {
-    var grid = document.getElementById('access-grid');
-    if (!grid) return;
-    var A = window.ACCESS || {};
-    var sub = document.getElementById('partner-sub');
-    if (sub) sub.textContent = (BRAND.company || '') + ' 현장 안내 및 공정표';
-    var door = A.doorCode ? A.doorCode : ceoLabel().trim() + '가 문자로 따로 안내';
-    var item = function (title, val, cls, copy) {
-      return '<div class="access-item full' + (copy ? ' copyable' : '') + '"' + (copy ? ' data-copy="' + esc(copy) + '"' : '') + '>' +
-        '<div class="access-title">' + esc(title) + '</div><div class="access-val' + (cls ? ' ' + cls : '') + '">' + esc(val) + '</div></div>';
-    };
-    grid.innerHTML =
-      item('현장 주소 (탭하여 복사)', A.address || '-', 'addr', A.address) +
-      (A.lobby ? item('1층 공동현관 출입', A.lobby, 'addr') : '') +
-      item(A.doorCode ? '세대 현관 비밀번호 (탭하여 복사)' : '세대 현관 비밀번호', door, A.doorCode ? '' : 'addr', A.doorCode || '') +
-      (A.parking ? item('주차 안내', A.parking, 'addr') : '') +
-      '<div class="access-item full" style="display:flex;justify-content:space-between;align-items:center;gap:10px;">' +
-      '<div><div class="access-title">현장 총괄</div><div style="font-size:14px;font-weight:700;color:#fff;">' + esc(BRAND.company || '') + ' ' + esc(ceoLabel()) +
-      ' · <span class="nowrap">' + esc(phoneText(BRAND.phone)) + '</span></div></div>' +
-      '<a class="call-chip" href="tel:' + esc(digits(BRAND.phone)) + '">📞 통화</a></div>';
-    var rules = (A.rules || []).slice();
-    var rl = document.getElementById('rule-list');
-    if (rl) rl.innerHTML = rules.map(function (r) { return '<li><strong>' + esc(r[0]) + ':</strong> ' + esc(r[1]) + '</li>'; }).join('');
-    var call = document.getElementById('call-btn');
-    if (call) { call.href = 'tel:' + digits(BRAND.phone); call.textContent = '📞 ' + ceoLabel().trim() + ' 통화'; }
-    if (A.doorCode) { var cb = document.getElementById('copy-btn'); if (cb) cb.textContent = '📋 주소·비번 복사'; }
-    grid.addEventListener('click', function (e) {
-      var el = e.target.closest('[data-copy]');
-      if (el && el.getAttribute('data-copy')) copyText(el.getAttribute('data-copy'));
-    });
-  }
-
-  function renderPrePhotos() {
-    var card = document.getElementById('pre-card');
-    if (!card) return;
-    var P = window.PARTNER || {}, photos = P.photos || [];
-    if (!photos.length && !(P.notices || []).length) { card.hidden = true; return; }
-    var hero = Math.min(photos.length, P.hero || 4);
-    var tile = function (p, i, all) {
-      var n = i + 1, label = String(n).padStart(2, '0');
-      return '<div class="pre-item"' + (all ? ' data-photo="' + n + '" data-cap="' + esc(label + ' · ' + (p.caption || '')) + '"' : '') + ' onclick="openPreLightbox(' + n + ')">' +
-        '<img src="' + esc(p.src) + '" alt="' + esc(p.caption || '') + '" loading="lazy"><div class="pre-badge">' + label + ' ' + esc(p.caption || '') + '</div></div>';
-    };
-    document.getElementById('pre-grid').innerHTML = photos.slice(0, hero).map(function (p, i) { return tile(p, i, false); }).join('');
-    document.getElementById('pre-all').innerHTML = photos.map(function (p, i) { return tile(p, i, true); }).join('');
-    var notices = P.notices || [];
-    document.getElementById('pre-notices').innerHTML = notices.length ? '<div class="memo-box"><div class="memo-title">⚠️ 현장 특이사항 ' + notices.length + '곳 (작업 전 확인)</div>' +
-      notices.map(function (n, i) {
-        return '<div class="memo-item"><b>' + (i + 1) + '. ' + esc(n.title || '') + '</b>' + esc(n.text || '') +
-          (n.photo && photos[n.photo - 1] ? '<br><button class="memo-link" onclick="openPreLightbox(' + Number(n.photo) + ')">사진 ' + String(n.photo).padStart(2, '0') + ' 보기</button>' : '') + '</div>';
-      }).join('') + '</div>' : '';
-    var toggle = document.getElementById('pre-toggle');
-    if (toggle) toggle.hidden = photos.length <= hero;
-    if (!photos.length) { document.getElementById('pre-hint').textContent = ''; }
-  }
-
+  /* ───────── 협력업체용: 복사 · 알림 ───────── */
   function showToast(msg) {
-    var t = document.getElementById('toast');
+    var t = $('toast');
     if (!t) return;
     t.textContent = msg;
     t.style.display = 'block';
     clearTimeout(showToast.timer);
     showToast.timer = setTimeout(function () { t.style.display = 'none'; }, 2500);
   }
-  function copyText(val, okMsg) {
-    var done = function () { showToast(okMsg || '📋 복사되었습니다: ' + val); };
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(val).then(done).catch(function () { fallbackCopy(val) ? done() : showToast('복사가 막힌 브라우저입니다. 길게 눌러 복사해 주세요.'); });
-    } else if (fallbackCopy(val)) done();
-    else showToast('복사가 막힌 브라우저입니다. 길게 눌러 복사해 주세요.');
+  function writeClipboard(val, ok, fail) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(val).then(ok).catch(fail);
+    } else fail();
   }
-  function fallbackCopy(val) {
-    try {
-      var ta = document.createElement('textarea');
-      ta.value = val; ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select();
-      var ok = document.execCommand('copy');
-      document.body.removeChild(ta);
-      return ok;
-    } catch (e) { return false; }
+  function copyText(val) {
+    writeClipboard(val, function () { showToast('📋 복사되었습니다: ' + val); },
+      function () { showToast('복사가 막힌 브라우저입니다. 길게 눌러 복사해 주세요.'); });
   }
   function copyAccessInfo() {
-    var A = window.ACCESS || {};
-    var lines = ['[' + (BRAND.company || '') + ' 협력업체 현장 안내]', '- 현장: ' + (SITE.name || ''), '- 주소: ' + (A.address || '')];
-    if (A.lobby) lines.push('- 공동현관: ' + A.lobby);
-    lines.push('- 세대 현관 비밀번호: ' + (A.doorCode || ceoLabel().trim() + '가 문자로 안내'));
+    var A = window.ACCESS || {}, C = contact();
+    var lines = ['[' + (BRAND.name || '') + ' 협력업체 현장 안내]', '- 현장: ' + (SITE.name || ''), '- 주소: ' + (A.address || '')];
+    if (A.lobby) lines.push('- 1층 공동현관: ' + A.lobby);
+    lines.push('- 세대 도어락: ' + (A.doorCode || CEO + '이 문자로 안내'));
     if (A.parking) lines.push('- 주차: ' + A.parking);
-    lines.push('- ' + ceoLabel().trim() + ': ' + phoneText(BRAND.phone));
-    lines.push('- 소음 작업: ' + (SITE.noiseHours || '') + ' (주말·공휴일 금지)');
-    lines.push('- 공정표: ' + location.href.split('?')[0]);
-    copyText(lines.join('\n'), '📋 현장 정보가 복사되었습니다!');
+    lines.push('- ' + C.short + ': ' + phoneText(C.phone));
+    lines.push('- 소음시간: ' + (SITE.noiseHours || '') + ' 준수 (주말·공휴일 금지)');
+    lines.push('- 현장 가이드: ' + location.href.split('?')[0]);
+    writeClipboard(lines.join('\n'), function () { showToast('📋 현장 정보가 복사되었습니다!'); },
+      function () { showToast('복사가 막힌 브라우저입니다.'); });
   }
 
   /* ───────── 이벤트 연결 ───────── */
   document.addEventListener('click', function (e) {
-    var cell = e.target.closest && e.target.closest('.cal-cell[data-date]');
-    if (cell) openCalDetail(cell.getAttribute('data-date'));
+    if (!e.target.closest) return;
+    var cell = e.target.closest('.cal-cell[data-date]');
+    if (cell) { openCalDetail(cell.getAttribute('data-date')); return; }
+    var zoom = e.target.closest('[data-zoom]');
+    if (zoom) { openSpecPhoto(zoom.getAttribute('data-zoom'), zoom.getAttribute('data-cap')); return; }
+    var g = e.target.closest('.gallery-toggle[data-total]');
+    if (g) { toggleGallery(g); return; }
+    var pre = e.target.closest('[data-open]');
+    if (pre) { e.stopPropagation(); openPreLightbox(pre.getAttribute('data-open')); }
   });
   document.addEventListener('keydown', function (e) {
-    var lb = document.getElementById('pre-lightbox');
+    var lb = $('pre-lightbox');
     if (lb && lb.classList.contains('open')) {
       if (e.key === 'Escape') closePreLightbox();
       else if (e.key === 'ArrowLeft') stepPrePhoto(-1);
@@ -721,8 +748,8 @@
     }
     if (e.key === 'Escape') { closeCalDetail(); closeSpecPhoto(); }
   });
-  (function swipe() {
-    var lb = document.getElementById('pre-lightbox');
+  (function swipe() {   // 라이트박스 좌우 스와이프
+    var lb = $('pre-lightbox');
     if (!lb) return;
     var sx = 0, sy = 0, on = false;
     lb.addEventListener('touchstart', function (e) {
@@ -737,10 +764,10 @@
     }, { passive: true });
   })();
 
+  // HTML 의 onclick 에서 부르는 함수들
   window.switchTab = switchTab;
   window.openSpecPhoto = openSpecPhoto;
   window.closeSpecPhoto = closeSpecPhoto;
-  window.toggleLogMore = toggleLogMore;
   window.setScheduleView = setScheduleView;
   window.openCalDetail = openCalDetail;
   window.closeCalDetail = closeCalDetail;
@@ -749,21 +776,18 @@
   window.closePreLightbox = closePreLightbox;
   window.togglePreGallery = togglePreGallery;
   window.copyAccessInfo = copyAccessInfo;
-  window.__calcPayment = calcPayment;   // 확인용
 
-  function safe(fn, name) {
-    try { fn(); } catch (e) { if (window.console) console.error('[' + name + '] data.js 내용을 확인해 주세요:', e); }
-  }
-  safe(fillSiteText, '현장명');
-  safe(updateProgress, '진행률');
-  safe(renderLogs, '현장 일지');
-  safe(renderSpecs, '자재 스펙');
-  safe(renderPayment, '정산');
-  safe(renderHeaderCall, '연락처');
-  safe(renderClientTimeline, '공정표');
-  safe(renderPartnerSchedule, '공정표');
-  safe(renderAccess, '출입 정보');
-  safe(renderPrePhotos, '공사 전 사진');
-  safe(function () { labelPre(false); }, '사진');
+  // 처음 열 때
+  applyBrand();
+  fillSiteText();
+  updateProgress();
+  renderLogs();
+  renderSpecs();
+  renderPayment();
+  renderClientTimeline();
+  renderPartnerSchedule();
+  renderAccess();
+  renderPrePhotos();
+  labelPre(false);
   try { if (localStorage.getItem(VIEW_KEY) === 'calendar') setScheduleView('calendar'); } catch (e) { /* 기본은 리스트 */ }
 })();

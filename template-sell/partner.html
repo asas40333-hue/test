@@ -6,11 +6,14 @@
   <meta name="robots" content="noindex, nofollow">
   <title>협력업체 현장 가이드</title>
 
-  <!-- 카카오톡 링크 미리보기 (현관 비밀번호는 여기에 절대 적지 않습니다) -->
+  <!-- 카카오톡 링크 미리보기 (카톡은 스크립트를 읽지 않아 파일에 그대로 적혀 있어야 합니다)
+       비밀번호·주소는 여기에 절대 적지 마세요. 미리보기는 누구에게나 보입니다. -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="협력업체 현장 가이드 · 출입 정보와 공정표">
-  <meta property="og:description" content="현장 주소·출입 방법·공정표·소음 시간을 한 화면에서 확인하세요">
+  <meta property="og:title" content="협력업체 현장 가이드 & 공정표">
+  <meta property="og:description" content="현장 출입·주차 안내 · 공정표 · 소음 시간 · 작업 수칙">
   <meta property="og:image" content="og-partner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
   <link rel="manifest" href="manifest-partner.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -18,21 +21,21 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="협력업체 가이드">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-title" content="협력 가이드">
+  <meta name="theme-color" content="#1e3a8a">
   <style>
     :root {
       --bg: #0f172a;
       --card-bg: #1e293b;
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --accent: #f59e0b;   /* site.js 의 색상으로 자동 교체 */
-      --brand: #1e3a8a;
-      --brand-light: #3b82f6;
+      --accent: #f59e0b;
       --accent-light: #fbbf24;
       --primary: #38bdf8;
       --success: #10b981;
       --border: #334155;
+      --brand: #1e3a8a;
+      --brand-light: #3b82f6;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", sans-serif; }
     body {
@@ -210,7 +213,7 @@
       transition: all .18s;
       -webkit-tap-highlight-color: transparent;
     }
-    .view-btn.active { background: var(--accent); color: #0f172a; box-shadow: 0 2px 8px rgba(245, 158, 11, .3); }
+    .view-btn.active { background: var(--accent); color: #0f172a; box-shadow: 0 2px 8px rgba(0, 0, 0, .3); }
     .view-btn:active { transform: scale(.985); }
 
     #schedule-list-view[hidden], #schedule-calendar-view[hidden] { display: none; }
@@ -255,7 +258,7 @@
     }
     .cal-cell:active { opacity: .82; }
     .cal-cell.off { background: #131f36; border-style: dashed; }
-    .cal-cell.today { box-shadow: 0 0 0 2px rgba(245, 158, 11, .75); }
+    .cal-cell.today { box-shadow: 0 0 0 2px var(--accent); }
     .cal-cell.today::after {
       content: '';
       position: absolute;
@@ -444,6 +447,7 @@
       cursor: pointer;
     }
     .pre-toggle:active { opacity: .85; }
+    .pre-toggle[hidden], .photo-card[hidden], .memo-box[hidden] { display: none; }
     .pre-hint { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 8px; }
 
     /* 현장 특이사항 메모 */
@@ -574,6 +578,18 @@
     .btn-copy { background: #38bdf8; color: #0f172a; }
 
     /* 토스트 알림 */
+    /* ── 판매용 템플릿 추가 스타일 ── */
+    .preview-bar { background: #fbbf24; color: #0f172a; font-size: 11.5px; font-weight: 800; text-align: center; padding: 6px 10px; border-radius: 10px; margin-bottom: 10px; word-break: keep-all; }
+    .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .header-top .badge-partner { margin-bottom: 0; }
+    .brand-logo { flex-shrink: 0; width: 34px; height: 34px; border-radius: 10px; background: rgba(255,255,255,.16); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 900; overflow: hidden; }
+    .brand-logo img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+    .site-title { word-break: keep-all; line-height: 1.3; }
+    .contact-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .contact-name { font-size: 14px; font-weight: 700; color: #fff; word-break: keep-all; }
+    .contact-call { background: var(--brand-light); color: #fff; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .access-item.full[data-copy]:active { opacity: .8; }
+
     .toast {
       position: fixed;
       top: 20px;
@@ -589,54 +605,59 @@
       display: none;
       box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     }
-
-    /* 판매용 템플릿 추가 */
-    .call-chip { background: var(--brand-light); color: #fff; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; }
-    .access-item.copyable { cursor: pointer; }
-    .nowrap { white-space: nowrap; }
-    .brand-footer { text-align: center; font-size: 11px; color: #64748b; padding: 16px 0 0; line-height: 1.6; }
-
   </style>
 </head>
 <body data-page="partner">
-  <!-- 이 파일은 고치지 않습니다. 내용은 site.js·data.js 에서 바꿉니다. -->
+  <!-- 이 파일은 고치지 않아도 됩니다. 회사 정보는 site.js, 현장 내용은 data.js 에서 바꿉니다. -->
+
+  <!-- 상단 헤더 (회사 이름·로고는 site.js, 현장명은 data.js 에서 자동) -->
   <div class="header">
-    <div class="badge-partner">협력업체 · 시공팀 전용 가이드</div>
+    <div class="header-top">
+      <div class="brand-logo" data-brand-logo></div>
+      <div class="badge-partner">협력업체 · 시공팀 전용 가이드</div>
+    </div>
     <div class="site-title" data-site="name"></div>
-    <div class="site-sub" id="partner-sub"></div>
+    <div class="site-sub"><span data-brand="name"></span> 현장 안내 및 공정표</div>
   </div>
 
+  <!-- 출입·도어락·주차·연락 정보: data.js 의 ACCESS 에서 자동 -->
   <div class="access-card">
     <div class="card-label">🔑 현장 출입 및 연락 정보</div>
     <div class="access-grid" id="access-grid"></div>
   </div>
 
+  <!-- 현장 필수 작업 수칙 (data.js 의 ACCESS.rules 에서 자동) -->
   <div class="rule-card">
     <div class="rule-title">⚠️ 현장 필수 작업 수칙 (관리소 준수)</div>
     <ul class="rule-list" id="rule-list"></ul>
   </div>
 
-  <div class="photo-card" id="pre-card">
+  <!-- 공사 전 현장 사진 + 특이사항: data.js 의 PARTNER 에서 자동 -->
+  <div class="photo-card">
     <div class="photo-card-title">📸 공사 전 현장 사진 <span>(착공 전 참고)</span></div>
     <div class="photo-card-sub">착공 전 원상태 기록입니다. 대표 사진으로 공간 상태를 먼저 확인하시고, 전체는 아래 버튼으로 펼쳐 보세요.</div>
     <div class="pre-grid" id="pre-grid"></div>
-    <div id="pre-notices"></div>
+    <div class="memo-box" id="memo-box"></div>
     <button class="pre-toggle" id="pre-toggle" onclick="togglePreGallery()">전체 사진 펼쳐보기</button>
     <div class="pre-all" id="pre-all" hidden></div>
     <div class="pre-hint" id="pre-hint"></div>
   </div>
 
+  <!-- 공정표: data.js 의 SCHEDULE 에서 자동 -->
   <div class="section-title">
     📅 공정별 일정표
-    <span class="section-desc">대표 공지 기준 업데이트</span>
+    <span class="section-desc">현장 총괄 공지 기준 업데이트</span>
   </div>
+
   <div class="view-toggle" role="group" aria-label="공정표 보기 방식">
     <button type="button" id="view-btn-list" class="view-btn active" onclick="setScheduleView('list')" aria-pressed="true">📋 리스트 보기</button>
     <button type="button" id="view-btn-calendar" class="view-btn" onclick="setScheduleView('calendar')" aria-pressed="false">📅 달력 보기</button>
   </div>
+
   <div id="schedule-list-view">
     <div id="partner-schedule"></div>
   </div>
+
   <div id="schedule-calendar-view" hidden>
     <div class="cal-card">
       <div class="cal-range">
@@ -648,14 +669,15 @@
     </div>
   </div>
 
-  <div class="brand-footer" id="brand-footer"></div>
-
+  <!-- 하단 고정 버튼 (ACCESS 에서 자동) -->
   <div class="bottom-bar">
-    <a href="#" id="call-btn" class="bottom-btn btn-call">📞 대표 통화</a>
+    <a href="#" id="call-btn" class="bottom-btn btn-call">📞 통화</a>
     <button class="bottom-btn btn-copy" id="copy-btn" onclick="copyAccessInfo()">📋 현장 정보 복사</button>
   </div>
+
   <div id="toast" class="toast"></div>
 
+  <!-- 공정표 달력: 날짜 상세 패널 -->
   <div id="cal-detail" class="cal-detail-overlay" onclick="if(event.target.id==='cal-detail')closeCalDetail()">
     <div class="cal-detail-sheet" role="dialog" aria-modal="true" aria-labelledby="cal-detail-date">
       <button type="button" class="cal-detail-close" onclick="closeCalDetail()" aria-label="닫기">✕</button>
@@ -668,6 +690,7 @@
     </div>
   </div>
 
+  <!-- 공사 전 현장 사진 확대 라이트박스 -->
   <div id="pre-lightbox" onclick="if(event.target.id==='pre-lightbox')closePreLightbox()">
     <button class="lb-close" onclick="closePreLightbox()" aria-label="닫기">✕</button>
     <button class="lb-nav lb-prev" onclick="event.stopPropagation();stepPrePhoto(-1)" aria-label="이전 사진">‹</button>
@@ -679,6 +702,7 @@
     </div>
   </div>
 
+  <!-- 순서를 바꾸지 마세요: 회사 설정 → 현장 데이터 → 화면 동작 -->
   <script src="site.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>

@@ -1,4 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="600" height="800">
-<rect width="300" height="400" fill="#1e293b"/><rect x="40" y="120" width="220" height="90" rx="10" fill="#f8fafc"/><rect x="40" y="120" width="220" height="90" rx="10" fill="#fef9c3" opacity=".35"/><g stroke="#fde68a" stroke-width="3" opacity=".6"><line x1="150" y1="230" x2="150" y2="300"/><line x1="80" y1="225" x2="50" y2="290"/><line x1="220" y1="225" x2="250" y2="290"/></g>
-<rect x="222" y="12" rx="7" width="66" height="24" fill="rgba(15,23,42,.55)"/>
-<text x="255" y="29" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="#fff" letter-spacing="1">SAMPLE</text></svg>

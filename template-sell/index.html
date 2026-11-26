@@ -6,14 +6,17 @@
   <meta name="robots" content="noindex, nofollow">
   <title>현장 리포트</title>
 
-  <!-- 카카오톡 링크 미리보기: 카톡은 스크립트를 읽지 않아 이 세 줄만 HTML에 둡니다.
-       그대로 두어도 어느 업체·현장에나 맞는 문구입니다. (바꾸는 법: README_구매자용.md 6번) -->
+  <!-- 카카오톡 링크 미리보기 (카톡은 스크립트를 읽지 않아 이 다섯 줄은 파일에 그대로 적혀 있어야 합니다)
+       회사 이름을 넣고 싶으면 og:title 글자만 바꾸세요. 사진(og-client.png)은 같은 폴더의 파일을 씁니다.
+       ※ 카톡에서 미리보기 사진이 안 보이면 README_구매자용.md 의 '카톡 미리보기' 항목을 보세요. -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="실시간 현장 리포트 · 공정 진행률과 현장 사진">
-  <meta property="og:description" content="입주자 고객님을 위한 공정 진행률, 현장 사진 일지, 공정 일정 안내">
+  <meta property="og:title" content="우리집 인테리어 실시간 현장 리포트">
+  <meta property="og:description" content="공정 진행률 · 날짜별 현장 사진 일지 · 공정 일정 · 자재 스펙 안내">
   <meta property="og:image" content="og-client.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
-  <!-- 홈 화면 바로가기 아이콘 (모두 이 폴더 안의 파일) -->
+  <!-- 스마트폰 홈 화면 바로가기 아이콘 (모두 이 폴더 안의 파일) -->
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="icon" type="image/png" href="icon-192.png">
@@ -24,7 +27,7 @@
   <meta name="theme-color" content="#1e3a8a">
   <style>
     :root {
-      --primary: #1e3a8a;   /* site.js 의 색상으로 자동 교체 */
+      --primary: #1e3a8a;
       --primary-light: #3b82f6;
       --accent: #10b981;
       --bg: #f8fafc;
@@ -462,7 +465,7 @@
       border: 3px solid #fff;
     }
     .timeline-step.done .timeline-dot { background: var(--accent); }
-    .timeline-step.current .timeline-dot { background: var(--primary-light); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+    .timeline-step.current .timeline-dot { background: var(--primary-light); box-shadow: 0 0 0 3px #e2e8f0; }
     .timeline-date { font-size: 12px; color: var(--text-muted); font-weight: 600; }
     .timeline-title { font-size: 14px; font-weight: 700; margin-top: 2px; }
     .timeline-notice { font-size: 12px; color: #dc2626; margin-top: 3px; font-weight: 500; }
@@ -530,7 +533,7 @@
     }
     .cal-cell:active { opacity: .82; }
     .cal-cell.off { background: #f8fafc; border-style: dashed; }
-    .cal-cell.today { box-shadow: 0 0 0 2px rgba(59, 130, 246, .55); }
+    .cal-cell.today { box-shadow: 0 0 0 2px var(--primary-light); }
     .cal-cell.today::after {
       content: '';
       position: absolute;
@@ -711,52 +714,74 @@
     /* 템플릿 추가: 공정표 메모 줄 (한빛 화면의 인라인 스타일과 같은 모양) */
     .timeline-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
     .timeline-meet { font-size: 13px; font-weight: 700; color: var(--primary-light); margin-top: 4px; }
-
-    /* 판매용 템플릿 추가 */
-    .catalog-banner { background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 14px; padding: 16px; margin-bottom: 20px; color: #fff; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18); }
-    .catalog-banner-title { font-size: 16px; font-weight: 800; line-height: 1.35; margin-bottom: 6px; }
-    .catalog-banner p { font-size: 12px; opacity: .88; margin-bottom: 12px; line-height: 1.45; word-break: keep-all; }
-    .catalog-banner a { display: block; background: #fff; color: var(--primary); font-weight: 800; font-size: 13px; padding: 9px; border-radius: 8px; text-align: center; text-decoration: none; }
-    .log-card { border-left: 4px solid var(--accent); }
-    .log-card .log-item { border-left-color: var(--accent); }
-    .log-text { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-top: 6px; word-break: keep-all; white-space: pre-line; }
-    .log-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 8px; text-align: right; }
-    .log-more { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 8px; }
-    .log-more[hidden] { display: none; }
-    .log-more .photo-item { aspect-ratio: 1; }
-    .log-more .photo-badge { font-size: 9.5px; padding: 2px 4px; left: 3px; bottom: 3px; }
+    /* ── 판매용 템플릿 추가 스타일 ── */
+    .preview-bar { background: #fef3c7; color: #92400e; font-size: 11.5px; font-weight: 700; text-align: center; padding: 6px 10px; word-break: keep-all; }
+    .brand-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo { flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; letter-spacing: -0.5px; overflow: hidden; }
+    .brand-logo img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+    .header-call { flex-shrink: 0; text-decoration: none; background: var(--primary); color: #fff; font-size: 12px; font-weight: 800; padding: 8px 11px; border-radius: 10px; white-space: nowrap; }
+    .header-call[hidden] { display: none; }
+    .project-name { word-break: keep-all; line-height: 1.3; }
+    .log-card-photo { border-left: 4px solid var(--accent); }
+    .log-card-photo .log-item { border-left-color: var(--accent); }
+    .log-text { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-top: 6px; word-break: keep-all; }
     .log-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .log-grid.single { grid-template-columns: 1fr; max-width: 360px; }
     .log-grid .photo-item { aspect-ratio: 4 / 3; }
-    .empty-note { font-size: 12.5px; color: var(--text-muted); text-align: center; padding: 18px 8px; line-height: 1.6; word-break: keep-all; }
-    .chg-list { margin-top: 8px; border-top: 1px dashed var(--border); padding-top: 8px; }
-    .chg-row { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; padding: 4px 0; color: var(--text-muted); word-break: keep-all; }
-    .chg-row b { white-space: nowrap; }
-    .chg-plus { color: #b91c1c; }
-    .chg-minus { color: #047857; }
-    .pay-total { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 10px 12px; margin-bottom: 6px; }
-    .pay-total .pay-sum-line b { color: var(--primary); }
-    .brand-footer { text-align: center; font-size: 11px; color: #94a3b8; padding: 18px 16px 4px; line-height: 1.6; }
-    .header-call { flex-shrink: 0; background: var(--primary); color: #fff; text-decoration: none; font-size: 12px; font-weight: 800; padding: 8px 11px; border-radius: 9px; }
-
+    .log-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 8px; text-align: right; }
+    .check-box { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); }
+    .check-head { font-size: 12.5px; font-weight: 800; color: #dc2626; margin-bottom: 2px; }
+    .catalog-banner { background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 14px; padding: 16px; margin-bottom: 20px; color: #fff; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18); }
+    .catalog-banner[hidden], .spec-notice[hidden], .card[hidden] { display: none; }
+    .catalog-title { font-size: 16px; font-weight: 800; line-height: 1.35; margin-bottom: 6px; }
+    .catalog-desc { font-size: 12px; opacity: .85; margin-bottom: 12px; line-height: 1.4; }
+    .catalog-btn { display: block; background: #fff; color: var(--primary); font-weight: 800; font-size: 13px; padding: 9px; border-radius: 8px; text-align: center; text-decoration: none; }
+    .amount-row b { color: var(--text-main); }
+    .amount-row .plus, .change-amt.plus { color: #c2410c; }
+    .amount-row .minus, .change-amt.minus { color: #047857; }
+    .amount-vat { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 4px; }
+    .pay-warn { font-size: 12px; font-weight: 700; color: #b91c1c; background: #fef2f2; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; }
+    .pay-sub-title { display: flex; justify-content: space-between; align-items: baseline; font-size: 12.5px; font-weight: 800; color: var(--text-main); padding-bottom: 4px; border-bottom: 2px solid var(--border); }
+    .pay-sub-title span { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+    .pay-extra { font-size: 10.5px; color: #c2410c; margin-top: 2px; }
+    .change-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .change-main { min-width: 0; }
+    .change-title { font-size: 13px; font-weight: 700; color: var(--text-main); word-break: keep-all; }
+    .change-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .change-amt { flex-shrink: 0; font-size: 13px; font-weight: 800; }
+    .change-total { border-bottom: none; }
+    .change-paid { border-bottom: none; background: #f8fafc; border-radius: 8px; padding: 10px; margin-top: 4px; }
+    .change-paid .pay-chip { flex-shrink: 0; }
+    .change-total .change-title { font-weight: 800; }
+    .contact-card { display: flex; gap: 8px; margin-top: 12px; }
+    .contact-card a { flex: 1; text-align: center; text-decoration: none; font-size: 13px; font-weight: 800; padding: 11px; border-radius: 10px; }
+    .contact-card a[hidden] { display: none; }
+    .btn-tel { background: var(--primary); color: #fff; }
+    .btn-kakao { background: #fee500; color: #191919; }
+    .app-footer { text-align: center; padding: 18px 16px 6px; font-size: 11.5px; color: var(--text-muted); line-height: 1.6; }
+    .app-footer b { color: var(--text-main); }
   </style>
 </head>
 <body data-page="client">
-  <!-- ════════════════════════════════════════════════════════════
-       이 파일은 고치지 않습니다. 글자·사진·일정·금액은 모두
-       site.js(회사 정보·색상)와 data.js(현장 정보)에서 바꿉니다.
-       ════════════════════════════════════════════════════════════ -->
 
+  <!-- 이 파일은 고치지 않아도 됩니다. 회사 정보는 site.js, 현장 내용은 data.js 에서 바꿉니다. -->
+
+  <!-- 헤더 (회사 이름·로고는 site.js, 현장명은 data.js 에서 자동) -->
   <header class="app-header">
-    <div>
-      <div class="brand-title" data-site="brand"></div>
-      <div class="project-name" data-site="name"></div>
+    <div class="brand-row">
+      <div class="brand-logo" data-brand-logo></div>
+      <div style="min-width:0;">
+        <div class="brand-title" data-brand="name"></div>
+        <div class="project-name" data-site="name"></div>
+      </div>
     </div>
-    <a class="header-call" id="header-call" href="#">📞 문의</a>
+    <a class="header-call" data-brand-tel href="#">📞 문의</a>
   </header>
 
+  <!-- 상단 진행률 카드 (모두 자동 계산) -->
   <div class="status-card">
     <div class="status-top">
-      <span class="status-stage" id="status-stage">현재 상태: <strong>-</strong></span>
+      <span class="status-stage" id="status-stage">현재 공정: <strong>-</strong></span>
       <span class="status-dday" id="status-dday">-</span>
     </div>
     <div class="status-percent" id="status-percent">-</div>
@@ -769,26 +794,38 @@
     </div>
   </div>
 
+  <!-- 탭 내비게이션 -->
   <nav class="nav-tabs">
     <div class="nav-tab active" onclick="switchTab('log', this)">📸 현장일지</div>
     <div class="nav-tab" onclick="switchTab('spec', this)">🧱 자재스펙</div>
     <div class="nav-tab" onclick="switchTab('schedule', this)">📅 공정일정</div>
-    <div class="nav-tab" id="nav-payment" onclick="switchTab('payment', this)">📄 계약·정산</div>
+    <div class="nav-tab" onclick="switchTab('payment', this)">📄 계약·정산</div>
   </nav>
 
-  <!-- 1. 현장 일지 (data.js 의 LOGS) -->
+  <!-- ═══════════ 1. 현장 일지 탭 (data.js 의 LOGS 에서 자동) ═══════════ -->
   <div id="tab-log" class="tab-content active">
     <div class="section-title">
       현장 일지
-      <span class="section-desc" id="log-desc"></span>
+      <span class="section-desc"><span data-brand="ceoTitle"></span>이 날짜별로 기록합니다</span>
     </div>
     <div id="log-list"></div>
+    <div class="card" style="text-align: center; padding: 26px 20px;">
+      <div style="font-size: 26px; margin-bottom: 8px;">📷</div>
+      <div style="font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">현장 사진은 날짜별로 계속 쌓입니다</div>
+      <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">철거·샷시·타일·도배 등 공정이 진행될 때마다<br>날짜별 사진과 작업 내용을 이 일지에 올려 드립니다.</div>
+    </div>
   </div>
 
-  <!-- 2. 자재 스펙 (data.js 의 SPECS, 자재도감 배너는 site.js 의 catalog) -->
+  <!-- ═══════════ 2. 자재 스펙 탭 (data.js 의 SPECS 에서 자동) ═══════════ -->
   <div id="tab-spec" class="tab-content">
-    <div id="catalog-banner"></div>
-    <div id="spec-notice"></div>
+    <!-- 자재 도감 안내 상자: site.js 의 catalog.show 가 true 일 때만 보입니다 -->
+    <div class="catalog-banner" id="catalog-banner"></div>
+
+    <div class="spec-notice" id="spec-notice">
+      <div class="spec-notice-icon">💡</div>
+      <div id="spec-notice-text"></div>
+    </div>
+
     <div class="section-title">
       선정 및 확정 자재 스펙
       <span class="section-desc" data-site="name"></span>
@@ -797,19 +834,24 @@
     <div id="spec-list"></div>
   </div>
 
-  <!-- 3. 공정 일정 (data.js 의 SCHEDULE) -->
+  <!-- ═══════════ 3. 공정 일정 탭 (data.js 의 SCHEDULE 에서 자동) ═══════════ -->
   <div id="tab-schedule" class="tab-content">
     <div class="section-title">
       전체 공정 스케줄
       <span class="section-desc">실시간 일정 반영</span>
     </div>
+
     <div class="view-toggle" role="group" aria-label="공정일정 보기 방식">
       <button type="button" id="view-btn-list" class="view-btn active" onclick="setScheduleView('list')" aria-pressed="true">📋 리스트 보기</button>
       <button type="button" id="view-btn-calendar" class="view-btn" onclick="setScheduleView('calendar')" aria-pressed="false">📅 달력 보기</button>
     </div>
+
     <div id="schedule-list-view">
-      <div class="card"><div class="timeline" id="timeline"></div></div>
+      <div class="card">
+        <div class="timeline" id="timeline"></div>
+      </div>
     </div>
+
     <div id="schedule-calendar-view" hidden>
       <div class="card cal-card">
         <div class="cal-range">
@@ -822,12 +864,13 @@
     </div>
   </div>
 
-  <!-- 4. 계약 · 정산 (data.js 의 PAYMENT) -->
+  <!-- ═══════════ 4. 계약 · 정산 탭 (data.js 의 PAYMENT 에서 자동 계산) ═══════════ -->
   <div id="tab-payment" class="tab-content">
     <div class="section-title">
       계약 및 정산 안내
       <span class="section-desc">계약서 기준으로 안내드립니다</span>
     </div>
+
     <div class="card">
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
         <div style="width: 38px; height: 38px; border-radius: 10px; background: #eff6ff; display: flex; align-items: center; justify-content: center; font-size: 19px;">📄</div>
@@ -838,25 +881,35 @@
         이 화면에는 계약서와 동일한 내용만 반영하며, 임의로 금액을 표시하지 않습니다.
       </p>
     </div>
+
     <div class="card" id="pay-card">
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
         <div style="width: 38px; height: 38px; border-radius: 10px; background: #ecfdf5; display: flex; align-items: center; justify-content: center; font-size: 19px;">💳</div>
-        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">대금 일정 · 입금 현황</div>
+        <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">공사 대금 · 추가·변경 견적 · 입금 현황</div>
       </div>
       <div id="pay-body"></div>
     </div>
+
     <div class="card">
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
         <div style="width: 38px; height: 38px; border-radius: 10px; background: #fffbeb; display: flex; align-items: center; justify-content: center; font-size: 19px;">☎️</div>
         <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">정산 문의</div>
       </div>
-      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;" id="pay-contact"></p>
+      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.65; word-break: keep-all;">
+        금액·일정과 관련해 궁금하신 점은 <b data-brand="name"></b> <span data-brand="ceoTitle"></span>께 편하게 연락 주시면 바로 확인해 드립니다.
+      </p>
+      <div class="contact-card">
+        <a class="btn-tel" data-brand-tel href="#">📞 <span data-brand="phone"></span></a>
+        <a class="btn-kakao" data-brand-kakao href="#" target="_blank" rel="noopener">💬 카카오톡 문의</a>
+      </div>
     </div>
   </div>
 
-  <div class="brand-footer" id="brand-footer"></div>
+  <footer class="app-footer">
+    <b data-brand="name"></b><br><span data-brand="slogan"></span>
+  </footer>
 
-  <!-- 달력 날짜 상세 -->
+  <!-- 공정일정 달력: 날짜 상세 패널 -->
   <div id="cal-detail" class="modal-overlay" onclick="if(event.target.id==='cal-detail')closeCalDetail()">
     <div class="modal-box cal-detail-box" role="dialog" aria-modal="true" aria-labelledby="cal-detail-date">
       <button type="button" class="cal-detail-close" onclick="closeCalDetail()" aria-label="닫기">✕</button>
@@ -869,7 +922,7 @@
     </div>
   </div>
 
-  <!-- 사진 확대 -->
+  <!-- 사진 확대 모달 -->
   <div id="photo-modal" class="modal-overlay" onclick="if(event.target.id==='photo-modal')closeSpecPhoto()">
     <div class="modal-box photo-modal-box">
       <img id="photo-modal-img" src="" alt="">
@@ -880,6 +933,7 @@
     </div>
   </div>
 
+  <!-- 순서를 바꾸지 마세요: 회사 설정 → 현장 데이터 → 화면 동작 -->
   <script src="site.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
