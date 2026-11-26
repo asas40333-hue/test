@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600"><rect width="800" height="600" fill="#f8fafc"/>
+<polygon points="0,0 220,130 220,400 0,600" fill="#f1f5f9"/>
+<polygon points="800,0 580,130 580,400 800,600" fill="#f1f5f9" opacity=".92"/>
+<polygon points="0,0 800,0 580,130 220,130" fill="#f8fafc"/>
+<rect x="220" y="130" width="360" height="270" fill="#ffffff"/>
+<polygon points="0,600 800,600 580,400 220,400" fill="#9ca3af"/><line x1="280" y1="130" x2="280" y2="400" stroke="#e2e8f0" stroke-width="3"/><line x1="340" y1="130" x2="340" y2="400" stroke="#e2e8f0" stroke-width="3"/><line x1="400" y1="130" x2="400" y2="400" stroke="#e2e8f0" stroke-width="3"/><line x1="460" y1="130" x2="460" y2="400" stroke="#e2e8f0" stroke-width="3"/><line x1="520" y1="130" x2="520" y2="400" stroke="#e2e8f0" stroke-width="3"/><line x1="220" y1="250" x2="580" y2="250" stroke="#e2e8f0" stroke-width="3"/><line x1="220" y1="370" x2="580" y2="370" stroke="#e2e8f0" stroke-width="3"/><polygon points="0,0 220,130 220,260 0,300" fill="#ffffff"/><rect x="220" y="260" width="360" height="140" fill="#cbd5e1" opacity=".5"/><polygon points="430,470 520,440 560,470 470,500" fill="#64748b"/><rect x="500" y="420" width="10" height="34" fill="#92400e" transform="rotate(30 505 437)"/><rect x="0" y="544" width="800" height="56" fill="#0f172a" fill-opacity=".55"/>
+<text x="24" y="580" font-family="Noto Sans KR, Apple SD Gothic Neo, sans-serif" font-size="26" font-weight="700" fill="#fff">욕실 벽 타일 시공</text>
+<rect x="672" y="556" width="104" height="32" rx="16" fill="#fff" fill-opacity=".9"/>
+<text x="724" y="579" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="800" fill="#0f172a" letter-spacing="2">SAMPLE</text></svg>
