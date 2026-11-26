@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600"><rect width="800" height="600" fill="#b5bcc5"/>
+<polygon points="0,0 220,130 220,400 0,600" fill="#98a1ac"/>
+<polygon points="800,0 580,130 580,400 800,600" fill="#98a1ac" opacity=".92"/>
+<polygon points="0,0 800,0 580,130 220,130" fill="#b5bcc5"/>
+<rect x="220" y="130" width="360" height="270" fill="#a8b0ba"/>
+<polygon points="0,600 800,600 580,400 220,400" fill="#2f7f6f"/><rect x="220" y="340" width="360" height="60" fill="#2f7f6f" opacity=".85"/><circle cx="400" cy="480" r="16" fill="#1f2937"/><polygon points="0,520 220,400 220,340 0,420" fill="#2f7f6f" opacity=".7"/><polygon points="800,520 580,400 580,340 800,420" fill="#2f7f6f" opacity=".7"/><rect x="0" y="544" width="800" height="56" fill="#0f172a" fill-opacity=".55"/>
+<text x="24" y="580" font-family="Noto Sans KR, Apple SD Gothic Neo, sans-serif" font-size="26" font-weight="700" fill="#fff">욕실 방수 · 바닥 정리</text>
+<rect x="672" y="556" width="104" height="32" rx="16" fill="#fff" fill-opacity=".9"/>
+<text x="724" y="579" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="800" fill="#0f172a" letter-spacing="2">SAMPLE</text></svg>

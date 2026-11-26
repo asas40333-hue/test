@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>아이콘 · 카톡 미리보기 이미지 만들기</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif; }
+    body { background: #f1f5f9; color: #0f172a; padding: 20px 16px 40px; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
+    .lead { font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 16px; word-break: keep-all; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+    .card h2 { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+    .card p { font-size: 12px; color: #64748b; margin-bottom: 10px; word-break: keep-all; line-height: 1.6; }
+    canvas { max-width: 100%; height: auto; border: 1px solid #e2e8f0; border-radius: 10px; display: block; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+    .btn { display: inline-block; margin-top: 10px; background: #0f172a; color: #fff; text-decoration: none; font-size: 13px; font-weight: 800; padding: 9px 14px; border-radius: 9px; border: none; cursor: pointer; }
+    .tip { font-size: 12px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; border-radius: 10px; padding: 10px 12px; line-height: 1.65; word-break: keep-all; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🎨 아이콘 · 카톡 미리보기 이미지 만들기</h1>
+    <p class="lead">
+      <b>site.js</b> 에 적은 회사 이름·로고 글자·색상으로 아래 이미지를 자동으로 그립니다.
+      각 이미지의 <b>[저장]</b> 버튼을 눌러 내려받은 뒤, 같은 이름 그대로 <b>템플릿 폴더 맨 위(index.html 옆)</b>에 덮어쓰세요.
+    </p>
+    <div class="tip">💡 site.js 를 고친 뒤에는 이 화면을 새로고침해야 바뀐 내용이 반영됩니다.<br>
+      로고 사진(logoImage)을 쓰셔도 이 도구는 logoText 글자로 그립니다. 로고 사진 아이콘이 필요하면 그림판 등에서 512×512 정사각형으로 만들어 바꾸세요.</div>
+    <div style="height:14px"></div>
+
+    <div class="card">
+      <h2>① 카톡 미리보기 — 고객용 (og-client.png)</h2>
+      <p>고객님께 링크를 보내면 카톡 대화창에 보이는 사진입니다. 1200×630</p>
+      <canvas id="og-client" width="1200" height="630"></canvas>
+      <a class="btn" data-save="og-client" download="og-client.png">⬇️ og-client.png 저장</a>
+    </div>
+
+    <div class="card">
+      <h2>② 카톡 미리보기 — 협력업체용 (og-partner.png)</h2>
+      <p>협력업체에 링크를 보낼 때 보이는 사진입니다. 1200×630</p>
+      <canvas id="og-partner" width="1200" height="630"></canvas>
+      <a class="btn" data-save="og-partner" download="og-partner.png">⬇️ og-partner.png 저장</a>
+    </div>
+
+    <div class="card">
+      <h2>③ 홈 화면 아이콘 3종</h2>
+      <p>휴대폰 '홈 화면에 추가' 때 보이는 아이콘입니다. 세 개 모두 저장해 주세요.</p>
+      <div class="row">
+        <div><canvas id="icon-512" width="512" height="512" style="width:160px"></canvas><a class="btn" data-save="icon-512" download="icon-512.png">⬇️ icon-512.png</a></div>
+        <div><canvas id="icon-192" width="192" height="192" style="width:96px"></canvas><a class="btn" data-save="icon-192" download="icon-192.png">⬇️ icon-192.png</a></div>
+        <div><canvas id="apple-touch-icon" width="180" height="180" style="width:90px"></canvas><a class="btn" data-save="apple-touch-icon" download="apple-touch-icon.png">⬇️ apple-touch-icon.png</a></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../site.js"></script>
+  <script>
+    (function () {
+      var B = window.BRAND || {}, C = B.colors || {};
+      var P = C.primary || '#1e3a8a', PL = C.primaryLight || '#3b82f6', PA = C.partnerAccent || '#f59e0b';
+      var FONT = '"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
+      var logo = B.logoText || (B.name || '').slice(0, 1);
+
+      function rr(ctx, x, y, w, h, r) {
+        ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+      }
+      function fit(ctx, text, max, size, weight) {
+        do { ctx.font = weight + ' ' + size + 'px ' + FONT; size -= 2; } while (ctx.measureText(text).width > max && size > 10);
+      }
+      function house(ctx, cx, cy, s, color) {      // 작은 집 모양
+        ctx.fillStyle = color;
+        ctx.beginPath(); ctx.moveTo(cx, cy - s); ctx.lineTo(cx + s, cy - s * 0.1); ctx.lineTo(cx + s * 0.75, cy - s * 0.1);
+        ctx.lineTo(cx + s * 0.75, cy + s * 0.8); ctx.lineTo(cx - s * 0.75, cy + s * 0.8); ctx.lineTo(cx - s * 0.75, cy - s * 0.1);
+        ctx.lineTo(cx - s, cy - s * 0.1); ctx.closePath(); ctx.fill();
+      }
+
+      function icon(id) {
+        var c = document.getElementById(id), ctx = c.getContext('2d'), n = c.width;
+        var g = ctx.createLinearGradient(0, 0, n, n); g.addColorStop(0, P); g.addColorStop(1, PL);
+        ctx.fillStyle = g; ctx.fillRect(0, 0, n, n);
+        house(ctx, n / 2, n * 0.43, n * 0.3, 'rgba(255,255,255,0.16)');
+        ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        fit(ctx, logo, n * 0.78, Math.round(n * (logo.length > 1 ? 0.3 : 0.48)), '900');
+        ctx.fillText(logo, n / 2, n * 0.5);
+        ctx.font = '700 ' + Math.round(n * 0.075) + 'px ' + FONT; ctx.globalAlpha = 0.85;
+        ctx.fillText('현장 리포트', n / 2, n * 0.8); ctx.globalAlpha = 1;
+      }
+
+      function og(id, partner) {
+        var c = document.getElementById(id), ctx = c.getContext('2d'), W = c.width, H = c.height;
+        var g = ctx.createLinearGradient(0, 0, W, H);
+        if (partner) { g.addColorStop(0, P); g.addColorStop(1, '#0f172a'); } else { g.addColorStop(0, P); g.addColorStop(1, PL); }
+        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+        house(ctx, W - 210, 300, 190, 'rgba(255,255,255,0.08)');
+        // 로고 배지
+        ctx.fillStyle = 'rgba(255,255,255,0.18)'; rr(ctx, 80, 80, 110, 110, 28); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        fit(ctx, logo, 92, logo.length > 1 ? 40 : 60, '900'); ctx.fillText(logo, 135, 137);
+        ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+        fit(ctx, B.name || '', 800, 44, '800'); ctx.fillText(B.name || '', 215, 152);
+        // 꼬리표
+        var tag = partner ? '협력업체 · 시공팀 전용' : '입주자 고객님 전용';
+        ctx.font = '800 30px ' + FONT;
+        var tw = ctx.measureText(tag).width + 44;
+        ctx.fillStyle = partner ? PA : 'rgba(255,255,255,0.22)'; rr(ctx, 80, 250, tw, 54, 27); ctx.fill();
+        ctx.fillStyle = partner ? '#0f172a' : '#fff'; ctx.fillText(tag, 102, 288);
+        // 큰 제목
+        ctx.fillStyle = '#fff';
+        var title = partner ? '현장 가이드 & 공정표' : '실시간 현장 리포트';
+        fit(ctx, title, 1040, 96, '900'); ctx.fillText(title, 80, 420);
+        ctx.globalAlpha = 0.85;
+        var sub = partner ? '출입·주차 안내 · 공정 달력 · 소음 시간 · 작업 수칙' : '공정 진행률 · 날짜별 현장 사진 · 공정 달력 · 자재 스펙';
+        fit(ctx, sub, 1040, 34, '600'); ctx.fillText(sub, 82, 490);
+        ctx.globalAlpha = 1;
+      }
+
+      function draw() {
+        og('og-client', false); og('og-partner', true);
+        icon('icon-512'); icon('icon-192'); icon('apple-touch-icon');
+        document.querySelectorAll('[data-save]').forEach(function (a) {
+          a.href = document.getElementById(a.getAttribute('data-save')).toDataURL('image/png');
+        });
+        window.__drawn = true;
+      }
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw); else draw();
+    })();
+  </script>
+</body>
+</html>
